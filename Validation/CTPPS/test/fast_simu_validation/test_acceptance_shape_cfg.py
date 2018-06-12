@@ -16,31 +16,26 @@ process.MessageLogger = cms.Service("MessageLogger",
 process.source = cms.Source("EmptySource")
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(100000)
+    input = cms.untracked.int32(10000)
 )
 
 # particle-data table
 process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
 
 # particle generator
-process.generator = cms.EDProducer("RandomtXiGunProducer",
-  Verbosity = cms.untracked.int32(0),
+process.generator = cms.EDProducer("RandomXiThetaGunProducer",
+  particleId = cms.uint32(2212),
 
-  FireBackward = cms.bool(True),
-  FireForward = cms.bool(True),
+  energy = cms.double(6500),  # nominal beam energy, GeV
+  xi_min = cms.double(0.),
+  xi_max = cms.double(0.20),
+  theta_x_mean = cms.double(0),
+  theta_x_sigma = cms.double(100E-6), # in rad
+  theta_y_mean = cms.double(0),
+  theta_y_sigma = cms.double(100E-6),
 
-  PGunParameters = cms.PSet(
-    PartID = cms.vint32(2212),
-    ECMS = cms.double(13E3),
-
-    Mint = cms.double(0),
-    Maxt = cms.double(3),
-    MinXi = cms.double(0.0),
-    MaxXi = cms.double(0.2),
-
-    MinPhi = cms.double(-3.14159265359),
-    MaxPhi = cms.double(+3.14159265359)
-  )
+  nParticlesSector45 = cms.uint32(1),
+  nParticlesSector56 = cms.uint32(1),
 )
 
 # random seeds
@@ -50,16 +45,6 @@ process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService
     SmearingGenerator = cms.PSet(initialSeed =cms.untracked.uint32(3849))
 )
 
-# geometry
-from Geometry.VeryForwardGeometry.geometryRP_cfi import totemGeomXMLFiles, ctppsDiamondGeomXMLFiles
-
-process.XMLIdealGeometryESSource_CTPPS = cms.ESSource("XMLIdealGeometryESSource",
-    geomXMLFiles = totemGeomXMLFiles+ctppsDiamondGeomXMLFiles+["Validation/CTPPS/test/fast_simu_with_phys_generator/qgsjet/global/RP_Dist_Beam_Cent.xml"],
-    rootNodeName = cms.string('cms:CMSE'),
-)
-
-process.TotemRPGeometryESModule = cms.ESProducer("TotemRPGeometryESModule")
-
 # fast simulation
 process.load('SimCTPPS.OpticsParameterisation.ctppsFastProtonSimulation_cfi')
 process.ctppsFastProtonSimulation.produceScoringPlaneHits = False
@@ -68,15 +53,8 @@ process.ctppsFastProtonSimulation.checkApertures = False
 process.ctppsFastProtonSimulation.produceHitsRelativeToBeam = False
 process.ctppsFastProtonSimulation.roundToPitch = True
 
-# strips reco: pattern recognition
-process.load('RecoCTPPS.TotemRPLocal.totemRPUVPatternFinder_cfi')
-process.totemRPUVPatternFinder.tagRecHit = cms.InputTag('ctppsFastProtonSimulation')
-
-# strips reco: track fitting
-process.load('RecoCTPPS.TotemRPLocal.totemRPLocalTrackFitter_cfi')
-
-# common reco: lite track production
-process.load('RecoCTPPS.TotemRPLocal.ctppsLocalTrackLiteProducer_cfi')
+# geometry and reco (rec hits --> tracks)
+process.load('common_cff')
 
 # distribution plotter
 process.ctppsTrackDistributionPlotter_reco = cms.EDAnalyzer("CTPPSTrackDistributionPlotter",
@@ -90,9 +68,7 @@ process.p = cms.Path(
 
     * process.ctppsFastProtonSimulation
 
-    * process.totemRPUVPatternFinder
-    * process.totemRPLocalTrackFitter
-    * process.ctppsLocalTrackLiteProducer
+    * process.recoHitsToTracks
 
     * process.ctppsTrackDistributionPlotter_reco
 )
