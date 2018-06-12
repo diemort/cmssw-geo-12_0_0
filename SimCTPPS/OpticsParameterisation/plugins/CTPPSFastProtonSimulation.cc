@@ -7,6 +7,8 @@
  *
  ****************************************************************************/
 
+// TODO: clean
+
 #include <memory>
 
 #include "FWCore/Framework/interface/Frameworkfwd.h"
@@ -27,6 +29,8 @@
 #include "DataFormats/Common/interface/DetSetVector.h"
 #include "DataFormats/CTPPSDetId/interface/CTPPSDetId.h"
 #include "DataFormats/CTPPSReco/interface/TotemRPRecHit.h"
+#include "DataFormats/CTPPSReco/interface/CTPPSDiamondRecHit.h"
+#include "DataFormats/CTPPSReco/interface/CTPPSPixelRecHit.h"
 #include "DataFormats/CTPPSReco/interface/CTPPSLocalTrackLite.h"
 
 #include "SimDataFormats/GeneratorProducts/interface/HepMCProduct.h"
@@ -37,6 +41,10 @@
 #include "Geometry/Records/interface/VeryForwardMisalignedGeometryRecord.h"
 
 #include <unordered_map>
+
+#include "TMath.h"
+#include "TMatrixD.h"
+#include "TVectorD.h"
 
 //----------------------------------------------------------------------------------------------------
 
@@ -64,8 +72,9 @@ class CTPPSFastProtonSimulation : public edm::stream::EDProducer<>
 
     virtual void produce( edm::Event&, const edm::EventSetup& ) override;
 
-    void transportProton(const HepMC::GenVertex* in_vtx, const HepMC::GenParticle* in_trk,
-      const CTPPSGeometry &geometry, std::vector<CTPPSLocalTrackLite> &out_tracks, edm::DetSetVector<TotemRPRecHit>& out_hits) const;
+    void processProton(const HepMC::GenVertex* in_vtx, const HepMC::GenParticle* in_trk,
+      const CTPPSGeometry &geometry, std::vector<CTPPSLocalTrackLite> &out_tracks, edm::DetSetVector<TotemRPRecHit>& out_strip_hits,
+      edm::DetSetVector<CTPPSPixelRecHit> &out_pixel_hits, edm::DetSetVector<CTPPSDiamondRecHit> &out_diamond_hits) const;
 
     bool produceRecHit(const CLHEP::Hep3Vector& coord_global, unsigned int detid,
       const CTPPSGeometry &geometry, TotemRPRecHit& rechit) const;
@@ -94,12 +103,15 @@ class CTPPSFastProtonSimulation : public edm::stream::EDProducer<>
     bool checkApertures_;
     bool produceHitsRelativeToBeam_;
     bool roundToPitch_;
-    double pitch_; ///< strip pitch in mm
-    double insensitiveMargin_; ///< size of insensitive margin at sensor's edge facing the beam, in mm
+    double pitchStrips_; ///< strip pitch in mm
+    double pitchPixelsHor_;
+    double pitchPixelsVer_;
+    double insensitiveMarginStrips_; ///< size of insensitive margin at sensor's edge facing the beam, in mm
+
 
     // ------------ internal parameters ------------
 
-    unsigned int verbosity;
+    unsigned int verbosity_;
 
     /// collection of RP information
     std::vector<CTPPSPotInfo> pots_;
@@ -138,16 +150,22 @@ CTPPSFastProtonSimulation::CTPPSFastProtonSimulation( const edm::ParameterSet& i
   checkApertures_             ( iConfig.getParameter<bool>( "checkApertures" ) ),
   produceHitsRelativeToBeam_  ( iConfig.getParameter<bool>( "produceHitsRelativeToBeam" ) ),
   roundToPitch_               ( iConfig.getParameter<bool>( "roundToPitch" ) ),
-  pitch_                      ( iConfig.getParameter<double>( "pitch" ) ),
-  insensitiveMargin_          ( iConfig.getParameter<double>( "insensitiveMargin" ) ),
+  pitchStrips_                ( iConfig.getParameter<double>( "pitchStrips" ) ),
+  pitchPixelsHor_             ( iConfig.getParameter<double>( "pitchPixelsHor" ) ),
+  pitchPixelsVer_             ( iConfig.getParameter<double>( "pitchPixelsVer" ) ),
+  insensitiveMarginStrips_    ( iConfig.getParameter<double>( "insensitiveMarginStrips" ) ),
 
-  verbosity                   ( iConfig.getUntrackedParameter<unsigned int>( "verbosity", 0 ) )
+  verbosity_                  ( iConfig.getUntrackedParameter<unsigned int>( "verbosity", 0 ) )
 {
   if (produceScoringPlaneHits_)
-    produces< std::vector<CTPPSLocalTrackLite> >();
+    produces<std::vector<CTPPSLocalTrackLite>>();
 
   if (produceRecHits_)
-    produces< edm::DetSetVector<TotemRPRecHit> >();
+  {
+    produces<edm::DetSetVector<TotemRPRecHit>>();
+    produces<edm::DetSetVector<CTPPSDiamondRecHit>>();
+    produces<edm::DetSetVector<CTPPSPixelRecHit>>();
+  }
 
   // v position of strip 0
   stripZeroPosition_ = RPTopology::last_strip_to_border_dist_ + (RPTopology::no_of_strips_-1)*RPTopology::pitch_ - RPTopology::y_width_/2.;
@@ -184,20 +202,22 @@ void CTPPSFastProtonSimulation::beginRun( const edm::Run&, const edm::EventSetup
 
 //----------------------------------------------------------------------------------------------------
 
-void
-CTPPSFastProtonSimulation::produce( edm::Event& iEvent, const edm::EventSetup& iSetup )
+void CTPPSFastProtonSimulation::produce( edm::Event& iEvent, const edm::EventSetup& iSetup )
 {
   // get input
   edm::Handle<edm::HepMCProduct> hepmc_prod;
-  iEvent.getByToken( hepMCToken_, hepmc_prod );
+  iEvent.getByToken(hepMCToken_, hepmc_prod);
 
   // get geometry
   edm::ESHandle<CTPPSGeometry> geometry;
   iSetup.get<VeryForwardMisalignedGeometryRecord>().get(geometry);
 
   // prepare outputs
-  std::unique_ptr< edm::DetSetVector<TotemRPRecHit> > pRecHits( new edm::DetSetVector<TotemRPRecHit>() );
-  std::unique_ptr< std::vector<CTPPSLocalTrackLite> > pTracks( new std::vector<CTPPSLocalTrackLite>() );
+  std::unique_ptr<edm::DetSetVector<TotemRPRecHit>> pStripRecHits(new edm::DetSetVector<TotemRPRecHit>());
+  std::unique_ptr<edm::DetSetVector<CTPPSDiamondRecHit>> pDiamondRecHits(new edm::DetSetVector<CTPPSDiamondRecHit>());
+  std::unique_ptr<edm::DetSetVector<CTPPSPixelRecHit>> pPixelRecHits(new edm::DetSetVector<CTPPSPixelRecHit>());
+
+  std::unique_ptr<std::vector<CTPPSLocalTrackLite>> pTracks(new std::vector<CTPPSLocalTrackLite>());
 
   // loop over event vertices
   auto evt = new HepMC::GenEvent( *hepmc_prod->GetEvent() );
@@ -211,28 +231,33 @@ CTPPSFastProtonSimulation::produce( edm::Event& iEvent, const edm::EventSetup& i
       auto part = *( it_part );
 
       // accept only stable protons
-      if ( part->pdg_id()!=2212 )
-        continue;
-      if ( part->status()!=1 && part->status()<83 )
+      if ( part->pdg_id() != 2212 )
         continue;
 
-      transportProton(vtx, part, *geometry, *pTracks, *pRecHits);
+      if ( part->status() != 1 && part->status() < 83 )
+        continue;
+
+      processProton(vtx, part, *geometry, *pTracks, *pStripRecHits, *pPixelRecHits, *pDiamondRecHits);
     }
   }
 
   if (produceScoringPlaneHits_)
-    iEvent.put( std::move( pTracks ) );
+    iEvent.put(std::move(pTracks));
 
   if (produceRecHits_)
-    iEvent.put( std::move( pRecHits ) );
+  {
+    iEvent.put(std::move(pStripRecHits));
+    iEvent.put(std::move(pPixelRecHits));
+    iEvent.put(std::move(pDiamondRecHits));
+  }
 }
 
 //----------------------------------------------------------------------------------------------------
 
-void CTPPSFastProtonSimulation::transportProton(const HepMC::GenVertex* in_vtx, const HepMC::GenParticle* in_trk,
-  const CTPPSGeometry &geometry, std::vector<CTPPSLocalTrackLite> &out_tracks, edm::DetSetVector<TotemRPRecHit>& out_hits) const
+void CTPPSFastProtonSimulation::processProton(const HepMC::GenVertex* in_vtx, const HepMC::GenParticle* in_trk,
+  const CTPPSGeometry &geometry, std::vector<CTPPSLocalTrackLite> &out_tracks, edm::DetSetVector<TotemRPRecHit>& out_strip_hits,
+  edm::DetSetVector<CTPPSPixelRecHit> &out_pixel_hits, edm::DetSetVector<CTPPSDiamondRecHit> &out_diamond_hits) const
 {
-#if 0
   /// xi is positive for diffractive protons, thus proton momentum p = (1-xi) * p_nom
   /// horizontal component of proton momentum: p_x = th_x * (1-xi) * p_nom
   
@@ -269,10 +294,6 @@ void CTPPSFastProtonSimulation::transportProton(const HepMC::GenVertex* in_vtx, 
     if (rp.detid.arm() != arm)
       continue;
 
-    // so far only works for strips
-    if (rp.detid.subdetId() != CTPPSDetId::sdTrackingStrip)
-      continue;
-
     // calculate kinematics for optics parametrisation
     const double p0 = rp.approximator->GetBeamMomentum();
     const double p = mom_lhc.rho();
@@ -290,7 +311,7 @@ void CTPPSFastProtonSimulation::transportProton(const HepMC::GenVertex* in_vtx, 
       -xi
     };
 
-    if (verbosity)
+    if (verbosity_)
     {
       const unsigned int rpDecId = rp.detid.arm()*100 + rp.detid.station()*10 + rp.detid.rp();
       printf("simu: RP=%u, xi=%.4f, th_x=%.3E, %.3E, vtx_lhc_eff_x=%.3E, vtx_lhc_eff_y=%.3E\n", rpDecId,
@@ -314,86 +335,138 @@ void CTPPSFastProtonSimulation::transportProton(const HepMC::GenVertex* in_vtx, 
     if (!proton_transported)
       continue;
 
-    // get z position of the approximator scoring plane
-    const double approximator_z = rp.z_position * 1E3; // in mm
+    // track parameters in the chosen reference frame, in rad and mm
+    double a_x = a_x_tr, a_y = a_y_tr;
+    double b_x = b_x_tr * 1E3, b_y = b_y_tr * 1E3;
+    if (produceHitsRelativeToBeam_)
+    {
+      a_x -= a_x_be; a_y -= a_y_be;
+      b_x -= b_x_be * 1E3; b_y -= b_y_be * 1E3;
+    }
   
     // save scoring plane hit
     if (produceScoringPlaneHits_)
-    {
-      if (produceHitsRelativeToBeam_)
-        out_tracks.emplace_back(rp.detid, (b_x_tr - b_x_be) * 1E3, 0., (b_y_tr - b_y_be) * 1E3, 0.);
-      else
-        out_tracks.emplace_back(rp.detid, b_x_tr * 1E3, 0., b_y_tr * 1E3, 0.);
-    }
-
+        out_tracks.emplace_back(rp.detid, b_x, 0., b_y, 0.);
+    
     // stop if rec hits are not to be produced
     if (!produceRecHits_)
       continue;
 
     // loop over all sensors in the RP
-    auto it = geometry.getSensorsInRP().find(rp.detid);
-    if (it == geometry.getSensorsInRP().end())
-      continue;
-
-    for (const auto& detid : it->second)
+    for (const auto& detIdInt : geometry.getSensorsInRP(rp.detid))
     {
-      // get sensor geometry
-      const double gl_o_z = geometry.localToGlobal( detid, CLHEP::Hep3Vector() ).z(); // in mm
+      CTPPSDetId detId(detIdInt);
 
-      // evaluate positions (in mm) of track and beam
-      const double de_z = (gl_o_z - approximator_z) * z_sign;
+      // get z position of the approximator scoring plane
+      const double approximator_z = rp.z_position * 1E3; // in mm
 
-      const double x_tr = a_x_tr * de_z + b_x_tr * 1E3;
-      const double y_tr = a_y_tr * de_z + b_y_tr * 1E3;
+      // determine the track impact point (in global coordinates)
+      // !! this assumes that local axes (1, 0, 0) and (0, 1, 0) describe the sensor surface
+      CLHEP::Hep3Vector gl_o = geometry.localToGlobal(detId, CLHEP::Hep3Vector(0, 0, 0));
+      CLHEP::Hep3Vector gl_a1 = geometry.localToGlobal(detId, CLHEP::Hep3Vector(1, 0, 0)) - gl_o;
+      CLHEP::Hep3Vector gl_a2 = geometry.localToGlobal(detId, CLHEP::Hep3Vector(0, 1, 0)) - gl_o;
 
-      const double x_be = a_x_be * de_z + b_x_be * 1E3;
-      const double y_be = a_y_be * de_z + b_y_be * 1E3;
+      TMatrixD A(3, 3);
+      TVectorD B(3);
+      A(0, 0) = a_x;    A(0, 1) = -gl_a1.x(); A(0, 2) = -gl_a2.x(); B(0) = gl_o.x() - b_x;
+      A(1, 0) = a_y;    A(1, 1) = -gl_a1.y(); A(1, 2) = -gl_a2.y(); B(1) = gl_o.y() - b_y;
+      A(2, 0) = z_sign; A(2, 1) = -gl_a1.z(); A(2, 2) = -gl_a2.z(); B(2) = gl_o.z() - approximator_z;
+      TMatrixD Ai(3, 3);
+      Ai = A.Invert();
+      TVectorD P(3);
+      P = Ai * B;
+      //printf("            de z = %f, p1 = %f, p2 = %f\n", P(0), P(1), P(2));
 
-      // determine hit global coordinates
-      CLHEP::Hep3Vector h_glo(x_tr, y_tr, gl_o_z);
-      if (produceHitsRelativeToBeam_)
-          h_glo -= CLHEP::Hep3Vector(x_be, y_be, 0.);
+      double de_z = P(0);
+      CLHEP::Hep3Vector h_glo(a_x * de_z + b_x, a_y * de_z + b_y, de_z + approximator_z);
+      //printf("            h_glo: x = %f, y = %f, z = %f\n", h_glo.x(), h_glo.y(), h_glo.z());
 
-      // make hit (if within acceptance)
-      TotemRPRecHit hit; // all coordinates in mm
-      if ( produceRecHit(h_glo, detid, geometry, hit) )
+      // hit in local coordinates
+      CLHEP::Hep3Vector h_loc = geometry.globalToLocal(detId, h_glo);
+      //printf("            h_loc: c1 = %f, c2 = %f, c3 = %f\n", h_loc.x(), h_loc.y(), h_loc.z());
+
+      // strips
+      if (detId.subdetId() == CTPPSDetId::sdTrackingStrip)
       {
-        edm::DetSet<TotemRPRecHit>& hits = out_hits.find_or_insert( detid );
-        hits.push_back( hit );
+        double u = h_loc.x();
+        double v = h_loc.y();
+
+        if (verbosity_ > 5)
+          printf("            u=%+8.4f, v=%+8.4f", u, v);
+
+        // is it within detector?
+        if (!RPTopology::IsHit(u, v, insensitiveMarginStrips_))
+        {
+          if (verbosity_ > 5)
+            printf(" | no hit\n");
+          continue;
+        } 
+
+        // round the measurement
+        if (roundToPitch_)
+        {
+          double m = stripZeroPosition_ - v;
+          signed int strip = (int) floor(m / pitchStrips_ + 0.5);
+
+          v = stripZeroPosition_ - pitchStrips_ * strip;
+
+          if (verbosity_ > 5)
+            printf(" | strip=%+4i", strip);
+        }
+
+        double sigma = pitchStrips_ / sqrt(12.);
+
+        if (verbosity_ > 5)
+          printf(" | m=%+8.4f, sigma=%+8.4f\n", v, sigma);
+
+        edm::DetSet<TotemRPRecHit> &hits = out_strip_hits.find_or_insert(detId);
+        hits.push_back(TotemRPRecHit(v, sigma));
       }
+
+      // diamonds
+      if (detId.subdetId() == CTPPSDetId::sdTimingDiamond)
+      {
+        // TODO: proper implementation
+        /*
+        if (roundToPitch_)
+        {
+          h_loc.setX( pitchDiamonds * floor(h_loc.x()/pitchDiamonds + 0.5) );
+        }
+
+        if (verbosity_ > 5)
+          printf("            m = %.3f\n", h_loc.x());
+
+        const double width = pitchDiamonds;
+
+        DetSet<CTPPSDiamondRecHit> &hits = diamondHitColl->find_or_insert(detId);
+        HPTDCErrorFlags flags;
+        hits.push_back(CTPPSDiamondRecHit(h_loc.x(), width, 0., 0., 0., 0., 0., 0., 0., 0, flags, false));
+        */
+      }
+
+      // pixels
+      if (detId.subdetId() == CTPPSDetId::sdTrackingPixel)
+      {
+        if (roundToPitch_)
+        {
+          h_loc.setX( pitchPixelsHor_ * floor(h_loc.x()/pitchPixelsHor_ + 0.5) );
+          h_loc.setY( pitchPixelsVer_ * floor(h_loc.y()/pitchPixelsVer_ + 0.5) );
+        }
+
+        if (verbosity_ > 5)
+          printf("            m1 = %.3f, m2 = %.3f\n", h_loc.x(), h_loc.y());
+
+        const double sigmaHor = pitchPixelsHor_ / sqrt(12.);
+        const double sigmaVer = pitchPixelsVer_ / sqrt(12.);
+
+        const LocalPoint lp(h_loc.x(), h_loc.y(), h_loc.z());
+        const LocalError le(sigmaHor, 0., sigmaVer);
+
+        edm::DetSet<CTPPSPixelRecHit> &hits = out_pixel_hits.find_or_insert(detId);
+        hits.push_back(CTPPSPixelRecHit(lp, le));
+      } 
     }
   }
-}
-
-//----------------------------------------------------------------------------------------------------
-
-bool CTPPSFastProtonSimulation::produceRecHit(const CLHEP::Hep3Vector& coord_global, unsigned int detid,
-  const CTPPSGeometry &geometry, TotemRPRecHit& rechit) const
-{
-  // transform hit global to local coordinates
-  const CLHEP::Hep3Vector h_loc = geometry.globalToLocal( detid, coord_global );
-
-  double u = h_loc.x();
-  double v = h_loc.y();
-
-  // is it within detector?
-  if ( !RPTopology::IsHit( u, v, insensitiveMargin_ ) )
-    return false;
-
-  // round the measurement
-  if ( roundToPitch_ )
-  {
-    double m = stripZeroPosition_ - v;
-    int strip = static_cast<int>( floor( m/pitch_ + 0.5 ) );
-    v = stripZeroPosition_ - pitch_ * strip;
-  }
-
-  const double sigma = pitch_ / sqrt( 12. );
-
-  rechit = TotemRPRecHit( v, sigma );
-
-  return true;
-#endif
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -406,5 +479,6 @@ CTPPSFastProtonSimulation::fillDescriptions( edm::ConfigurationDescriptions& des
   descriptions.addDefault( desc );
 }
 
-// define this as a plug-in
+//----------------------------------------------------------------------------------------------------
+
 DEFINE_FWK_MODULE( CTPPSFastProtonSimulation );
