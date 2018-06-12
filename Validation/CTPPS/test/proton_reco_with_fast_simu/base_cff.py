@@ -48,14 +48,7 @@ process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService
 )
 
 # geometry
-from Geometry.VeryForwardGeometry.geometryRP_cfi import totemGeomXMLFiles, ctppsDiamondGeomXMLFiles
-
-process.XMLIdealGeometryESSource_CTPPS = cms.ESSource("XMLIdealGeometryESSource",
-    geomXMLFiles = totemGeomXMLFiles+ctppsDiamondGeomXMLFiles+["Validation/CTPPS/test/rp_positions/data/2016_preTS2_without_margin_end/RP_Dist_Beam_Cent.xml"],
-    rootNodeName = cms.string('cms:CMSE'),
-)
-
-process.TotemRPGeometryESModule = cms.ESProducer("TotemRPGeometryESModule")
+process.load("Geometry.VeryForwardGeometry.geometryRPFromDD_2018_cfi")
 
 # beam-smearing settings
 process.load("IOMC.EventVertexGenerators.beamDivergenceVtxGenerator_cfi")
@@ -82,20 +75,32 @@ process.load('SimCTPPS.OpticsParameterisation.ctppsFastProtonSimulation_cfi')
 process.ctppsFastProtonSimulation.hepMCTag = cms.InputTag('beamDivergenceVtxGenerator')
 process.ctppsFastProtonSimulation.checkApertures = False
 process.ctppsFastProtonSimulation.roundToPitch = True
-process.ctppsFastProtonSimulation.pitch = 66E-3 * 12 / 19 # effective value to reproduce real RP resolution
+process.ctppsFastProtonSimulation.pitchStrips = 66E-3 * 12 / 19 # effective value to reproduce real RP resolution
 process.ctppsFastProtonSimulation.produceHitsRelativeToBeam = True
 process.ctppsFastProtonSimulation.produceScoringPlaneHits = False
 process.ctppsFastProtonSimulation.produceRecHits = True
 
-# strips reco: pattern recognition
-process.load('RecoCTPPS.TotemRPLocal.totemRPUVPatternFinder_cfi')
+# reco (rec hits --> tracks)
+process.load("RecoCTPPS.TotemRPLocal.totemRPUVPatternFinder_cfi")
 process.totemRPUVPatternFinder.tagRecHit = cms.InputTag('ctppsFastProtonSimulation')
 
-# strips reco: track fitting
-process.load('RecoCTPPS.TotemRPLocal.totemRPLocalTrackFitter_cfi')
+process.load("RecoCTPPS.TotemRPLocal.totemRPLocalTrackFitter_cfi")
 
-# common reco: lite track production
-process.load('RecoCTPPS.TotemRPLocal.ctppsLocalTrackLiteProducer_cfi')
+process.load("RecoCTPPS.TotemRPLocal.ctppsDiamondLocalTracks_cfi")
+process.ctppsDiamondLocalTracks.recHitsTag = cms.InputTag('ctppsFastProtonSimulation')
+
+process.load("RecoCTPPS.PixelLocal.ctppsPixelLocalTracks_cfi")
+process.ctppsPixelLocalTracks.label = cms.string('ctppsFastProtonSimulation')
+
+process.load("RecoCTPPS.TotemRPLocal.ctppsLocalTrackLiteProducer_cff")
+
+process.recoHitsToTracks = cms.Sequence(
+    process.totemRPUVPatternFinder
+    * process.totemRPLocalTrackFitter
+    * process.ctppsDiamondLocalTracks
+    * process.ctppsPixelLocalTracks
+    * process.ctppsLocalTrackLiteProducer
+)
 
 # proton reconstruction
 process.load("RecoCTPPS.ProtonReconstruction.ctppsProtonReconstruction_cfi")
@@ -113,9 +118,7 @@ process.p = cms.Path(
     * process.beamDivergenceVtxGenerator
     * process.ctppsFastProtonSimulation
 
-    * process.totemRPUVPatternFinder
-    * process.totemRPLocalTrackFitter
-    * process.ctppsLocalTrackLiteProducer
+    * process.recoHitsToTracks
     * process.ctppsProtonReconstruction
 
     * process.ctppsProtonReconstructionValidator
