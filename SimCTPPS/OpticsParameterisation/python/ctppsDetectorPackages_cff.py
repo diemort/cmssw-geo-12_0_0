@@ -35,3 +35,32 @@ detectorPackages_2016PreTS2 = cms.VPSet(
         zPosition = cms.double(+212.551),
     ),
 )
+
+
+# list of detector packages to simulate
+# z coordinates in TOTEM/LHC coordinate system, in m
+detectorPackages_2018_fake = cms.VPSet(
+    #----- sector 45
+    genericStripsPackage.clone(
+        potId = cms.uint32(2014838784), # 003
+        interpolatorName = cms.string('ip5_to_station_150_h_1_lhcb2'),
+        zPosition = cms.double(-212.550),
+    ),
+    genericStripsPackage.clone(
+        potId = cms.uint32(2023227392), # 023
+        interpolatorName = cms.string('ip5_to_station_150_h_2_lhcb2'),
+        zPosition = cms.double(-219.550),
+    ),
+
+    #----- sector 56
+    genericStripsPackage.clone(
+        potId = cms.uint32(2031616000), # 103
+        interpolatorName = cms.string('ip5_to_station_150_h_1_lhcb1'),
+        zPosition = cms.double(+212.550),
+    ),
+    genericStripsPackage.clone(
+        potId = cms.uint32(2040004608), # 123
+        interpolatorName = cms.string('ip5_to_station_150_h_2_lhcb1'),
+        zPosition = cms.double(+219.550),
+    ),
+)
