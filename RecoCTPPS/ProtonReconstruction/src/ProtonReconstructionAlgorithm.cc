@@ -13,6 +13,7 @@
 
 #include "DataFormats/CTPPSDetId/interface/CTPPSDetId.h"
 #include "DataFormats/CTPPSDetId/interface/TotemRPDetId.h"
+#include "DataFormats/CTPPSDetId/interface/CTPPSPixelDetId.h"
 
 using namespace std;
 using namespace edm;
@@ -42,11 +43,12 @@ ProtonReconstructionAlgorithm::ProtonReconstructionAlgorithm(const std::string &
     throw cms::Exception("ProtonReconstructionAlgorithm") << "Can't open file '" << optics_file_beam2 << "'.";
 
   // build RP id, optics object name association
+  // TODO: fake association
   std::map<unsigned int, std::string> idNameMap = {
-    { TotemRPDetId(0, 0, 2), "ip5_to_station_150_h_1_lhcb2" },
-    { TotemRPDetId(0, 0, 3), "ip5_to_station_150_h_2_lhcb2" },
-    { TotemRPDetId(1, 0, 2), "ip5_to_station_150_h_1_lhcb1" },
-    { TotemRPDetId(1, 0, 3), "ip5_to_station_150_h_2_lhcb1" }
+    { CTPPSPixelDetId(0, 0, 3), "ip5_to_station_150_h_1_lhcb2" },
+    { CTPPSPixelDetId(0, 2, 3), "ip5_to_station_150_h_2_lhcb2" },
+    { CTPPSPixelDetId(1, 0, 3), "ip5_to_station_150_h_1_lhcb1" },
+    { CTPPSPixelDetId(1, 2, 3), "ip5_to_station_150_h_2_lhcb1" }
   };
 
   // TODO: debug only
