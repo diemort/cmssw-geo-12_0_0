@@ -6,8 +6,8 @@ process = cms.Process('CTPPSFastSimulation', eras.ctpps_2016)
 # minimal logger settings
 process.MessageLogger = cms.Service("MessageLogger",
     statistics = cms.untracked.vstring(),
-    destinations = cms.untracked.vstring('cerr'),
-    cerr = cms.untracked.PSet(
+    destinations = cms.untracked.vstring('cout'),
+    cout = cms.untracked.PSet(
         threshold = cms.untracked.string('WARNING')
     )
 )
@@ -16,7 +16,7 @@ process.MessageLogger = cms.Service("MessageLogger",
 process.source = cms.Source("EmptySource")
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(10000)
+    input = cms.untracked.int32(100000)
 )
 
 # particle-data table
@@ -72,3 +72,15 @@ process.p = cms.Path(
 
     * process.ctppsTrackDistributionPlotter_reco
 )
+
+process.o1 = cms.OutputModule("PoolOutputModule",
+  outputCommands = cms.untracked.vstring('drop *',
+                                         'keep CTPPS*_*_*_*',
+#                                               'keep CTPPSPixelRecHitedmDetSetVector_ctppsPixelRecHits_*_*',
+#                                               'keep CTPPSPixelLocalTrackedmDetSetVector_ctppsPixelLocalTracks_*_*',
+#                                               'keep CTPPSLocalTrackLites_ctppsLocalTrackLiteProducer_*_*'
+  ),
+  fileName = cms.untracked.string("SimulatedTracks.root")
+)
+
+process.outpath = cms.EndPath(process.o1)
