@@ -49,6 +49,8 @@ process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService
 
 # geometry
 process.load("Geometry.VeryForwardGeometry.geometryRPFromDD_2018_cfi")
+del(XMLIdealGeometryESSource_CTPPS.geomXMLFiles[-1])
+XMLIdealGeometryESSource_CTPPS.geomXMLFiles.append("Validation/CTPPS/test/rp_positions/simulation_default/RP_Dist_Beam_Cent.xml")
 
 # beam-smearing settings
 process.load("IOMC.EventVertexGenerators.beamDivergenceVtxGenerator_cfi")
