@@ -76,8 +76,21 @@ class CTPPSFastProtonSimulation : public edm::stream::EDProducer<>
       const CTPPSGeometry &geometry, std::vector<CTPPSLocalTrackLite> &out_tracks, edm::DetSetVector<TotemRPRecHit>& out_strip_hits,
       edm::DetSetVector<CTPPSPixelRecHit> &out_pixel_hits, edm::DetSetVector<CTPPSDiamondRecHit> &out_diamond_hits) const;
 
-    bool produceRecHit(const CLHEP::Hep3Vector& coord_global, unsigned int detid,
-      const CTPPSGeometry &geometry, TotemRPRecHit& rechit) const;
+
+    static bool isPixelHit(float xLocalCoordinate, float yLocalCoordinate, bool is3x2 = true)
+    {
+      if (xLocalCoordinate < 0 || yLocalCoordinate<0)
+        return false;
+
+      const float xModuleSize = 0.1*79 + 0.2*2 + 0.1*79; // mm - 100 um pitch direction
+      float yModuleSize; // mm - 150 um pitch direction
+      if (is3x2)
+        yModuleSize = 0.15*51 + 0.3*2 + 0.15*50 + 0.3*2 + 0.15*51;
+      else
+        yModuleSize = 0.15*51 + 0.3*2 + 0.15*51;
+
+      return (xLocalCoordinate <= xModuleSize && yLocalCoordinate <= yModuleSize);
+    }
 
     // ------------ config file parameters ------------
 
@@ -447,6 +460,9 @@ void CTPPSFastProtonSimulation::processProton(const HepMC::GenVertex* in_vtx, co
       // pixels
       if (detId.subdetId() == CTPPSDetId::sdTrackingPixel)
       {
+        if (! isPixelHit(h_loc.x(), h_loc.y()))
+          continue;
+
         if (roundToPitch_)
         {
           h_loc.setX( pitchPixelsHor_ * floor(h_loc.x()/pitchPixelsHor_ + 0.5) );
