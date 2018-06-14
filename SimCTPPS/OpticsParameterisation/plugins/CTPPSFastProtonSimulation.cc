@@ -28,6 +28,7 @@
 #include "DataFormats/Common/interface/View.h"
 #include "DataFormats/Common/interface/DetSetVector.h"
 #include "DataFormats/CTPPSDetId/interface/CTPPSDetId.h"
+#include "DataFormats/CTPPSDetId/interface/CTPPSPixelDetId.h"
 #include "DataFormats/CTPPSReco/interface/TotemRPRecHit.h"
 #include "DataFormats/CTPPSReco/interface/CTPPSDiamondRecHit.h"
 #include "DataFormats/CTPPSReco/interface/CTPPSPixelRecHit.h"
@@ -76,20 +77,20 @@ class CTPPSFastProtonSimulation : public edm::stream::EDProducer<>
       const CTPPSGeometry &geometry, std::vector<CTPPSLocalTrackLite> &out_tracks, edm::DetSetVector<TotemRPRecHit>& out_strip_hits,
       edm::DetSetVector<CTPPSPixelRecHit> &out_pixel_hits, edm::DetSetVector<CTPPSDiamondRecHit> &out_diamond_hits) const;
 
-
     static bool isPixelHit(float xLocalCoordinate, float yLocalCoordinate, bool is3x2 = true)
     {
-      if (xLocalCoordinate < 0 || yLocalCoordinate<0)
-        return false;
+      float tmpXlocalCoordinate = xLocalCoordinate + (79*0.1 + 0.2);
+      float tmpYlocalCoordinate = yLocalCoordinate + (0.15*51 + 0.3*2 + 0.15*25);
 
-      const float xModuleSize = 0.1*79 + 0.2*2 + 0.1*79; // mm - 100 um pitch direction
-      float yModuleSize; // mm - 150 um pitch direction
-      if (is3x2)
-        yModuleSize = 0.15*51 + 0.3*2 + 0.15*50 + 0.3*2 + 0.15*51;
-      else
-        yModuleSize = 0.15*51 + 0.3*2 + 0.15*51;
-
-      return (xLocalCoordinate <= xModuleSize && yLocalCoordinate <= yModuleSize);
+      if(tmpXlocalCoordinate<0) return false;
+      if(tmpYlocalCoordinate<0) return false;
+      int xModuleSize = 0.1*79 + 0.2*2 + 0.1*79; // mm - 100 um pitch direction
+      int yModuleSize; // mm - 150 um pitch direction
+      if (is3x2) yModuleSize = 0.15*51 + 0.3*2 + 0.15*50 + 0.3*2 + 0.15*51;
+      else       yModuleSize = 0.15*51 + 0.3*2 + 0.15*51;
+      if(tmpXlocalCoordinate>xModuleSize) return false;
+      if(tmpYlocalCoordinate>yModuleSize) return false;
+      return true;
     }
 
     // ------------ config file parameters ------------
@@ -356,6 +357,15 @@ void CTPPSFastProtonSimulation::processProton(const HepMC::GenVertex* in_vtx, co
       a_x -= a_x_be; a_y -= a_y_be;
       b_x -= b_x_be * 1E3; b_y -= b_y_be * 1E3;
     }
+
+    // get z position of the approximator scoring plane
+    const double approximator_z = rp.z_position * 1E3; // in mm
+
+    if (verbosity_)
+    {
+      printf("    proton transported: a_x = %.3E rad, a_y = %.3E rad, b_x = %.3f mm, b_y = %.3f mm, z = %.3f mm\n",
+        a_x, a_y, b_x, b_y, approximator_z);
+    }
   
     // save scoring plane hit
     if (produceScoringPlaneHits_)
@@ -369,9 +379,6 @@ void CTPPSFastProtonSimulation::processProton(const HepMC::GenVertex* in_vtx, co
     for (const auto& detIdInt : geometry.getSensorsInRP(rp.detid))
     {
       CTPPSDetId detId(detIdInt);
-
-      // get z position of the approximator scoring plane
-      const double approximator_z = rp.z_position * 1E3; // in mm
 
       // determine the track impact point (in global coordinates)
       // !! this assumes that local axes (1, 0, 0) and (0, 1, 0) describe the sensor surface
@@ -388,15 +395,20 @@ void CTPPSFastProtonSimulation::processProton(const HepMC::GenVertex* in_vtx, co
       Ai = A.Invert();
       TVectorD P(3);
       P = Ai * B;
-      //printf("            de z = %f, p1 = %f, p2 = %f\n", P(0), P(1), P(2));
 
-      double de_z = P(0);
-      CLHEP::Hep3Vector h_glo(a_x * de_z + b_x, a_y * de_z + b_y, de_z + approximator_z);
-      //printf("            h_glo: x = %f, y = %f, z = %f\n", h_glo.x(), h_glo.y(), h_glo.z());
+      double ze = P(0);
+      CLHEP::Hep3Vector h_glo(a_x * ze + b_x, a_y * ze + b_y, z_sign*ze + approximator_z);
 
       // hit in local coordinates
       CLHEP::Hep3Vector h_loc = geometry.globalToLocal(detId, h_glo);
-      //printf("            h_loc: c1 = %f, c2 = %f, c3 = %f\n", h_loc.x(), h_loc.y(), h_loc.z());
+
+      if (verbosity_)
+      {
+        printf("\n");
+        printf("    de z = %f mm, p1 = %f mm, p2 = %f mm\n", P(0), P(1), P(2));
+        printf("    h_glo: x = %f mm, y = %f mm, z = %f mm\n", h_glo.x(), h_glo.y(), h_glo.z());
+        printf("    h_loc: c1 = %f mm, c2 = %f mm, c3 = %f mm\n", h_loc.x(), h_loc.y(), h_loc.z());
+      }
 
       // strips
       if (detId.subdetId() == CTPPSDetId::sdTrackingStrip)
@@ -460,6 +472,12 @@ void CTPPSFastProtonSimulation::processProton(const HepMC::GenVertex* in_vtx, co
       // pixels
       if (detId.subdetId() == CTPPSDetId::sdTrackingPixel)
       {
+        if (verbosity_)
+        {
+          CTPPSPixelDetId pixelDetId(detIdInt);
+          printf("    pixel plane %u: local hit x = %.3f mm, y = %.3f mm, z = %.1E mm\n", pixelDetId.plane(), h_loc.x(), h_loc.y(), h_loc.z());
+        }
+
         if (! isPixelHit(h_loc.x(), h_loc.y()))
           continue;
 
@@ -470,7 +488,7 @@ void CTPPSFastProtonSimulation::processProton(const HepMC::GenVertex* in_vtx, co
         }
 
         if (verbosity_ > 5)
-          printf("            m1 = %.3f, m2 = %.3f\n", h_loc.x(), h_loc.y());
+          printf("            hit accepted: m1 = %.3f mm, m2 = %.3f mm\n", h_loc.x(), h_loc.y());
 
         const double sigmaHor = pitchPixelsHor_ / sqrt(12.);
         const double sigmaVer = pitchPixelsVer_ / sqrt(12.);
