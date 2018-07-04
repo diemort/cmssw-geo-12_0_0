@@ -117,6 +117,7 @@ class CTPPSFastProtonSimulation : public edm::stream::EDProducer<>
     bool checkApertures_;
     bool produceHitsRelativeToBeam_;
     bool roundToPitch_;
+    bool checkIsHit_;
     double pitchStrips_; ///< strip pitch in mm
     double pitchPixelsHor_;
     double pitchPixelsVer_;
@@ -164,6 +165,7 @@ CTPPSFastProtonSimulation::CTPPSFastProtonSimulation( const edm::ParameterSet& i
   checkApertures_             ( iConfig.getParameter<bool>( "checkApertures" ) ),
   produceHitsRelativeToBeam_  ( iConfig.getParameter<bool>( "produceHitsRelativeToBeam" ) ),
   roundToPitch_               ( iConfig.getParameter<bool>( "roundToPitch" ) ),
+  checkIsHit_                 ( iConfig.getParameter<bool>( "checkIsHit" ) ),
   pitchStrips_                ( iConfig.getParameter<double>( "pitchStrips" ) ),
   pitchPixelsHor_             ( iConfig.getParameter<double>( "pitchPixelsHor" ) ),
   pitchPixelsVer_             ( iConfig.getParameter<double>( "pitchPixelsVer" ) ),
@@ -171,6 +173,7 @@ CTPPSFastProtonSimulation::CTPPSFastProtonSimulation( const edm::ParameterSet& i
 
   verbosity_                  ( iConfig.getUntrackedParameter<unsigned int>( "verbosity", 0 ) )
 {
+  
   if (produceScoringPlaneHits_)
     produces<std::vector<CTPPSLocalTrackLite>>();
 
@@ -420,7 +423,7 @@ void CTPPSFastProtonSimulation::processProton(const HepMC::GenVertex* in_vtx, co
           printf("            u=%+8.4f, v=%+8.4f", u, v);
 
         // is it within detector?
-        if (!RPTopology::IsHit(u, v, insensitiveMarginStrips_))
+        if (checkIsHit_  && !RPTopology::IsHit(u, v, insensitiveMarginStrips_))
         {
           if (verbosity_ > 5)
             printf(" | no hit\n");
@@ -453,6 +456,12 @@ void CTPPSFastProtonSimulation::processProton(const HepMC::GenVertex* in_vtx, co
       {
         // TODO: proper implementation
         /*
+        if (checkIsHit_)
+        {
+          if (verbosity_ > 5)
+            printf(" | no hit\n");
+          continue;
+        } 
         if (roundToPitch_)
         {
           h_loc.setX( pitchDiamonds * floor(h_loc.x()/pitchDiamonds + 0.5) );
@@ -478,7 +487,7 @@ void CTPPSFastProtonSimulation::processProton(const HepMC::GenVertex* in_vtx, co
           printf("    pixel plane %u: local hit x = %.3f mm, y = %.3f mm, z = %.1E mm\n", pixelDetId.plane(), h_loc.x(), h_loc.y(), h_loc.z());
         }
 
-        if (! isPixelHit(h_loc.x(), h_loc.y()))
+        if (checkIsHit_  && !isPixelHit(h_loc.x(), h_loc.y()))
           continue;
 
         if (roundToPitch_)

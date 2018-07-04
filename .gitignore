@@ -6,3 +6,5 @@ __init__.py
 *~
 *.root
 Analysis/*
+Validation/CTPPS/test/fast_simu_validation/EffAndMultPlotter*
+Validation/CTPPS/test/fast_simu_validation/output_trackArmFinder*.pdf
