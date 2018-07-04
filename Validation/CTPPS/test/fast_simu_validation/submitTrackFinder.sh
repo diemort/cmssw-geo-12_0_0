@@ -1,0 +1,10 @@
+bsub -q 1nd -o dev/null runTrackFinder.sh 1
+bsub -q 1nd -o dev/null runTrackFinder.sh 2
+bsub -q 1nd -o dev/null runTrackFinder.sh 3
+bsub -q 1nd -o dev/null runTrackFinder.sh 4
+bsub -q 1nd -o dev/null runTrackFinder.sh 5
+bsub -q 1nd -o dev/null runTrackFinder.sh 6
+bsub -q 1nd -o dev/null runTrackFinder.sh 7
+bsub -q 1nd -o dev/null runTrackFinder.sh 8
+bsub -q 1nd -o dev/null runTrackFinder.sh 9
+bsub -q 1nd -o dev/null runTrackFinder.sh 10
