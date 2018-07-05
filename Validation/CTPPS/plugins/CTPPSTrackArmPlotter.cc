@@ -29,68 +29,7 @@
 
 #include <map>
 
-  enum slope { slopePosNear, slopePosFar, slopeNegNear, slopeNegFar };
-
-//----------------------------------------------------------------------------------------------------
-
-// double deltaXvsY(double *xx, double *par){
-
-//   double x0 = TMath::Abs(xx[0]-par[0]);
-
-//   return TMath::Exp(par[1]*x0)*par[2] + par[3] + par[4]*x0 + par[5]*x0*x0;
-// }
-
-//----------------------------------------------------------------------------------------------------
-
-// 
-
-
-
-//   double x1 = xx[0]-par[0];
-//   double x0 = TMath::Abs(x1);
-//   double aDeltaL = par[1]*par[3];
-//   // double slope = 1/(par[1]*TMath::Abs(par[2]-par[0])+par[3]);
-//   // double logInter = TMath::Exp(TMath::Abs(par[2]-par[0])*slope) - par[1]*TMath::Abs(par[2]-par[0]);
-
-//   // return TMath::Sign(1.,x1)*((TMath::Exp(par[1]*x0)-1)*par[2] + par[4]*x0 + par[5]*x0*x0)*(TMath::Exp(par[6]*x0+par[7])) + par[3];
-
-//   if(x0<=par[0]+par[3]) return TMath::Sign(1.,x1)*par[1]*x0+par[2];
-//   else return TMath::Sign(1.,x1)*TMath::Log( TMath::Exp(aDeltaL)/(1.+2.*aDeltaL)*(par[1]*x0 + aDeltaL +1.) )+par[2];
-
-// }
-// }
-
-//----------------------------------------------------------------------------------------------------
-
-// double deltaYvsYPos(double *xx, double *par){
-
-//   double x0 = xx[0]-par[0];
-//   if(x0<+par[1]){
-//     TF1::RejectPoint();
-//     return 0.;
-//   }
-
-//   else {
-//     return TMath::Log(par[2]*xx[0]+par[3])*par[5] + par[4];
-//   }
-
-// }
-
-// //----------------------------------------------------------------------------------------------------
-
-// double deltaYvsYNeg(double *xx, double *par){
-
-//   double x0 = xx[0]-par[0];
-//   if(x0>-par[1]){
-//     TF1::RejectPoint();
-//     return 0.;
-//   }
-
-//   else {
-//     return -TMath::Log(-par[2]*xx[0]+par[3])*par[5] + par[4];
-//   }
-
-// }
+enum slope { slopePosNear, slopePosFar, slopeNegNear, slopeNegFar };
 
 
 std::map<slope,double> getSlopes(TH1D *normProjection, TH1D *meanProjectionCut, double hitShapeCenter, double hitShapeSigma, int minNumberOfHits, double nSigmaMinNear, double nSigmaMaxNear, double nSigmaMinFar){
@@ -217,11 +156,6 @@ double deltaYvsY(double *xx, double *par){
 
 double deltaXvsY(double *xx, double *par){
 
-  // double x0 = TMath::Abs(xx[0]-par[0]);
-
-  // return x0*x0*TMath::Exp(-x0*x0*par[1])*par[2]+par[3];
-
-
   double x0 = xx[0]-par[0];
   
   if(x0>-par[1] && x0<par[1] ){
@@ -263,10 +197,6 @@ class CTPPSTrackArmPlotter : public edm::one::EDAnalyzer<>
     edm::EDGetTokenT< std::vector<CTPPSLocalTrackLite> > tracksToken_;
 
     std::string outputFile;
-
-    // std::map<slope,double> getSlopes(TH1D* normProjection, TH1D* meanProjectionCut, double hitShapeCenter, double hitShapeSigma);
-
-
 
 
     struct RPPlots
@@ -431,12 +361,10 @@ class CTPPSTrackArmPlotter : public edm::one::EDAnalyzer<>
             double sigmaMultFactorDelta = 1.;
 
             // ----------------------- deltaXvsY fit ---------------------------------------------------------------------- //
-
             std::map<slope,double> xSlopes = getSlopes(normProjection, xMeanProjectionCut,hitShapeCenter,hitShapeSigma,minNumberOfHits,0.5,2.5,1.5);
 
             TF1 *fDeltaXvsYPos = new TF1("fDeltaXvsYPos",deltaXvsY,hitShapeCenter+sigmaMultFactorDelta*hitShapeSigma,30.,6);
             fDeltaXvsYPos->FixParameter(0,hitShapeCenter);
-            // fDeltaXvsYPos->SetParLimits(0, hitShapeCenter - hitShapeSigma/2., hitShapeCenter + hitShapeSigma/2.);
             fDeltaXvsYPos->FixParameter(1,hitShapeSigma);
             fDeltaXvsYPos->SetParLimits(2,0.,100.);
             fDeltaXvsYPos->SetParLimits(3,0.,100.);
@@ -490,74 +418,43 @@ class CTPPSTrackArmPlotter : public edm::one::EDAnalyzer<>
             yMeanProjectionCut->Write();
 
             // ----------------------- varianceDeltaXvsY fit -------------------------------------------------------------- //
+
             double sigmaMultFactorVariance = 1.5;
-            // std::cout<<"culo1\n";
             TF1 *fVarianceXvsY = new TF1("fVarianceXvsY","pol0", -30.,30.);
             TFitResultPtr fitResultVarianceXvsY;
-            // int pointsForFit = 0;
-            // bool fitIsDone = false;
-            // double minBin =  normProjection->FindBin(hitShapeCenter+nSigmaMinNear*hitShapeSigma);
-            // if (normProjection->GetBinCenter(minBin)<hitShapeCenter+nSigmaMinNear*hitShapeSigma) ++minBin;
-            // double maxBin =  normProjection->FindBin(hitShapeCenter+nSigmaMaxNear*hitShapeSigma);
-            // if (normProjection->GetBinCenter(maxBin)>hitShapeCenter+nSigmaMaxNear*hitShapeSigma) --maxBin;
-            // for(int yBin = minBin; yBin <= maxBin; ++yBin){
-            //   if(normProjection->GetBinContent(yBin)>=minNumberOfHits) ++pointsForFit;
-            //   if(pointsForFit>=4) {
-            //     fitResultVarianceXvsY = xVarianceProjectionCut->Fit(fVarianceXvsY,"Q+S","",hitShapeCenter+nSigmaMinNear*hitShapeSigma,hitShapeCenter+nSigmaMaxNear*hitShapeSigma);
-            //     fitIsDone = true;
-            //     break;
-            //   }
-            // }
-            // if( !fitIsDone ){
-            //   for(int plusBin = 1; plusBin<=300; ++yBin){
-            //     if(normProjection->GetBinContent(minBin-plusBin)>=minNumberOfHits) ++pointsForFit;
-            //     if(normProjection->GetBinContent(maxBin+plusBin)>=minNumberOfHits) ++pointsForFit;
-            //     if(pointsForFit>=4) {
-            //       fitResultVarianceXvsY = xVarianceProjectionCut->Fit(fVarianceXvsY,"Q+S","",normProjection->GetBinCenter(minBin-plusBin),normProjection->GetBinCenter(maxBin+plusBin));
-            //       break;
-            //     }
-            //   }
-            // }
             if(xVarianceProjectionCut->GetEntries()>=3) fitResultVarianceXvsY = xVarianceProjectionCut->Fit(fVarianceXvsY,"QR+S");
-            // std::cout<<"culo2\n";
             xVarianceProjectionCut->Write();
 
-            // ----------------------- varianceDeltaXvsY fit -------------------------------------------------------------- //
+            // ----------------------- fVarianceYvsY fit -------------------------------------------------------------- //
 
-            // std::cout<<"culo3\n";
             TF1 *fVarianceYvsY = new TF1("fVarianceYvsY","pol2", hitShapeCenter-hitShapeSigma*sigmaMultFactorVariance,hitShapeCenter+hitShapeSigma*sigmaMultFactorVariance);
-            // TF1 *fVarianceYvsY = new TF1("fVarianceYvsY",varianceYvsY, hitShapeCenter-hitShapeSigma*sigmaMultFactorVariance,hitShapeCenter+hitShapeSigma*sigmaMultFactorVariance,3);
-            // fVarianceYvsY->SetParLimits(0,0.,1000.);
-            // fVarianceYvsY->SetParLimits(2,0.,1000.);
             TFitResultPtr fitResultVarianceYvsY;
-            int pointsForFit = 0;
-            bool fitIsDone = false;
-            double minBin =  normProjection->FindBin(hitShapeCenter+sigmaMultFactorVariance*hitShapeSigma);
-            if (normProjection->GetBinCenter(minBin)<hitShapeCenter+sigmaMultFactorVariance*hitShapeSigma) ++minBin;
-            double maxBin =  normProjection->FindBin(hitShapeCenter+sigmaMultFactorVariance*hitShapeSigma);
-            if (normProjection->GetBinCenter(maxBin)>hitShapeCenter+sigmaMultFactorVariance*hitShapeSigma) --maxBin;
-            for(int yBin = minBin; yBin <= maxBin; ++yBin){
-              if(normProjection->GetBinContent(yBin)>=minNumberOfHits) ++pointsForFit;
-              if(pointsForFit>=4) {
-                // std::cout<<"culo3.1\n";
-                fitResultVarianceYvsY = yVarianceProjectionCut->Fit(fVarianceYvsY,"Q+S","",hitShapeCenter+sigmaMultFactorVariance*hitShapeSigma,hitShapeCenter+sigmaMultFactorVariance*hitShapeSigma);
-                fitIsDone = true;
-                break;
-              }
-            }
-            if( !fitIsDone ){
-              for(int plusBin = 1; plusBin<=300; ++plusBin){
-                if(normProjection->GetBinContent(minBin-plusBin)>=minNumberOfHits) ++pointsForFit;
-                if(normProjection->GetBinContent(maxBin+plusBin)>=minNumberOfHits) ++pointsForFit;
+            if(yVarianceProjectionCut->GetEntries()>=4){
+              int pointsForFit = 0;
+              bool fitIsDone = false;
+              double minBin =  normProjection->FindBin(hitShapeCenter+sigmaMultFactorVariance*hitShapeSigma);
+              if (normProjection->GetBinCenter(minBin)<hitShapeCenter+sigmaMultFactorVariance*hitShapeSigma) ++minBin;
+              double maxBin =  normProjection->FindBin(hitShapeCenter+sigmaMultFactorVariance*hitShapeSigma);
+              if (normProjection->GetBinCenter(maxBin)>hitShapeCenter+sigmaMultFactorVariance*hitShapeSigma) --maxBin;
+              for(int yBin = minBin; yBin <= maxBin; ++yBin){
+                if(normProjection->GetBinContent(yBin)>=minNumberOfHits) ++pointsForFit;
                 if(pointsForFit>=4) {
-                  // std::cout<<"culo3.2\n";
-                  // std::cout<<plusBin<<std::endl;
-                  fitResultVarianceYvsY = yVarianceProjectionCut->Fit(fVarianceYvsY,"Q+S","",normProjection->GetBinCenter(minBin-plusBin),normProjection->GetBinCenter(maxBin+plusBin));
+                  fitResultVarianceYvsY = yVarianceProjectionCut->Fit(fVarianceYvsY,"Q+S","",hitShapeCenter+sigmaMultFactorVariance*hitShapeSigma,hitShapeCenter+sigmaMultFactorVariance*hitShapeSigma);
+                  fitIsDone = true;
                   break;
                 }
               }
+              if( !fitIsDone ){
+                for(int plusBin = 1; plusBin<=300; ++plusBin){
+                  if(normProjection->GetBinContent(minBin-plusBin)>=minNumberOfHits) ++pointsForFit;
+                  if(normProjection->GetBinContent(maxBin+plusBin)>=minNumberOfHits) ++pointsForFit;
+                  if(pointsForFit>=4) {
+                    fitResultVarianceYvsY = yVarianceProjectionCut->Fit(fVarianceYvsY,"Q+S","",normProjection->GetBinCenter(minBin-plusBin),normProjection->GetBinCenter(maxBin+plusBin));
+                    break;
+                  }
+                }
+              }
             }
-            // std::cout<<"culo4\n";
             yVarianceProjectionCut->Write();
 
             // ----------------------- filling extended maps -------------------------------------------------------------- //
@@ -643,8 +540,6 @@ class CTPPSTrackArmPlotter : public edm::one::EDAnalyzer<>
                 
               }
             }
-
-            // yMeanProjectionCut->Write();
 
             ++counter;
           }
@@ -788,12 +683,7 @@ class CTPPSTrackArmPlotter : public edm::one::EDAnalyzer<>
         h2_dYsigmaExtendedSmooth3Norm->Add(h2_dYsigma,-1.);
         h2_dYsigmaExtendedSmooth3Norm->SetMinimum(-0.3);
         h2_dYsigmaExtendedSmooth3Norm->SetMaximum(+0.3);
-        h2_dYsigmaExtendedSmooth3Norm->Write();
-
-
-        // h2_dYmeanExtended->Smooth(1,"k3a");
-        // h2_dYmeanExtended->Write("h2_dYmeanExtended");
-        
+        h2_dYsigmaExtendedSmooth3Norm->Write();        
 
       }
     };

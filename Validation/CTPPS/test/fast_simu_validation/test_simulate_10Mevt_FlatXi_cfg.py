@@ -3,21 +3,6 @@ import FWCore.ParameterSet.Config as cms
 from Configuration.StandardSequences.Eras import eras
 process = cms.Process('CTPPSFastSimulation', eras.ctpps_2016)
 
-
-import FWCore.ParameterSet.VarParsing as VarParsing
-process.options = cms.untracked.PSet(
-    wantSummary = cms.untracked.bool(True),
-    FailPath = cms.untracked.vstring('ProductNotFound','Type Mismatch')
-    )
-options = VarParsing.VarParsing ()
-options.register('numberOfParticles',
-                '',
-                VarParsing.VarParsing.multiplicity.singleton,
-                VarParsing.VarParsing.varType.int,
-                "select bunch to be read")
-options.parseArguments()
-
-
 # minimal logger settings
 process.MessageLogger = cms.Service("MessageLogger",
     statistics = cms.untracked.vstring(),
@@ -34,18 +19,18 @@ process.MessageLogger = cms.Service("MessageLogger",
 process.source = cms.Source("EmptySource")
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(1000000)
+    input = cms.untracked.int32(10000000)
 )
 
 # particle-data table
 process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
 
 # particle generator
-process.generator = cms.EDProducer("RandomRealisticXiThetaVertexGunProducer",
+process.generator = cms.EDProducer("RandomFlatXiThetaVertexGunProducer",
   particleId = cms.uint32(2212),
 
   energy = cms.double(6500),  # nominal beam energy, GeV
-  xi_min = cms.double(0.015),
+  xi_min = cms.double(0.),
   xi_max = cms.double(0.30),
   theta_x_mean = cms.double(0.),
   theta_x_sigma = cms.double(100E-6), # in rad
@@ -55,9 +40,9 @@ process.generator = cms.EDProducer("RandomRealisticXiThetaVertexGunProducer",
   vertex_x_sigma = cms.double(0.013), # in mm
   vertex_y_mean = cms.double(0.),
   vertex_y_sigma = cms.double(0.013),
-  nParticlesSector45 = cms.uint32(options.numberOfParticles),
-  nParticlesSector56 = cms.uint32(options.numberOfParticles),
-  nBinsProbability = cms.int32(1000),
+
+  nParticlesSector45 = cms.uint32(1),
+  nParticlesSector56 = cms.uint32(1),
 )
 
 # random seeds
@@ -73,7 +58,7 @@ process.ctppsFastProtonSimulation.produceScoringPlaneHits = False
 process.ctppsFastProtonSimulation.produceRecHits = True
 process.ctppsFastProtonSimulation.checkApertures = False
 process.ctppsFastProtonSimulation.produceHitsRelativeToBeam = False
-process.ctppsFastProtonSimulation.roundToPitch = True
+process.ctppsFastProtonSimulation.roundToPitch = False
 process.ctppsFastProtonSimulation.checkIsHit = False
 
 
@@ -81,10 +66,11 @@ process.ctppsFastProtonSimulation.checkIsHit = False
 process.load('common_cff')
 
 # distribution plotter
-# process.ctppsTrackDistributionPlotter_reco = cms.EDAnalyzer("CTPPSTrackDistributionPlotter",
-#   tracksTag = cms.InputTag("ctppsLocalTrackLiteProducer"),
-#   outputFile = cms.string("output_hitShape_" + str(options.numberOfParticles) + "protons.root")
-# )
+process.ctppsTrackDistributionPlotter_reco = cms.EDAnalyzer("CTPPSTrackArmPlotter",
+  tracksTag = cms.InputTag("ctppsLocalTrackLiteProducer"),
+  outputFile = cms.string("trackArmCorrelationMaps_Reference10Mevt.root")
+)
+
 
 # processing path
 process.p = cms.Path(
@@ -94,7 +80,8 @@ process.p = cms.Path(
 
     * process.recoHitsToTracks
 
-    # * process.ctppsTrackDistributionPlotter_reco
+    * process.ctppsTrackDistributionPlotter_reco
+
 )
 
 process.o1 = cms.OutputModule("PoolOutputModule",
@@ -104,7 +91,7 @@ process.o1 = cms.OutputModule("PoolOutputModule",
 #                                         'keep CTPPSPixelLocalTrackedmDetSetVector_ctppsPixelLocalTracks_*_*',
                                          'keep CTPPSLocalTrackLites_ctppsLocalTrackLiteProducer_*_*'
   ),
-  fileName = cms.untracked.string("Simulated_" + str(options.numberOfParticles) + "protons.root")
+  fileName = cms.untracked.string("SimulatedTracksReference10Mevt.root")
 )
 
 process.outpath = cms.EndPath(process.o1)

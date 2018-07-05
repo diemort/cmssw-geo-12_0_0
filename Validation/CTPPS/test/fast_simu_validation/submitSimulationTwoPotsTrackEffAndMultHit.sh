@@ -1,0 +1,10 @@
+bsub -q 1nd -o dev/null runSimulationTwoPotsTrackEffAndMultHit.sh 1
+bsub -q 1nd -o dev/null runSimulationTwoPotsTrackEffAndMultHit.sh 2
+bsub -q 1nd -o dev/null runSimulationTwoPotsTrackEffAndMultHit.sh 3
+bsub -q 1nd -o dev/null runSimulationTwoPotsTrackEffAndMultHit.sh 4
+bsub -q 1nd -o dev/null runSimulationTwoPotsTrackEffAndMultHit.sh 5
+bsub -q 1nd -o dev/null runSimulationTwoPotsTrackEffAndMultHit.sh 6
+bsub -q 1nd -o dev/null runSimulationTwoPotsTrackEffAndMultHit.sh 7
+bsub -q 1nd -o dev/null runSimulationTwoPotsTrackEffAndMultHit.sh 8
+bsub -q 1nd -o dev/null runSimulationTwoPotsTrackEffAndMultHit.sh 9
+bsub -q 1nd -o dev/null runSimulationTwoPotsTrackEffAndMultHit.sh 10

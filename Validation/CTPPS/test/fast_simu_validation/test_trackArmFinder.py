@@ -90,8 +90,8 @@ process.maxEvents = cms.untracked.PSet(
 # distribution plotter
 process.ctppsTrackDistributionPlotter_reco = cms.EDAnalyzer("CTPPSTrackArmFinder",
   tracksTag = cms.InputTag("ctppsLocalTrackLiteProducer"),
-  outputFile = cms.string("output_trackArmFinder_" + str(options.numberOfParticles) + "protons.root"),
-  armMapFileName = cms.string("output_trackArmCorrelation_Reference10Mevt.root"),
+  outputFile = cms.string("trackArmFinderEffAndMultHit_" + str(options.numberOfParticles) + "protons.root"),
+  armMapFileName = cms.string("trackArmCorrelationMaps_Reference10Mevt.root"),
   xSigmaMultiplierMin = cms.double(0.5),
   xSigmaMultiplierStepSize = cms.double(0.5),
   xSigmaMultiplierStepNumber = cms.uint32(20),

@@ -1,8 +1,8 @@
 #!/bin/bash
 
-if [ $# -ne 1 ]
+if [ $# -ne 0 ]
 then
-    echo "One argument required. Nothing done."
+    echo "Zero arguments required. Nothing done."
 else
 #    export LC_ALL="en_US.utf9"
     export X509_USER_PROXY=/afs/cern.ch/user/f/fravera/x509up_u40737
@@ -11,5 +11,5 @@ else
     cd $CMSSW_BASE/src
     eval `scramv1 runtime -sh`
     cd $CMSSW_BASE/src/Validation/CTPPS/test/fast_simu_validation
-    eval "cmsRun test_acceptance_shape_realVertex_cfg.py numberOfParticles=$1"
+    eval "cmsRun test_simulate_10Mevt_FlatXi_cfg.py"
 fi

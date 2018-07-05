@@ -65,8 +65,8 @@ void RandomFlatXiThetaVertexGunProducer::produce(edm::Event &e, const edm::Event
   HepMC::GenEvent *fEvt = new HepMC::GenEvent();
   fEvt->set_event_number(e.id().event());
   
-  const double xVertex = CLHEP::RandFlat::shoot(engine, vertex_x_mean-vertex_x_sigma/2., vertex_x_mean+vertex_x_sigma/2.);
-  const double yVertex = CLHEP::RandFlat::shoot(engine, vertex_y_mean-vertex_y_sigma/2., vertex_y_mean+vertex_y_sigma/2.);
+  const double xVertex = CLHEP::RandGauss::shoot(engine, vertex_x_mean, vertex_x_sigma);
+  const double yVertex = CLHEP::RandGauss::shoot(engine, vertex_y_mean, vertex_y_sigma);
 
   HepMC::GenVertex *vtx = new HepMC::GenVertex(HepMC::FourVector(xVertex, yVertex, 0., 0.));
   fEvt->add_vertex(vtx);
@@ -101,8 +101,8 @@ void RandomFlatXiThetaVertexGunProducer::GenerateParticle(double z_sign, double 
   CLHEP::HepRandomEngine* engine, HepMC::GenVertex *vtx) const
 {
   const double xi = CLHEP::RandFlat::shoot(engine, xi_min, xi_max);
-  const double theta_x = CLHEP::RandFlat::shoot(engine, theta_x_mean-theta_x_sigma/2., theta_x_mean+theta_x_sigma/2.);
-  const double theta_y = CLHEP::RandFlat::shoot(engine, theta_y_mean-theta_y_sigma/2., theta_y_mean+theta_y_sigma/2.);
+  const double theta_x = CLHEP::RandGauss::shoot(engine, theta_x_mean, theta_x_sigma);
+  const double theta_y = CLHEP::RandGauss::shoot(engine, theta_y_mean, theta_y_sigma);
 
   if (verbosity)
     printf("xi = %.4f, theta_x = %E, theta_y = %E, z_sign = %.0f\n", xi, theta_x, theta_y, z_sign);
