@@ -174,7 +174,11 @@ double deltaXvsY(double *xx, double *par){
 
 double varianceYvsY(double *xx, double *par){
 
-    return par[0]*TMath::Power(xx[0]-par[1],2)+par[2];
+  if(xx[0]>par[3] && xx[0]<par[4] ){
+    TF1::RejectPoint();
+    return 0.;
+  }
+  return par[0] + par[1]*xx[0] + par[2]*xx[0]*xx[0];//TMath::Power(xx[0]-par[1],2)+par[2];
 
 }
 
@@ -315,14 +319,30 @@ class CTPPSTrackArmPlotter : public edm::one::EDAnalyzer<>
         h2_dYvariance->Write("h2_dYvariance");
         h2_Normalization->Write("h2_Normalization");
 
+        TH2D *h2_NormalizationCut = new TH2D("h2_NormalizationCut", "h2_NormalizationCut", 300, -10., +50., 300, -30, +30.);
+        for(int xBin=1; xBin<=300; ++xBin){
+          for(int yBin=1; yBin<=300; ++yBin){
+            if(h2_Normalization->GetBinContent(xBin,yBin)<minNumberOfHits) continue;
+            h2_NormalizationCut->SetBinContent(xBin,yBin,h2_Normalization->GetBinContent(xBin, yBin));
+          }
+        }
+
         int counter=0;
         for(int xBin=1; xBin<=300; ++xBin){
-          TH1D *normProjection = h2_Normalization->ProjectionY(Form("normProjection_%i",xBin),xBin, xBin);
-          if(normProjection->GetEntries()>=10){
+          TH1D *normProjection = h2_NormalizationCut->ProjectionY(Form("normProjection_%i",xBin),xBin, xBin);
+          if(normProjection->GetEntries()<10){
+            for(int yBin = 1; yBin <= 300; ++yBin){
+                h2_dXsigmaExtended->SetBinContent(xBin,yBin,1.);
+                h2_dXsigmaExtended->SetBinError(xBin,yBin,1.);
+                h2_dYsigmaExtended->SetBinContent(xBin,yBin,1.);
+                h2_dYsigmaExtended->SetBinError(xBin,yBin,1.);                
+            }
+          }
+          else{
             TF1 *fGaus = new TF1("fGaus","gaus",normProjection->GetMean()-normProjection->GetRMS(),normProjection->GetMean()+normProjection->GetRMS());
             normProjection->Fit(fGaus,"QNR");
-            double binCenter = h2_Normalization->GetXaxis()->GetBinCenter(xBin);
-            double binWidth = h2_Normalization->GetXaxis()->GetBinWidth(xBin);
+            double binCenter = h2_NormalizationCut->GetXaxis()->GetBinCenter(xBin);
+            double binWidth = h2_NormalizationCut->GetXaxis()->GetBinWidth(xBin);
             double hitShapeCenter = fGaus->GetParameter(1);
             double hitShapeCenterError = fGaus->GetParError(1);
             double hitShapeSigma = fGaus->GetParameter(2);
@@ -356,6 +376,16 @@ class CTPPSTrackArmPlotter : public edm::one::EDAnalyzer<>
                 yVarianceProjectionCut->SetBinContent(yBin,yVarianceProjection->GetBinContent(yBin));
                 yVarianceProjectionCut->SetBinError(yBin,yVarianceProjection->GetBinError(yBin));
               }
+            }
+
+            if (xMeanProjectionCut->GetEntries()<=5){
+              for(int yBin = 1; yBin <= 300; ++yBin){
+                h2_dXsigmaExtended->SetBinContent(xBin,yBin,1.);
+                h2_dXsigmaExtended->SetBinError(xBin,yBin,1.);
+                h2_dYsigmaExtended->SetBinContent(xBin,yBin,1.);
+                h2_dYsigmaExtended->SetBinError(xBin,yBin,1.);                
+              }
+              continue;
             }
 
             double sigmaMultFactorDelta = 1.;
@@ -419,7 +449,7 @@ class CTPPSTrackArmPlotter : public edm::one::EDAnalyzer<>
 
             // ----------------------- varianceDeltaXvsY fit -------------------------------------------------------------- //
 
-            double sigmaMultFactorVariance = 1.5;
+            double sigmaMultFactorVariance = 2.5;
             TF1 *fVarianceXvsY = new TF1("fVarianceXvsY","pol0", -30.,30.);
             TFitResultPtr fitResultVarianceXvsY;
             if(xVarianceProjectionCut->GetEntries()>=3) fitResultVarianceXvsY = xVarianceProjectionCut->Fit(fVarianceXvsY,"QR+S");
@@ -427,19 +457,24 @@ class CTPPSTrackArmPlotter : public edm::one::EDAnalyzer<>
 
             // ----------------------- fVarianceYvsY fit -------------------------------------------------------------- //
 
-            TF1 *fVarianceYvsY = new TF1("fVarianceYvsY","pol2", hitShapeCenter-hitShapeSigma*sigmaMultFactorVariance,hitShapeCenter+hitShapeSigma*sigmaMultFactorVariance);
+            // TF1 *fVarianceYvsY = new TF1("fVarianceYvsY","pol2", hitShapeCenter-hitShapeSigma*sigmaMultFactorVariance,hitShapeCenter+hitShapeSigma*sigmaMultFactorVariance);
+            TF1 *fVarianceYvsY = new TF1("fVarianceYvsY",varianceYvsY, hitShapeCenter-hitShapeSigma*sigmaMultFactorVariance,hitShapeCenter+hitShapeSigma*sigmaMultFactorVariance,5);
+            // fVarianceYvsY->SetParLimits(0, 0., 1000.);
+            fVarianceYvsY->SetParLimits(2, 0., 1000.);
+            fVarianceYvsY->FixParameter(3, hitShapeCenter-hitShapeSigma*0.5);
+            fVarianceYvsY->FixParameter(4, hitShapeCenter+hitShapeSigma*0.5);
             TFitResultPtr fitResultVarianceYvsY;
             if(yVarianceProjectionCut->GetEntries()>=4){
               int pointsForFit = 0;
               bool fitIsDone = false;
-              double minBin =  normProjection->FindBin(hitShapeCenter+sigmaMultFactorVariance*hitShapeSigma);
-              if (normProjection->GetBinCenter(minBin)<hitShapeCenter+sigmaMultFactorVariance*hitShapeSigma) ++minBin;
+              double minBin =  normProjection->FindBin(hitShapeCenter-sigmaMultFactorVariance*hitShapeSigma);
+              if (normProjection->GetBinCenter(minBin)<hitShapeCenter-sigmaMultFactorVariance*hitShapeSigma) ++minBin;
               double maxBin =  normProjection->FindBin(hitShapeCenter+sigmaMultFactorVariance*hitShapeSigma);
               if (normProjection->GetBinCenter(maxBin)>hitShapeCenter+sigmaMultFactorVariance*hitShapeSigma) --maxBin;
               for(int yBin = minBin; yBin <= maxBin; ++yBin){
                 if(normProjection->GetBinContent(yBin)>=minNumberOfHits) ++pointsForFit;
                 if(pointsForFit>=4) {
-                  fitResultVarianceYvsY = yVarianceProjectionCut->Fit(fVarianceYvsY,"Q+S","",hitShapeCenter+sigmaMultFactorVariance*hitShapeSigma,hitShapeCenter+sigmaMultFactorVariance*hitShapeSigma);
+                  fitResultVarianceYvsY = yVarianceProjectionCut->Fit(fVarianceYvsY,"Q+S","",hitShapeCenter-sigmaMultFactorVariance*hitShapeSigma,hitShapeCenter+sigmaMultFactorVariance*hitShapeSigma);
                   fitIsDone = true;
                   break;
                 }
@@ -544,6 +579,27 @@ class CTPPSTrackArmPlotter : public edm::one::EDAnalyzer<>
             ++counter;
           }
 
+        }
+
+        for(int xBin=1; xBin<=300; ++xBin){
+          for(int yBin = 1; yBin <= 300; ++yBin){
+            if(h2_dXsigmaExtended->GetBinContent(xBin, yBin)>1.){
+              h2_dXsigmaExtended->SetBinContent(xBin,yBin,1.);
+              h2_dXsigmaExtended->SetBinError(xBin,yBin,1.);
+            }
+            if(h2_dXsigmaExtended->GetBinContent(xBin, yBin)<0.05){
+              h2_dXsigmaExtended->SetBinContent(xBin,yBin,0.05);
+              h2_dXsigmaExtended->SetBinError(xBin,yBin,0.05);
+            }
+            if(h2_dYsigmaExtended->GetBinContent(xBin, yBin)>1.){
+              h2_dYsigmaExtended->SetBinContent(xBin,yBin,1.);
+              h2_dYsigmaExtended->SetBinError(xBin,yBin,1.);
+            }
+            if(h2_dYsigmaExtended->GetBinContent(xBin, yBin)<0.05){
+              h2_dYsigmaExtended->SetBinContent(xBin,yBin,0.05);
+              h2_dYsigmaExtended->SetBinError(xBin,yBin,0.05);
+            }
+          }
         }
 
         g_hitShapeCenter->Write("g_hitShapeCenter");
