@@ -105,7 +105,7 @@ class CTPPSProtonReconstructionPlotter : public edm::one::EDAnalyzer<>
 
     struct MultiRPPlots
     {
-      std::unique_ptr<TH1D> h_xi, h_th_x, h_th_y, h_vtx_y, h_t_unif, h_t, h_chi_sq, h_chi_sq_norm;
+      std::unique_ptr<TH1D> h_xi, h_th_x, h_th_y, h_vtx_y, h_t_unif, h_t, h_chi_sq, h_log_chi_sq, h_chi_sq_norm;
       std::unique_ptr<TH1D> h_t_xi_range1, h_t_xi_range2, h_t_xi_range3;
       std::unique_ptr<TH1D> h_n_tracking_RPs, h_n_timing_RPs;
       std::unique_ptr<TH2D> h2_th_x_vs_xi, h2_th_y_vs_xi, h2_vtx_y_vs_xi, h2_t_vs_xi;
@@ -113,16 +113,17 @@ class CTPPSProtonReconstructionPlotter : public edm::one::EDAnalyzer<>
 
       MultiRPPlots() :
         h_xi(new TH1D("", ";#xi", 100, 0., 0.3)),
-        h_th_x(new TH1D("", ";#theta_{x}   (rad)", 100, -500E-6, +500E-6)),
-        h_th_y(new TH1D("", ";#theta_{y}   (rad)", 100, -500E-6, +500E-6)),
-        h_vtx_y(new TH1D("", ";vtx_{y}   (cm)", 100, -2., +2.)),
-        h_chi_sq(new TH1D("", ";#chi^{2}", 100, 0., 0.)),
+        h_th_x(new TH1D("", ";#theta_{x}   (rad)", 250, -500E-6, +500E-6)),
+        h_th_y(new TH1D("", ";#theta_{y}   (rad)", 250, -500E-6, +500E-6)),
+        h_vtx_y(new TH1D("", ";vtx_{y}   (cm)", 100, -100E-3, +100E-3)),
+        h_chi_sq(new TH1D("", ";#chi^{2}", 100, 0., 10.)),
+        h_log_chi_sq(new TH1D("", ";log_{10} #chi^{2}", 100, -20., 5.)),
         h_chi_sq_norm(new TH1D("", ";#chi^{2}/ndf", 100, 0., 5.)),
         h_n_tracking_RPs(new TH1D("", ";n of tracking RPs", 4, -0.5, +3.5)),
         h_n_timing_RPs(new TH1D("", ";n of timing RPs", 4, -0.5, +3.5)),
         h2_th_x_vs_xi(new TH2D("", ";#xi;#theta_{x}   (rad)", 100, 0., 0.3, 100, -500E-6, +500E-6)),
         h2_th_y_vs_xi(new TH2D("", ";#xi;#theta_{y}   (rad)", 100, 0., 0.3, 100, -500E-6, +500E-6)),
-        h2_vtx_y_vs_xi(new TH2D("", ";#xi;vtx_{y}   (cm)", 100, 0., 0.3, 100, -500E-3, +500E-3)),
+        h2_vtx_y_vs_xi(new TH2D("", ";#xi;vtx_{y}   (cm)", 100, 0., 0.3, 100, -100E-3, +100E-3)),
         p_th_x_vs_xi(new TProfile("", ";#xi;#theta_{x}   (rad)", 100, 0., 0.3)),
         p_th_y_vs_xi(new TProfile("", ";#xi;#theta_{y}   (rad)", 100, 0., 0.3)),
         p_vtx_y_vs_xi(new TProfile("", ";#xi;vtx_{y}   (cm)", 100, 0., 0.3))
@@ -161,6 +162,7 @@ class CTPPSProtonReconstructionPlotter : public edm::one::EDAnalyzer<>
         const double mt = - p.t();
 
         h_chi_sq->Fill(p.chi2());
+        h_log_chi_sq->Fill(log10(p.chi2()));
         if (p.ndof() > 0)
           h_chi_sq_norm->Fill(p.normalizedChi2());
 
@@ -193,6 +195,7 @@ class CTPPSProtonReconstructionPlotter : public edm::one::EDAnalyzer<>
       void write() const
       {
         h_chi_sq->Write("h_chi_sq");
+        h_log_chi_sq->Write("h_log_chi_sq");
         h_chi_sq_norm->Write("h_chi_sq_norm");
 
         h_n_tracking_RPs->Write("h_n_tracking_RPs");
@@ -289,6 +292,7 @@ class CTPPSProtonReconstructionPlotter : public edm::one::EDAnalyzer<>
     struct ArmCorrelationPlots
     {
       std::unique_ptr<TH1D> h_xi_si_diffNF;
+      std::unique_ptr<TH2D> h2_xi_si_diffNF_vs_xi_mu;
       std::unique_ptr<TProfile> p_xi_si_diffNF_vs_xi_mu;
 
       std::unique_ptr<TH1D> h_th_y_si_diffNF;
@@ -296,6 +300,7 @@ class CTPPSProtonReconstructionPlotter : public edm::one::EDAnalyzer<>
 
       ArmCorrelationPlots() :
         h_xi_si_diffNF(new TH1D("", ";#xi_{sF} - #xi_{sN}", 100, -0.02, +0.02)),
+        h2_xi_si_diffNF_vs_xi_mu(new TH2D("", ";#xi_{m};#xi_{sF} - #xi_{sN}", 100, 0., 0.3,  100, -0.02, +0.02)),
         p_xi_si_diffNF_vs_xi_mu(new TProfile("", ";#xi_{m};#xi_{sF} - #xi_{sN}", 100, 0., 0.3)),
         h_th_y_si_diffNF(new TH1D("", ";#theta_{y,sF} - #theta_{y,sN}", 100, -100E-6, +100E-6)),
         p_th_y_si_diffNF_vs_xi_mu(new TProfile("", ";#xi_{m};#theta_{y,sF} - #theta_{y,sN}", 100, 0., 0.3))
@@ -310,6 +315,7 @@ class CTPPSProtonReconstructionPlotter : public edm::one::EDAnalyzer<>
         const double th_y_s_F = p_s_F.thetaY();
 
         h_xi_si_diffNF->Fill(p_s_F.xi() - p_s_N.xi());
+        h2_xi_si_diffNF_vs_xi_mu->Fill(p_m.xi(), p_s_F.xi() - p_s_N.xi());
         p_xi_si_diffNF_vs_xi_mu->Fill(p_m.xi(), p_s_F.xi() - p_s_N.xi());
 
         h_th_y_si_diffNF->Fill(th_y_s_F - th_y_s_N);
@@ -319,6 +325,7 @@ class CTPPSProtonReconstructionPlotter : public edm::one::EDAnalyzer<>
       void write() const
       {
         h_xi_si_diffNF->Write("h_xi_si_diffNF");
+        h2_xi_si_diffNF_vs_xi_mu->Write("h2_xi_si_diffNF_vs_xi_mu");
         p_xi_si_diffNF_vs_xi_mu->Write("p_xi_si_diffNF_vs_xi_mu");
 
         h_th_y_si_diffNF->Write("h_th_y_si_diffNF");
@@ -429,55 +436,56 @@ void CTPPSProtonReconstructionPlotter::analyze(const edm::Event &event, const ed
   }
 
   // make correlation plots
-  for (const auto &proton_s : *hRecoProtonsSingleRP)
+  for (const auto &proton_m : *hRecoProtonsMultiRP)
   {
-    for (const auto &proton_m : *hRecoProtonsMultiRP)
-    {
-      // only compare object from the same arm
-      CTPPSDetId rpId_s((*proton_s.contributingLocalTracks().begin())->getRPId());
-      CTPPSDetId rpId_m((*proton_m.contributingLocalTracks().begin())->getRPId());
+    CTPPSDetId rpId_m((*proton_m.contributingLocalTracks().begin())->getRPId());
+    unsigned int arm = rpId_m.arm();
 
-      if (rpId_s.arm() != rpId_m.arm())
+    const reco::ForwardProton *p_s_N = nullptr, *p_s_F = nullptr;
+
+    /*
+    printf("multi-RP candidate: ");
+    for (const auto &tr_m : proton_m.contributingLocalTracks())
+      printf("%u, ", tr_m.key());
+    printf("\n");
+    */
+
+    for (const auto &proton_s : *hRecoProtonsSingleRP)
+    {
+      // skip if source of single-RP reco not included in multi-RP reco
+      const auto key_s = proton_s.contributingLocalTracks()[0].key();
+      bool compatible = false;
+      for (const auto &tr_m : proton_m.contributingLocalTracks())
+      {
+        if (tr_m.key() == key_s)
+        {
+          compatible = true;
+          break;
+        }
+      }
+
+      //printf("    key_s = %u --> compatible = %u\n", key_s, compatible);
+
+      if (!compatible)
         continue;
 
-      // build index
-      const unsigned int idx = rpId_s.arm()*1000 + rpId_s.station()*100 + rpId_s.rp()*10 + rpId_m.arm();
-
-      // fill plots
+      // fill single-multi plots
+      CTPPSDetId rpId_s((*proton_s.contributingLocalTracks().begin())->getRPId());
+      const unsigned int idx = rpId_s.arm()*1000 + rpId_s.station()*100 + rpId_s.rp()*10 + rpId_s.arm();
       singleMultiCorrelationPlots_[idx].fill(proton_s, proton_m);
+
+      //printf("    arm_s = %u, arm_m = %u\n", rpId_s.arm(), arm);
+
+      // select protons for arm-correlation plots
+      const unsigned int rpDecId_s = rpId_s.arm()*100 + rpId_s.station()*10 + rpId_s.rp();
+      if (rpDecId_s == rpId_45_N_ || rpDecId_s == rpId_56_N_) p_s_N = &proton_s;
+      if (rpDecId_s == rpId_45_F_ || rpDecId_s == rpId_56_F_) p_s_F = &proton_s;
     }
+
+    // fill arm-correlation plots
+    if (p_s_N && p_s_F)
+      armCorrelationPlots_[arm].fill(*p_s_N, *p_s_F, proton_m);
   }
-
-  // arm correlation plots
-  const reco::ForwardProton *p_arm0_s_N = nullptr, *p_arm0_s_F = nullptr, *p_arm0_m = nullptr;
-  const reco::ForwardProton *p_arm1_s_N = nullptr, *p_arm1_s_F = nullptr, *p_arm1_m = nullptr;
-
-  for (const auto &proton : *hRecoProtonsSingleRP)
-  {
-    CTPPSDetId rpId((*proton.contributingLocalTracks().begin())->getRPId());
-    const unsigned int rpDecId = rpId.arm()*100 + rpId.station()*10 + rpId.rp();
-
-    if (rpDecId == rpId_45_N_) p_arm0_s_N = &proton;
-    if (rpDecId == rpId_45_F_) p_arm0_s_F = &proton;
-
-    if (rpDecId == rpId_56_N_) p_arm1_s_N = &proton;
-    if (rpDecId == rpId_56_F_) p_arm1_s_F = &proton;
-  }
-
-  for (const auto & proton : *hRecoProtonsMultiRP)
-  {
-    CTPPSDetId rpId((*proton.contributingLocalTracks().begin())->getRPId());
-    const unsigned int arm = rpId.arm();
-
-    if (arm == 0) p_arm0_m = &proton;
-    if (arm == 1) p_arm1_m = &proton;
-  }
-
-  if (p_arm0_s_N && p_arm0_s_F && p_arm0_m)
-    armCorrelationPlots_[0].fill(*p_arm0_s_N, *p_arm0_s_F, *p_arm0_m);
-
-  if (p_arm1_s_N && p_arm1_s_F && p_arm1_m)
-    armCorrelationPlots_[1].fill(*p_arm1_s_N, *p_arm1_s_F, *p_arm1_m);
 }
 
 //----------------------------------------------------------------------------------------------------
