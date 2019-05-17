@@ -1,0 +1,77 @@
+#!/bin/bash
+
+sub_script="condor.sub"
+
+cwd=`pwd -P`
+base_dir="$cwd"
+
+#----------------------------------------------------------------------------------------------------
+
+function CheckMultiple()
+{
+	baseDir="$1"
+	
+	for mass in ${masses[*]}
+	do
+		for xangle in ${xangles[*]}
+		do
+			dir="$baseDir/m_X_$mass/xangle_$xangle"
+			eos_dir="/eos/cms/store/group/phys_pps/ppxz/$baseDir/m_X_$mass/xangle_$xangle"
+
+			error="n"
+
+			if [ ! -f "$dir/success" ]
+			then
+				error="y"
+			fi
+
+			if [ ! -f "$eos_dir/ntuple.root" ]
+			then
+				size="0"
+			else
+				size=$(ls -l "$eos_dir/ntuple.root" |awk '{print $5}')
+			fi
+
+			if [ $size -lt 50000000 ]
+			then
+				error="y"
+			fi
+
+			if [ "$error" == "y" ]
+			then
+				echo "ERROR: $dir"
+			fi
+
+		done
+	done
+}
+
+#----------------------------------------------------------------------------------------------------
+
+masses=(
+	#800
+	#1000
+	#1200
+	#1400
+	#1600
+)
+
+masses=()
+for mass in {780..1650..60}
+do
+	masses+=($mass)
+done
+
+xangles=(
+	120
+	130
+	140
+	150
+)
+
+n_events=400000
+#n_events=100000
+#n_events=4000
+
+CheckMultiple "Z"
+CheckMultiple "gamma"

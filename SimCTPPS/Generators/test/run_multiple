@@ -1,0 +1,112 @@
+#!/bin/bash
+
+sub_script="condor.sub"
+
+cwd=`pwd -P`
+base_dir="$cwd"
+
+#----------------------------------------------------------------------------------------------------
+
+function RunOne()
+{
+	dir="$baseDir/m_X_$mass/xangle_$xangle"
+	eos_dir="/eos/cms/store/group/phys_pps/ppxz/$baseDir/m_X_$mass/xangle_$xangle"
+	echo "* $dir"
+
+	mkdir -p "$dir"
+	eos mkdir -p "$eos_dir"
+
+	cat "template_cfg.py"|sed "\
+			s|\$mass|$mass|g;\
+			s|\$xangle|$xangle|g;\
+			s|\$n_events|$n_events|g;\
+			s|\$eos_dir|$eos_dir|g;\
+			s|\$save_ntuples|$save_ntuples|g;\
+			s|\$settings_function|$settingsFunction|g;\
+		" > "$dir/cfg.py"
+
+	cat "template_job"|sed "\
+			s|\$WORK_DIR|$cwd/$dir|;\
+			s|\$CMSSW_BASE|$CMSSW_BASE|;\
+		" > "$dir/job"
+
+	chmod u+x "$dir/job"
+
+	(
+		echo ""
+		echo "dir=$dir"
+		echo "queue"
+	) >> "$sub_script"
+
+	#cd "$dir"
+	#cmsRun "cfg.py" &> "log" &
+	#cd - &> /dev/null
+}
+
+#----------------------------------------------------------------------------------------------------
+
+function RunMultiple()
+{
+	baseDir="$1"
+	settingsFunction="$2"
+	
+	for mass in ${masses[*]}
+	do
+		for xangle in ${xangles[*]}
+		do
+			RunOne
+		done
+	done
+}
+
+#----------------------------------------------------------------------------------------------------
+
+(
+	echo "executable = $base_dir/\$(dir)/job"
+	echo "arguments = \$(ClusterId) \$(ProcId) \\\"\$(dir)\\\""
+	echo "output = $base_dir/\$(dir)/out"
+	echo "error = $base_dir/\$(dir)/err"
+	echo "log = $base_dir/condor.log"
+
+	echo "+MaxRuntime = 14400" # in s
+
+	#echo "+JobBatchName = \"$output_dir\""
+
+	echo "requirements = (OpSysAndVer =?= \"SLCern6\")"
+
+) > "$sub_script"
+
+#----------------------------------------------------------------------------------------------------
+
+masses=(
+	#800
+	#1000
+	#1200
+	#1400
+	#1600
+)
+
+masses=()
+for mass in {780..1650..60}
+do
+	masses+=($mass)
+done
+
+xangles=(
+	120
+	130
+	140
+	150
+)
+
+n_events=400000
+#n_events=100000
+#n_events=4000
+
+save_ntuples="False"
+
+RunMultiple "Z" "UseSettingsZ"
+RunMultiple "gamma" "UseSettingsGamma"
+
+echo "To submit:"
+echo "    condor_submit \"$sub_script\""
