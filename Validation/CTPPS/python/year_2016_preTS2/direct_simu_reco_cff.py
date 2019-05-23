@@ -3,7 +3,7 @@ import FWCore.ParameterSet.Config as cms
 # beam parameters as declared by LHC
 ctppsLHCInfoESSource = cms.ESSource("CTPPSLHCInfoESSource",
   label = cms.string(""),
-  validityRange = cms.EventRange("1:min - 999999:max"),
+  validityRange = cms.EventRange("0:min - 999999:max"),
   beamEnergy = cms.double(6500),  # GeV
   xangle = cms.double(185)  # murad
 )
@@ -52,7 +52,7 @@ ctppsBeamParametersESSource = cms.ESSource("CTPPSBeamParametersESSource",
 from CalibPPS.ESProducers.ctppsOpticalFunctionsESSource_cfi import *
 
 config_2016_preTS2 = cms.PSet(
-  validityRange = cms.EventRange("273725:min - 280385:max"),
+  validityRange = cms.EventRange("0:min - 999999:max"),
 
   opticalFunctions = cms.VPSet(
     cms.PSet( xangle = cms.double(185), fileName = cms.FileInPath("CalibPPS/ESProducers/data/optical_functions/2016_preTS2/version1/optical_functions.root") )
@@ -128,10 +128,12 @@ from RecoCTPPS.ProtonReconstruction.ctppsProtons_cff import *
 ctppsProtons.tagLocalTrackLite = cms.InputTag('ctppsLocalTrackLiteProducer')
 
 # RP ids
-rpId_45_F = 3
-rpId_45_N = 2
-rpId_56_N = 102
-rpId_56_F = 103
+rpIds = cms.PSet(
+  rp_45_F = cms.uint32(3),
+  rp_45_N = cms.uint32(2),
+  rp_56_N = cms.uint32(102),
+  rp_56_F = cms.uint32(103)
+)
 
 #----------------------------------------------------------------------------------------------------
 

@@ -14,6 +14,7 @@ process.MessageLogger = cms.Service("MessageLogger",
 
 # load common code
 process.load("Validation.CTPPS.year_2016_preTS2.direct_simu_reco_cff")
+from Validation.CTPPS.year_2016_preTS2.direct_simu_reco_cff import * # to import also functions
 
 # number of events
 process.maxEvents = cms.untracked.PSet(
@@ -27,7 +28,7 @@ process.ctppsProtonReconstructionSimulationValidator = cms.EDAnalyzer("CTPPSProt
   tagRecoProtonsSingleRP = cms.InputTag("ctppsProtons", "singleRP"),
   tagRecoProtonsMultiRP = cms.InputTag("ctppsProtons", "multiRP"),
 
-  lhcInfoLabel = "",
+  lhcInfoLabel = cms.string(""),
 
   outputFile = cms.string("")
 )
