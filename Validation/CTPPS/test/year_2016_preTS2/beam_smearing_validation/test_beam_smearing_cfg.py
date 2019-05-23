@@ -12,37 +12,13 @@ process.MessageLogger = cms.Service("MessageLogger",
     )
 )
 
-# number of events
-process.source = cms.Source("EmptySource",
-    firstRun = cms.untracked.uint32(280000)
-)
+# load common code
+process.load("Validation.CTPPS.year_2016_preTS2.direct_simu_reco_cff")
 
+# number of events
 process.maxEvents = cms.untracked.PSet(
     input = cms.untracked.int32(10000)
 )
-
-# particle-data table
-process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
-
-# supply LHC info and optics
-# TODO: remove this line once data are available in CondDB
-process.load("CalibPPS.ESProducers.ctppsOpticalFunctions_cff")
-
-# supply beam parameters
-process.load("Validation.CTPPS.year_2016.ctppsBeamParametersESSource_cfi")
-
-# particle generator
-process.load("Validation.CTPPS.year_2016.randomXiThetaGunProducer_cfi")
-
-# random seeds
-process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService",
-    sourceSeed = cms.PSet(initialSeed =cms.untracked.uint32(98765)),
-    generator = cms.PSet(initialSeed = cms.untracked.uint32(98766)),
-    beamDivergenceVtxGenerator = cms.PSet(initialSeed =cms.untracked.uint32(3849))
-)
-
-# beam-smearing
-process.load("IOMC.EventVertexGenerators.beamDivergenceVtxGenerator_cfi")
 
 # beam-smearing validation
 process.ctppsBeamSmearingValidator = cms.EDAnalyzer("CTPPSBeamSmearingValidator",
