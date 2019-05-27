@@ -34,9 +34,9 @@
 #include "Geometry/VeryForwardGeometryBuilder/interface/CTPPSGeometry.h"
 #include "Geometry/Records/interface/VeryForwardMisalignedGeometryRecord.h"
 #include "Geometry/VeryForwardRPTopology/interface/RPTopology.h"
+#include "Geometry/VeryForwardGeometry/interface/CTPPSPixelTopology.h"
 
 #include <unordered_map>
-
 #include "TMath.h"
 #include "TMatrixD.h"
 #include "TVectorD.h"
@@ -68,22 +68,6 @@ class CTPPSDirectProtonSimulation : public edm::stream::EDProducer<>
       std::map<int, edm::DetSetVector<CTPPSDiamondRecHit>> &out_diamond_hits_per_particle
     ) const;
 
-    static bool isPixelHit(float xLocalCoordinate, float yLocalCoordinate, bool is3x2 = true)
-    {
-      float tmpXlocalCoordinate = xLocalCoordinate + (79*0.1 + 0.2);
-      float tmpYlocalCoordinate = yLocalCoordinate + (0.15*51 + 0.3*2 + 0.15*25);
-
-      if(tmpXlocalCoordinate<0) return false;
-      if(tmpYlocalCoordinate<0) return false;
-      int xModuleSize = 0.1*79 + 0.2*2 + 0.1*79; // mm - 100 um pitch direction
-      int yModuleSize; // mm - 150 um pitch direction
-      if (is3x2) yModuleSize = 0.15*51 + 0.3*2 + 0.15*50 + 0.3*2 + 0.15*51;
-      else       yModuleSize = 0.15*51 + 0.3*2 + 0.15*51;
-      if(tmpXlocalCoordinate>xModuleSize) return false;
-      if(tmpYlocalCoordinate>yModuleSize) return false;
-      return true;
-    }
-
     // ------------ config file parameters ------------
 
     /// input tag
@@ -109,6 +93,8 @@ class CTPPSDirectProtonSimulation : public edm::stream::EDProducer<>
 
     double pitchPixelsHor_;
     double pitchPixelsVer_;
+
+    std::vector<unsigned int> rpsWith2By2Pixels_;
 
     unsigned int verbosity_;
 
@@ -141,6 +127,8 @@ CTPPSDirectProtonSimulation::CTPPSDirectProtonSimulation( const edm::ParameterSe
 
   pitchPixelsHor_( iConfig.getParameter<double>( "pitchPixelsHor" ) ),
   pitchPixelsVer_( iConfig.getParameter<double>( "pitchPixelsVer" ) ),
+
+  rpsWith2By2Pixels_( iConfig.getParameter<std::vector<unsigned int>>( "rpsWith2By2Pixels" ) ),
 
   verbosity_( iConfig.getUntrackedParameter<unsigned int>( "verbosity", 0 ) )
 {
@@ -451,7 +439,8 @@ void CTPPSDirectProtonSimulation::processProton(const HepMC::GenVertex* in_vtx, 
             << " mm, y = " << h_loc.y() << " mm, z = " << h_loc.z() << " mm" << std::endl;
         }
 
-        if (checkIsHit_  && !isPixelHit(h_loc.x(), h_loc.y()))
+        bool module3By2 = (find(rpsWith2By2Pixels_.begin(), rpsWith2By2Pixels_.end(), rpDecId) == rpsWith2By2Pixels_.end());
+        if (checkIsHit_ && !CTPPSPixelTopology::isPixelHit(h_loc.x(), h_loc.y(), module3By2))
           continue;
 
         if (roundToPitch_)
@@ -501,8 +490,10 @@ void CTPPSDirectProtonSimulation::fillDescriptions( edm::ConfigurationDescriptio
   desc.add<bool>("checkIsHit", true);
   desc.add<double>("pitchStrips", 66.e-3); // in mm
   desc.add<double>("insensitiveMarginStrips", 34.e-3); // in mm
+
   desc.add<double>("pitchPixelsHor", 100.e-3)->setComment("x in local coordinates, in mm");
   desc.add<double>("pitchPixelsVer", 150.e-3)->setComment("y in local coordinates, in mm");
+  desc.add<std::vector<unsigned int>>("rpsWith2By2Pixels", std::vector<unsigned int>())->setComment("list of decimal ids of RPs containting 2x2 pixel modules");
 
   descriptions.add("ctppsDirectProtonSimulation", desc);
 }
