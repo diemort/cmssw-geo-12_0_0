@@ -51,8 +51,8 @@ class CTPPSDirectProtonSimulationValidator : public edm::one::EDAnalyzer<>
       RPPlots() :
         h2_xr_vs_xs( new TH2D("", "", 100, -10., +10., 100, -10, +10.) ),
         h2_yr_vs_ys( new TH2D("", "", 100, -10., +10., 100, -10, +10.) ),
-        h_de_x( new TH1D("", "", 100, -0., +0.) ),
-        h_de_y( new TH1D("", "", 100, -0., +0.) )
+        h_de_x( new TH1D("", "", 100, -50E-3, +50E-3) ),
+        h_de_y( new TH1D("", "", 100, -50E-3, +50E-3) )
       {}
 
       void fill(double simu_x, double simu_y, double reco_x, double reco_y)
