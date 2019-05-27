@@ -70,7 +70,9 @@ class CTPPSDirectProtonSimulation : public edm::stream::EDProducer<>
 
     // ------------ config file parameters ------------
 
-    /// input tag
+    /// input
+    std::string opticsLabel_;
+
     edm::EDGetTokenT<edm::HepMCProduct> hepMCToken_;
 
     /// flags what output to be produced
@@ -107,6 +109,7 @@ class CTPPSDirectProtonSimulation : public edm::stream::EDProducer<>
 //----------------------------------------------------------------------------------------------------
 
 CTPPSDirectProtonSimulation::CTPPSDirectProtonSimulation( const edm::ParameterSet& iConfig ) :
+  opticsLabel_(iConfig.getParameter<std::string>("opticsLabel")),
   hepMCToken_( consumes<edm::HepMCProduct>( iConfig.getParameter<edm::InputTag>( "hepMCTag" ) ) ),
 
   produceScoringPlaneHits_( iConfig.getParameter<bool>( "produceScoringPlaneHits" ) ),
@@ -163,7 +166,7 @@ void CTPPSDirectProtonSimulation::produce( edm::Event& iEvent, const edm::EventS
   iSetup.get<CTPPSBeamParametersRcd>().get(hBeamParameters);
 
   edm::ESHandle<LHCInterpolatedOpticalFunctionsSetCollection> hOpticalFunctions;
-  iSetup.get<CTPPSInterpolatedOpticsRcd>().get(hOpticalFunctions);
+  iSetup.get<CTPPSInterpolatedOpticsRcd>().get(opticsLabel_, hOpticalFunctions);
 
   edm::ESHandle<CTPPSGeometry> geometry;
   iSetup.get<VeryForwardMisalignedGeometryRecord>().get(geometry);
@@ -477,7 +480,10 @@ void CTPPSDirectProtonSimulation::fillDescriptions( edm::ConfigurationDescriptio
 {
   edm::ParameterSetDescription desc;
   desc.addUntracked<unsigned int>("verbosity", 0);
+
+  desc.add<std::string>("opticsLabel", "")->setComment("label of the optics records");
   desc.add<edm::InputTag>("hepMCTag", edm::InputTag("generator", "unsmeared"));
+
   desc.add<bool>("produceScoringPlaneHits", true);
   desc.add<bool>("produceRecHits", true);
   desc.add<bool>("useEmpiricalApertures", false);
