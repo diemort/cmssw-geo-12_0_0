@@ -287,7 +287,7 @@ void CTPPSProtonReconstructionEfficiencyEstimator::endJob()
   for (const auto& ait : plots_)
   {
     char buf[100];
-    sprintf(buf, "arm %u", ait.first);
+    sprintf(buf, "arm%u", ait.first);
     TDirectory *d_arm = f_out->mkdir(buf);
 
     for (const auto &npit : ait.second)
