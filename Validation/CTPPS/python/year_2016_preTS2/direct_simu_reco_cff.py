@@ -23,10 +23,10 @@ ctppsBeamParametersESSource = cms.ESSource("CTPPSBeamParametersESSource",
   betaStarY56 = cms.double(0.),
 
   #  beam divergence  (rad)
-  beamDivX45 = cms.double(20E-6),
-  beamDivX56 = cms.double(20E-6),
-  beamDivY45 = cms.double(20E-6),
-  beamDivY56 = cms.double(20E-6),
+  beamDivX45 = cms.double(30E-6),
+  beamDivX56 = cms.double(30E-6),
+  beamDivY45 = cms.double(30E-6),
+  beamDivY56 = cms.double(30E-6),
 
   #  half crossing angle  (rad)
   halfXangleX45 = cms.double(179.394E-6),
@@ -72,7 +72,7 @@ ctppsOpticalFunctionsESSource.configuration.append(config_2016_preTS2)
 # geometry
 from Geometry.VeryForwardGeometry.geometryRPFromDD_2017_cfi import * # NB: 2017 is OK here
 del(XMLIdealGeometryESSource_CTPPS.geomXMLFiles[-1])
-XMLIdealGeometryESSource_CTPPS.geomXMLFiles.append("Validation/CTPPS/test/year_2016/RP_Dist_Beam_Cent.xml")
+XMLIdealGeometryESSource_CTPPS.geomXMLFiles.append("Validation/CTPPS/test/year_2016_preTS2/RP_Dist_Beam_Cent.xml")
 
 # particle-data table
 from SimGeneral.HepPDTESSource.pythiapdt_cfi import *
@@ -99,7 +99,7 @@ from IOMC.EventVertexGenerators.beamDivergenceVtxGenerator_cfi import *
 from Validation.CTPPS.ctppsDirectProtonSimulation_cfi import *
 ctppsDirectProtonSimulation.verbosity = 0
 ctppsDirectProtonSimulation.hepMCTag = cms.InputTag('beamDivergenceVtxGenerator')
-ctppsDirectProtonSimulation.useEmpiricalApertures = False
+ctppsDirectProtonSimulation.useEmpiricalApertures = False # TODO: change to true
 ctppsDirectProtonSimulation.roundToPitch = True
 ctppsDirectProtonSimulation.pitchStrips = 66E-3 * 12 / 19 # effective value to reproduce real RP resolution
 ctppsDirectProtonSimulation.produceHitsRelativeToBeam = True
@@ -107,13 +107,11 @@ ctppsDirectProtonSimulation.produceScoringPlaneHits = False
 ctppsDirectProtonSimulation.produceRecHits = True
 
 # local reconstruction
-# TODO: load common config
-from RecoCTPPS.TotemRPLocal.totemRPUVPatternFinder_cfi import *
+from RecoCTPPS.TotemRPLocal.totemRPLocalReconstruction_cff import *
+from RecoCTPPS.TotemRPLocal.ctppsLocalTrackLiteProducer_cff import *
+
 totemRPUVPatternFinder.tagRecHit = cms.InputTag('ctppsDirectProtonSimulation')
 
-from RecoCTPPS.TotemRPLocal.totemRPLocalTrackFitter_cfi import *
-
-from RecoCTPPS.TotemRPLocal.ctppsLocalTrackLiteProducer_cff import *
 ctppsLocalTrackLiteProducer.includeDiamonds = False
 ctppsLocalTrackLiteProducer.includePixels = False
 
@@ -134,42 +132,3 @@ rpIds = cms.PSet(
   rp_56_N = cms.uint32(102),
   rp_56_F = cms.uint32(103)
 )
-
-#----------------------------------------------------------------------------------------------------
-
-def SetLevel1():
-  ctppsBeamParametersESSource.vtxStddevX = 0E-4
-  ctppsBeamParametersESSource.vtxStddevZ = 0
-
-  ctppsBeamParametersESSource.beamDivX45 = 0E-6
-  ctppsBeamParametersESSource.beamDivX56 = 0E-6
-  ctppsBeamParametersESSource.beamDivY45 = 0E-6
-  ctppsBeamParametersESSource.beamDivY56 = 0E-6
-
-  ctppsDirectProtonSimulation.roundToPitch = False
-
-
-def SetLevel2():
-  ctppsBeamParametersESSource.beamDivX45 = 0E-6
-  ctppsBeamParametersESSource.beamDivX56 = 0E-6
-  ctppsBeamParametersESSource.beamDivY45 = 0E-6
-  ctppsBeamParametersESSource.beamDivY56 = 0E-6
-
-  ctppsDirectProtonSimulation.roundToPitch = False
-
-
-def SetLevel3():
-  ctppsDirectProtonSimulation.roundToPitch = False
-
-
-def SetLevel4():
-  pass
-
-
-def SetLowTheta():
-  generator.theta_x_sigma = 0E-6
-  generator.theta_y_sigma = 0E-6
-
-
-def SetLargeTheta():
-  pass
