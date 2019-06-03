@@ -71,11 +71,13 @@ class CTPPSProtonReconstructionPlotter : public edm::one::EDAnalyzer<>
 
     struct SingleRPPlots
     {
+      std::unique_ptr<TH1D> h_multiplicity;
       std::unique_ptr<TH1D> h_xi;
       std::unique_ptr<TH2D> h2_th_y_vs_xi;
       std::unique_ptr<TProfile> p_th_y_vs_xi;
 
       SingleRPPlots() :
+        h_multiplicity(new TH1D("", ";reconstructed protons", 11, -0.5, 10.5)),
         h_xi(new TH1D("", ";#xi", 100, 0., 0.3)),
         h2_th_y_vs_xi(new TH2D("", ";#xi;#theta_{y}   (rad)", 100, 0., 0.3, 100, -500E-6, +500E-6)),
         p_th_y_vs_xi(new TProfile("", ";#xi;#theta_{y}   (rad)", 100, 0., 0.3))
@@ -94,6 +96,7 @@ class CTPPSProtonReconstructionPlotter : public edm::one::EDAnalyzer<>
 
       void write() const
       {
+        h_multiplicity->Write("h_multiplicity");
         h_xi->Write("h_xi");
 
         h2_th_y_vs_xi->Write("h2_th_y_vs_xi");
@@ -105,6 +108,7 @@ class CTPPSProtonReconstructionPlotter : public edm::one::EDAnalyzer<>
 
     struct MultiRPPlots
     {
+      std::unique_ptr<TH1D> h_multiplicity;
       std::unique_ptr<TH1D> h_xi, h_th_x, h_th_y, h_vtx_y, h_t_unif, h_t, h_chi_sq, h_log_chi_sq, h_chi_sq_norm;
       std::unique_ptr<TH1D> h_t_xi_range1, h_t_xi_range2, h_t_xi_range3;
       std::unique_ptr<TH1D> h_n_tracking_RPs, h_n_timing_RPs;
@@ -112,6 +116,7 @@ class CTPPSProtonReconstructionPlotter : public edm::one::EDAnalyzer<>
       std::unique_ptr<TProfile> p_th_x_vs_xi, p_th_y_vs_xi, p_vtx_y_vs_xi;
 
       MultiRPPlots() :
+        h_multiplicity(new TH1D("", ";reconstructed protons", 11, -0.5, 10.5)),
         h_xi(new TH1D("", ";#xi", 100, 0., 0.3)),
         h_th_x(new TH1D("", ";#theta_{x}   (rad)", 250, -500E-6, +500E-6)),
         h_th_y(new TH1D("", ";#theta_{y}   (rad)", 250, -500E-6, +500E-6)),
@@ -194,6 +199,8 @@ class CTPPSProtonReconstructionPlotter : public edm::one::EDAnalyzer<>
 
       void write() const
       {
+        h_multiplicity->Write("h_multiplicity");
+
         h_chi_sq->Write("h_chi_sq");
         h_log_chi_sq->Write("h_log_chi_sq");
         h_chi_sq_norm->Write("h_chi_sq_norm");
@@ -419,13 +426,24 @@ void CTPPSProtonReconstructionPlotter::analyze(const edm::Event &event, const ed
     p_y_R_diffNF_vs_y_R_N_->Fill(tr_R_N->getY(), tr_R_F->getY() - tr_R_N->getY());
   }
 
+  // initialise multiplicity counters
+  std::map<unsigned int, unsigned int> singleRPMultiplicity, multiRPMultiplicity;
+  singleRPMultiplicity[rpId_45_N_] = singleRPMultiplicity[rpId_45_F_] = singleRPMultiplicity[rpId_56_N_] = singleRPMultiplicity[rpId_56_F_] = 0;
+  multiRPMultiplicity[0] = multiRPMultiplicity[1] = 0;
+
   // make single-RP-reco plots
   for (const auto &proton : *hRecoProtonsSingleRP)
   {
     CTPPSDetId rpId((*proton.contributingLocalTracks().begin())->getRPId());
     unsigned int decRPId = rpId.arm()*100 + rpId.station()*10 + rpId.rp();
     singleRPPlots_[decRPId].fill(proton);
+
+    if (proton.validFit())
+      singleRPMultiplicity[decRPId]++;
   }
+
+  for (const auto it : singleRPMultiplicity)
+    singleRPPlots_[it.first].h_multiplicity->Fill(it.second);
 
   // make multi-RP-reco plots
   for (const auto &proton : *hRecoProtonsMultiRP)
@@ -433,7 +451,13 @@ void CTPPSProtonReconstructionPlotter::analyze(const edm::Event &event, const ed
     CTPPSDetId rpId((*proton.contributingLocalTracks().begin())->getRPId());
     unsigned int armId = rpId.arm();
     multiRPPlots_[armId].fill(proton);
+
+    if (proton.validFit())
+      multiRPMultiplicity[armId]++;
   }
+
+  for (const auto it : multiRPMultiplicity)
+    multiRPPlots_[it.first].h_multiplicity->Fill(it.second);
 
   // make correlation plots
   for (const auto &proton_m : *hRecoProtonsMultiRP)
