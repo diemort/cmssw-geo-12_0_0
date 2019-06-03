@@ -76,14 +76,19 @@ class CTPPSProtonReconstructionPlotter : public edm::one::EDAnalyzer<>
       std::unique_ptr<TH2D> h2_th_y_vs_xi;
       std::unique_ptr<TProfile> p_th_y_vs_xi;
 
+      std::map<unsigned int, TH1D*> m_h_xi_nTracks;
+
       SingleRPPlots() :
         h_multiplicity(new TH1D("", ";reconstructed protons", 11, -0.5, 10.5)),
         h_xi(new TH1D("", ";#xi", 100, 0., 0.3)),
         h2_th_y_vs_xi(new TH2D("", ";#xi;#theta_{y}   (rad)", 100, 0., 0.3, 100, -500E-6, +500E-6)),
         p_th_y_vs_xi(new TProfile("", ";#xi;#theta_{y}   (rad)", 100, 0., 0.3))
-      {}
+      {
+        for (unsigned int n = 2; n <= 10; ++n)
+          m_h_xi_nTracks[n] = new TH1D(*h_xi);
+      }
 
-      void fill(const reco::ForwardProton &p)
+      void fill(const reco::ForwardProton &p, unsigned int nTracks)
       {
         if (p.validFit()) {
           h_xi->Fill(p.xi());
@@ -91,6 +96,10 @@ class CTPPSProtonReconstructionPlotter : public edm::one::EDAnalyzer<>
           const double th_y = p.thetaY();
           h2_th_y_vs_xi->Fill(p.xi(), th_y);
           p_th_y_vs_xi->Fill(p.xi(), th_y);
+
+          auto it = m_h_xi_nTracks.find(nTracks);
+          if (it != m_h_xi_nTracks.end())
+            it->second->Fill(p.xi());
         }
       }
 
@@ -101,6 +110,18 @@ class CTPPSProtonReconstructionPlotter : public edm::one::EDAnalyzer<>
 
         h2_th_y_vs_xi->Write("h2_th_y_vs_xi");
         p_th_y_vs_xi->Write("p_th_y_vs_xi");
+
+        TDirectory *d_top = gDirectory;
+
+        gDirectory = d_top->mkdir("h_xi_nTracks");
+        for (const auto p : m_h_xi_nTracks)
+        {
+          char buf[100];
+          sprintf(buf, "h_xi_nTracks_%u", p.first);
+          p.second->Write(buf);
+        }
+
+        gDirectory = d_top;
       }
     };
 
@@ -114,6 +135,8 @@ class CTPPSProtonReconstructionPlotter : public edm::one::EDAnalyzer<>
       std::unique_ptr<TH1D> h_n_tracking_RPs, h_n_timing_RPs;
       std::unique_ptr<TH2D> h2_th_x_vs_xi, h2_th_y_vs_xi, h2_vtx_y_vs_xi, h2_t_vs_xi;
       std::unique_ptr<TProfile> p_th_x_vs_xi, p_th_y_vs_xi, p_vtx_y_vs_xi;
+
+      std::map<unsigned int, TH1D*> m_h_xi_nTracks;
 
       MultiRPPlots() :
         h_multiplicity(new TH1D("", ";reconstructed protons", 11, -0.5, 10.5)),
@@ -145,9 +168,12 @@ class CTPPSProtonReconstructionPlotter : public edm::one::EDAnalyzer<>
         h_t_xi_range2.reset(new TH1D("", ";|t|   (GeV^2)", v_t_bin_edges.size() - 1, v_t_bin_edges.data()));
         h_t_xi_range3.reset(new TH1D("", ";|t|   (GeV^2)", v_t_bin_edges.size() - 1, v_t_bin_edges.data()));
         h2_t_vs_xi.reset(new TH2D("", ";#xi;|t|   (GeV^2)", 100, 0., 0.3, v_t_bin_edges.size() - 1, v_t_bin_edges.data()));
+
+        for (unsigned int n = 2; n <= 10; ++n)
+          m_h_xi_nTracks[n] = new TH1D(*h_xi);
       }
 
-      void fill(const reco::ForwardProton &p)
+      void fill(const reco::ForwardProton &p, unsigned int nTracks)
       {
         if (!p.validFit())
           return;
@@ -195,6 +221,10 @@ class CTPPSProtonReconstructionPlotter : public edm::one::EDAnalyzer<>
         p_th_x_vs_xi->Fill(p.xi(), th_x);
         p_th_y_vs_xi->Fill(p.xi(), th_y);
         p_vtx_y_vs_xi->Fill(p.xi(), p.vertex().y());
+
+        auto it = m_h_xi_nTracks.find(nTracks);
+        if (it != m_h_xi_nTracks.end())
+          it->second->Fill(p.xi());
       }
 
       void write() const
@@ -240,6 +270,18 @@ class CTPPSProtonReconstructionPlotter : public edm::one::EDAnalyzer<>
         h_t_xi_range3->Write("h_t_xi_range3");
 
         h2_t_vs_xi->Write("h2_t_vs_xi");
+
+        TDirectory *d_top = gDirectory;
+
+        gDirectory = d_top->mkdir("h_xi_nTracks");
+        for (const auto p : m_h_xi_nTracks)
+        {
+          char buf[100];
+          sprintf(buf, "h_xi_nTracks_%u", p.first);
+          p.second->Write(buf);
+        }
+
+        gDirectory = d_top;
       }
     };
 
@@ -402,6 +444,7 @@ void CTPPSProtonReconstructionPlotter::analyze(const edm::Event &event, const ed
   const CTPPSLocalTrackLite *tr_L_F = nullptr;
   const CTPPSLocalTrackLite *tr_R_N = nullptr;
   const CTPPSLocalTrackLite *tr_R_F = nullptr;
+  std::map<unsigned int, unsigned int> armTrackCounter;
 
   for (const auto &tr : *hTracks)
   {
@@ -412,6 +455,8 @@ void CTPPSProtonReconstructionPlotter::analyze(const edm::Event &event, const ed
     if (decRPId == rpId_45_F_) tr_L_F = &tr;
     if (decRPId == rpId_56_N_) tr_R_N = &tr;
     if (decRPId == rpId_56_F_) tr_R_F = &tr;
+
+    armTrackCounter[rpId.arm()]++;
   }
 
   if (tr_L_N && tr_L_F)
@@ -436,7 +481,7 @@ void CTPPSProtonReconstructionPlotter::analyze(const edm::Event &event, const ed
   {
     CTPPSDetId rpId((*proton.contributingLocalTracks().begin())->getRPId());
     unsigned int decRPId = rpId.arm()*100 + rpId.station()*10 + rpId.rp();
-    singleRPPlots_[decRPId].fill(proton);
+    singleRPPlots_[decRPId].fill(proton, armTrackCounter[rpId.arm()]);
 
     if (proton.validFit())
       singleRPMultiplicity[decRPId]++;
@@ -450,7 +495,7 @@ void CTPPSProtonReconstructionPlotter::analyze(const edm::Event &event, const ed
   {
     CTPPSDetId rpId((*proton.contributingLocalTracks().begin())->getRPId());
     unsigned int armId = rpId.arm();
-    multiRPPlots_[armId].fill(proton);
+    multiRPPlots_[armId].fill(proton, armTrackCounter[armId]);
 
     if (proton.validFit())
       multiRPMultiplicity[armId]++;
