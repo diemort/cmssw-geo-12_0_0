@@ -48,7 +48,7 @@ class PPXZGeneratorValidation : public edm::one::EDAnalyzer<>
 
     edm::EDGetTokenT<edm::HepMCProduct> hepMCToken_;
     edm::EDGetTokenT<std::vector<CTPPSLocalTrackLite>> recoTracksToken_;
-    edm::EDGetTokenT<std::vector<reco::ForwardProton>> recoProtonsToken_;
+    edm::EDGetTokenT<std::vector<reco::ForwardProton>> recoProtonsTokenSingleRP_, recoProtonsTokenMultiRP_;
 
     unsigned int referenceRPDecId_45, referenceRPDecId_56;
 
@@ -506,9 +506,10 @@ class PPXZGeneratorValidation : public edm::one::EDAnalyzer<>
 //----------------------------------------------------------------------------------------------------
 
 PPXZGeneratorValidation::PPXZGeneratorValidation( const edm::ParameterSet& iConfig ) :
-  hepMCToken_( consumes< edm::HepMCProduct >( iConfig.getParameter<edm::InputTag>( "hepMCTag" ) ) ),
-  recoTracksToken_( consumes< std::vector<CTPPSLocalTrackLite> >( iConfig.getParameter<edm::InputTag>( "recoTracksTag" ) ) ),
-  recoProtonsToken_( consumes<std::vector<reco::ForwardProton>>(iConfig.getParameter<edm::InputTag>("recoProtonsTag")) ),
+  hepMCToken_( consumes< edm::HepMCProduct >( iConfig.getParameter<edm::InputTag>( "tagHepMC" ) ) ),
+  recoTracksToken_( consumes< std::vector<CTPPSLocalTrackLite> >( iConfig.getParameter<edm::InputTag>( "tagRecoTracks" ) ) ),
+  recoProtonsTokenSingleRP_( consumes<std::vector<reco::ForwardProton>>(iConfig.getParameter<edm::InputTag>("tagRecoProtonsSingleRP")) ),
+  recoProtonsTokenMultiRP_( consumes<std::vector<reco::ForwardProton>>(iConfig.getParameter<edm::InputTag>("tagRecoProtonsMultiRP")) ),
   referenceRPDecId_45(iConfig.getParameter<unsigned int>("referenceRPDecId_45")),
   referenceRPDecId_56(iConfig.getParameter<unsigned int>("referenceRPDecId_56")),
   outputFile( iConfig.getParameter<std::string>("outputFile") )
@@ -532,8 +533,11 @@ void PPXZGeneratorValidation::analyze(const edm::Event& iEvent, const edm::Event
   edm::Handle< std::vector<CTPPSLocalTrackLite> > hRecoTracks;
   iEvent.getByToken(recoTracksToken_, hRecoTracks);
 
-  edm::Handle< std::vector<reco::ForwardProton> > hRecoProtons;
-  iEvent.getByToken(recoProtonsToken_, hRecoProtons);
+  edm::Handle< std::vector<reco::ForwardProton> > hRecoProtonsSingleRP;
+  iEvent.getByToken(recoProtonsTokenSingleRP_, hRecoProtonsSingleRP);
+
+  edm::Handle< std::vector<reco::ForwardProton> > hRecoProtonsMultiRP;
+  iEvent.getByToken(recoProtonsTokenMultiRP_, hRecoProtonsMultiRP);
 
   // process HepMC record
   CLHEP::HepLorentzVector momentum_p1, momentum_p2, momentum_X, momentum_X_pr1, momentum_X_pr2, momentum_Z, momentum_l_pl, momentum_l_mi;
@@ -593,31 +597,31 @@ void PPXZGeneratorValidation::analyze(const edm::Event& iEvent, const edm::Event
   reco::ForwardProton rec_pr_multi_45; rec_pr_multi_45.setValidFit(false);
   reco::ForwardProton rec_pr_multi_56; rec_pr_multi_56.setValidFit(false);
 
-  for (const auto &rec_pr : *hRecoProtons)
+  for (const auto &rec_pr : *hRecoProtonsSingleRP)
   {
     if (! rec_pr.validFit())
       continue;
 
-    if (rec_pr.method() == reco::ForwardProton::ReconstructionMethod::singleRP)
-    {
-      CTPPSDetId rpId((*rec_pr.contributingLocalTracks().begin())->getRPId());
-      unsigned int rpDecId = 100*rpId.arm() + 10*rpId.station() + rpId.rp();
+    CTPPSDetId rpId((*rec_pr.contributingLocalTracks().begin())->getRPId());
+    unsigned int rpDecId = 100*rpId.arm() + 10*rpId.station() + rpId.rp();
 
-      if (rpDecId == referenceRPDecId_45)
-        rec_pr_single_45 = rec_pr;
+    if (rpDecId == referenceRPDecId_45)
+      rec_pr_single_45 = rec_pr;
 
-      if (rpDecId == referenceRPDecId_56)
-        rec_pr_single_56 = rec_pr;
-    }
+    if (rpDecId == referenceRPDecId_56)
+      rec_pr_single_56 = rec_pr;
+  }
 
-    if (rec_pr.method() == reco::ForwardProton::ReconstructionMethod::multiRP)
-    {
-      if (rec_pr.lhcSector() == reco::ForwardProton::LHCSector::sector45)
-        rec_pr_multi_45 = rec_pr;
+  for (const auto &rec_pr : *hRecoProtonsMultiRP)
+  {
+    if (! rec_pr.validFit())
+      continue;
 
-      if (rec_pr.lhcSector() == reco::ForwardProton::LHCSector::sector56)
-        rec_pr_multi_56 = rec_pr;
-    }
+    if (rec_pr.lhcSector() == reco::ForwardProton::LHCSector::sector45)
+      rec_pr_multi_45 = rec_pr;
+
+    if (rec_pr.lhcSector() == reco::ForwardProton::LHCSector::sector56)
+      rec_pr_multi_56 = rec_pr;
   }
 
   // fill plots
@@ -625,8 +629,10 @@ void PPXZGeneratorValidation::analyze(const edm::Event& iEvent, const edm::Event
     rec_pr_single_45, rec_pr_single_56, rec_pr_multi_45, rec_pr_multi_56);
 
   if (protonTrackIn45 && protonTrackIn56)
+  {
     plotsAfterSimulation.fill(momentum_p1, momentum_p2, momentum_X, momentum_X_pr1, momentum_X_pr2, momentum_Z, momentum_l_pl, momentum_l_mi,
       rec_pr_single_45, rec_pr_single_56, rec_pr_multi_45, rec_pr_multi_56);
+  }
 }
 
 //----------------------------------------------------------------------------------------------------
