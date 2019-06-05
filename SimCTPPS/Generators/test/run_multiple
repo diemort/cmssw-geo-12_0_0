@@ -9,12 +9,22 @@ base_dir="$cwd"
 
 function RunOne()
 {
-	dir="$baseDir/m_X_$mass/xangle_$xangle"
-	eos_dir="/eos/cms/store/group/phys_pps/ppxz/$baseDir/m_X_$mass/xangle_$xangle"
+	version="version2"
+
+	dir="output/$version/$baseDir/m_X_$mass/xangle_$xangle"
+	eos_dir="/eos/cms/store/group/phys_pps/ppxz/$version/$baseDir/m_X_$mass/xangle_$xangle"
+
 	echo "* $dir"
 
 	mkdir -p "$dir"
 	eos mkdir -p "$eos_dir"
+
+	dir_settings="settings/2017_preTS2"
+
+	cp $dir_settings/*.* "$dir"
+
+	RD_base=$(pwd -P)
+	RD_base=${RD_base#*/src/}
 
 	cat "template_cfg.py"|sed "\
 			s|\$mass|$mass|g;\
@@ -23,6 +33,7 @@ function RunOne()
 			s|\$eos_dir|$eos_dir|g;\
 			s|\$save_ntuples|$save_ntuples|g;\
 			s|\$settings_function|$settingsFunction|g;\
+			s|\$RD|$RD_base/$dir|g;\
 		" > "$dir/cfg.py"
 
 	cat "template_job"|sed "\
@@ -72,25 +83,25 @@ function RunMultiple()
 
 	#echo "+JobBatchName = \"$output_dir\""
 
-	echo "requirements = (OpSysAndVer =?= \"SLCern6\")"
+	echo "requirements = (OpSysAndVer =?= \"CentOS7\")"
 
 ) > "$sub_script"
 
 #----------------------------------------------------------------------------------------------------
 
 masses=(
-	#800
-	#1000
-	#1200
-	#1400
-	#1600
+	800
+	1000
+	1200
+	1400
+	1600
 )
 
-masses=()
-for mass in {780..1650..60}
-do
-	masses+=($mass)
-done
+#masses=()
+#for mass in {780..1650..60}
+#do
+#	masses+=($mass)
+#done
 
 xangles=(
 	120
@@ -99,14 +110,14 @@ xangles=(
 	150
 )
 
-n_events=400000
-#n_events=100000
+#n_events=400000
+n_events=100000
 #n_events=4000
 
 save_ntuples="False"
 
 RunMultiple "Z" "UseSettingsZ"
-RunMultiple "gamma" "UseSettingsGamma"
+#RunMultiple "gamma" "UseSettingsGamma"
 
 echo "To submit:"
 echo "    condor_submit \"$sub_script\""

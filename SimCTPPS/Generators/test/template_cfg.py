@@ -1,7 +1,16 @@
 import FWCore.ParameterSet.Config as cms
 
 from Configuration.StandardSequences.Eras import eras
-process = cms.Process('CTPPSFastSimulation', eras.ctpps_2016)
+process = cms.Process('CTPPSDirectSimulation', eras.ctpps_2016)
+
+# load common code
+process.load("direct_simu_reco_cff")
+from customisation_cff import *
+SetDefaults(process)
+UseCrossingAngle($xangle, process)
+
+process.ctppsRPAlignmentCorrectionsDataESSourceXML.MisalignedFiles = ["$RD/alignment.xml"]
+process.ctppsRPAlignmentCorrectionsDataESSourceXML.RealFiles = ["$RD/alignment.xml"]
 
 # minimal logger settings
 process.MessageLogger = cms.Service("MessageLogger",
@@ -13,16 +22,11 @@ process.MessageLogger = cms.Service("MessageLogger",
 )
 
 # number of events
-process.source = cms.Source("EmptySource")
-
 process.maxEvents = cms.untracked.PSet(
   input = cms.untracked.int32($n_events)
 )
 
-# particle-data table
-process.load("SimGeneral.HepPDTESSource.pythiapdt_cfi")
-
-# particle generator
+# redefine particle generator
 process.load("SimCTPPS.Generators.PPXZGenerator_cfi")
 process.generator.verbosity = 0
 process.generator.m_X = $mass
@@ -30,147 +34,47 @@ process.generator.m_XZ_min = $mass + 100
 process.generator.m_X_pr1 = $mass - 100
 process.generator.decayX = True
 
-# random seeds
-process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService",
-    sourceSeed = cms.PSet(initialSeed =cms.untracked.uint32(98765)),
-    generator = cms.PSet(initialSeed = cms.untracked.uint32(98766)),
-    SmearingGenerator = cms.PSet(initialSeed =cms.untracked.uint32(3849)),
-    beamDivergenceVtxGenerator = cms.PSet(initialSeed =cms.untracked.uint32(3849))
-)
-
-# geometry
-process.load("Geometry.VeryForwardGeometry.geometryRPFromDD_2017_cfi")
-del(process.XMLIdealGeometryESSource_CTPPS.geomXMLFiles[-1])
-process.XMLIdealGeometryESSource_CTPPS.geomXMLFiles.append("Validation/CTPPS/test_2017/RP_Dist_Beam_Cent.xml")
-
-# beam-smearing settings
-process.load("IOMC.EventVertexGenerators.beamDivergenceVtxGenerator_cfi")
-process.beamDivergenceVtxGenerator.src = cms.InputTag("generator", "unsmeared")
-
-process.beamDivergenceVtxGenerator.simulateBeamDivergence = True
-process.beamDivergenceVtxGenerator.simulateVertex = True
-
-# values in rad
-process.beamDivergenceVtxGenerator.beamDivergenceX = 20E-6 # TODO: updated with experimental value
-process.beamDivergenceVtxGenerator.beamDivergenceY = 20E-6
-
-# values in cm
-process.beamDivergenceVtxGenerator.vertexMeanX = 0.
-process.beamDivergenceVtxGenerator.vertexMeanY = 0.
-process.beamDivergenceVtxGenerator.vertexMeanZ = 0.
-
-process.beamDivergenceVtxGenerator.vertexSigmaX = 10E-4
-process.beamDivergenceVtxGenerator.vertexSigmaY = 10E-4
-process.beamDivergenceVtxGenerator.vertexSigmaZ = 5
-
-# fast simulation
-process.load('SimCTPPS.OpticsParameterisation.year_2017_OF.ctppsFastProtonSimulation_cfi')
-process.ctppsFastProtonSimulation.verbosity = 0
-process.ctppsFastProtonSimulation.hepMCTag = cms.InputTag('beamDivergenceVtxGenerator')
-process.ctppsFastProtonSimulation.produceScoringPlaneHits = False
-process.ctppsFastProtonSimulation.produceRecHits = True
-process.ctppsFastProtonSimulation.useEmpiricalApertures = True
-process.ctppsFastProtonSimulation.checkApertures = False
-process.ctppsFastProtonSimulation.produceHitsRelativeToBeam = False
-process.ctppsFastProtonSimulation.roundToPitch = True
-
-process.ctppsFastProtonSimulation.xangle = $xangle
-
-if (process.ctppsFastProtonSimulation.xangle == 150):
-  process.ctppsFastProtonSimulation.empiricalAperture45_xi0 = 0.158
-  process.ctppsFastProtonSimulation.empiricalAperture56_xi0 = 0.20
-
-if (process.ctppsFastProtonSimulation.xangle == 140):
-  process.ctppsFastProtonSimulation.empiricalAperture45_xi0 = 0.153
-  process.ctppsFastProtonSimulation.empiricalAperture56_xi0 = 0.19
-
-if (process.ctppsFastProtonSimulation.xangle == 130):
-  process.ctppsFastProtonSimulation.empiricalAperture45_xi0 = 0.148
-  process.ctppsFastProtonSimulation.empiricalAperture56_xi0 = 0.18
-
-if (process.ctppsFastProtonSimulation.xangle == 120):
-  process.ctppsFastProtonSimulation.empiricalAperture45_xi0 = 0.143
-  process.ctppsFastProtonSimulation.empiricalAperture56_xi0 = 0.17
-
-# effective value to reproduce real RP resolution
-process.ctppsFastProtonSimulation.pitchStrips = 66E-3 * 12 / 19
-process.ctppsFastProtonSimulation.pitchPixelsHor = cms.double(60e-3)
-process.ctppsFastProtonSimulation.pitchPixelsVer = cms.double(80e-3)
-
-# local track reco
-process.load('RecoCTPPS.TotemRPLocal.totemRPUVPatternFinder_cfi')
-process.totemRPUVPatternFinder.tagRecHit = cms.InputTag('ctppsFastProtonSimulation')
-
-process.load('RecoCTPPS.TotemRPLocal.totemRPLocalTrackFitter_cfi')
-
-process.load("RecoCTPPS.PixelLocal.ctppsPixelLocalTracks_cfi")
-process.ctppsPixelLocalTracks.label = "ctppsFastProtonSimulation"
-
-process.load('RecoCTPPS.TotemRPLocal.ctppsLocalTrackLiteProducer_cff')
-process.ctppsLocalTrackLiteProducer.includeDiamonds = False
-
-# proton reconstruction
-process.load("RecoCTPPS.ProtonReconstruction.year_2017_OF.ctppsProtonReconstructionOF_cfi")
-process.ctppsProtonReconstructionOFDB.tagLocalTrackLite = cms.InputTag('ctppsLocalTrackLiteProducer')
-process.ctppsProtonReconstructionOFDB.applyExperimentalAlignment = False
-
-process.ctppsLHCInfoESSource = cms.ESSource("CTPPSLHCInfoESSource",
-  beamEnergy = cms.double(6500),
-  xangle = cms.double($xangle)
-)
-
-# XY distribution plotter
+# distribution plotter
 process.ctppsTrackDistributionPlotter = cms.EDAnalyzer("CTPPSTrackDistributionPlotter",
-  tracksTag = cms.InputTag("ctppsLocalTrackLiteProducer"),
+  tagTracks = cms.InputTag("ctppsLocalTrackLiteProducer"),
   outputFile = cms.string("output_shape_smear.root")
 )
-
-# generator plots
-process.load("SimCTPPS.Generators.PPXZGeneratorValidation_cfi")
-process.ppxzGeneratorValidation.hepMCTag = cms.InputTag("generator", "unsmeared")
-process.ppxzGeneratorValidation.recoTracksTag = cms.InputTag("ctppsLocalTrackLiteProducer")
-process.ppxzGeneratorValidation.recoProtonsTag = cms.InputTag("ctppsProtonReconstructionOFDB")
-process.ppxzGeneratorValidation.referenceRPDecId_45 = cms.uint32(23)
-process.ppxzGeneratorValidation.referenceRPDecId_56 = cms.uint32(123)
-process.ppxzGeneratorValidation.outputFile = "ppxzGeneratorValidation.root"
 
 # acceptance plotter
 process.ctppsAcceptancePlotter = cms.EDAnalyzer("CTPPSAcceptancePlotter",
   tagHepMC = cms.InputTag("generator", "unsmeared"),
   tagTracks = cms.InputTag("ctppsLocalTrackLiteProducer"),
 
-  rpId_45_F = cms.uint32(23),
-  rpId_45_N = cms.uint32(3),
-  rpId_56_N = cms.uint32(103),
-  rpId_56_F = cms.uint32(123),
+  rpId_45_F = process.rpIds.rp_45_F,
+  rpId_45_N = process.rpIds.rp_45_N,
+  rpId_56_N = process.rpIds.rp_56_N,
+  rpId_56_F = process.rpIds.rp_56_F,
 
   outputFile = cms.string("acceptance.root")
 )
 
-# reconstruction validation
-process.load("Validation.CTPPS.ctppsProtonReconstructionValidator_cfi")
-process.ctppsProtonReconstructionValidator.tagHepMCBeforeSmearing = cms.InputTag("generator", "unsmeared")
-process.ctppsProtonReconstructionValidator.tagHepMCAfterSmearing = cms.InputTag("beamDivergenceVtxGenerator")
-process.ctppsProtonReconstructionValidator.tagRecoProtons = cms.InputTag("ctppsProtonReconstructionOFDB")
+# generator plots
+process.load("SimCTPPS.Generators.PPXZGeneratorValidation_cfi")
+process.ppxzGeneratorValidation.tagHepMC = cms.InputTag("generator", "unsmeared")
+process.ppxzGeneratorValidation.tagRecoTracks = cms.InputTag("ctppsLocalTrackLiteProducer")
+process.ppxzGeneratorValidation.tagRecoProtonsSingleRP = cms.InputTag("ctppsProtons", "singleRP")
+process.ppxzGeneratorValidation.tagRecoProtonsMultiRP = cms.InputTag("ctppsProtons", "multiRP")
+process.ppxzGeneratorValidation.referenceRPDecId_45 = process.rpIds.rp_45_F
+process.ppxzGeneratorValidation.referenceRPDecId_56 = process.rpIds.rp_56_F
+process.ppxzGeneratorValidation.outputFile = "ppxzGeneratorValidation.root"
 
 # processing path
 process.p = cms.Path(
-    process.generator
+  process.generator
+  * process.beamDivergenceVtxGenerator
+  * process.ctppsDirectProtonSimulation
 
-    * process.beamDivergenceVtxGenerator
+  * process.reco_local
+  * process.ctppsProtons
 
-    * process.ctppsFastProtonSimulation
-
-    * process.totemRPUVPatternFinder
-    * process.totemRPLocalTrackFitter
-    * process.ctppsPixelLocalTracks
-    * process.ctppsLocalTrackLiteProducer
-    * process.ctppsProtonReconstructionOFDB
-
-    * process.ctppsTrackDistributionPlotter
-    * process.ctppsAcceptancePlotter
-    * process.ppxzGeneratorValidation
-    * process.ctppsProtonReconstructionValidator
+  * process.ctppsTrackDistributionPlotter
+  * process.ctppsAcceptancePlotter
+  * process.ppxzGeneratorValidation
 )
 
 
@@ -185,7 +89,7 @@ process.output = cms.OutputModule("PoolOutputModule",
     'drop *',
     'keep edmHepMCProduct_*_*_*',
     'keep CTPPSLocalTrackLites_*_*_*',
-    'keep recoProtonTracks_*_*_*'
+    'keep recoForwardProtons_*_*_*'
   )
 )
 
