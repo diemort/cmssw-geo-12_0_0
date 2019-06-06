@@ -96,8 +96,6 @@ class CTPPSDirectProtonSimulation : public edm::stream::EDProducer<>
     double pitchPixelsHor_;
     double pitchPixelsVer_;
 
-    std::vector<unsigned int> rpsWith2By2Pixels_;
-
     unsigned int verbosity_;
 
     // ------------ internal parameters ------------
@@ -130,8 +128,6 @@ CTPPSDirectProtonSimulation::CTPPSDirectProtonSimulation( const edm::ParameterSe
 
   pitchPixelsHor_( iConfig.getParameter<double>( "pitchPixelsHor" ) ),
   pitchPixelsVer_( iConfig.getParameter<double>( "pitchPixelsVer" ) ),
-
-  rpsWith2By2Pixels_( iConfig.getParameter<std::vector<unsigned int>>( "rpsWith2By2Pixels" ) ),
 
   verbosity_( iConfig.getUntrackedParameter<unsigned int>( "verbosity", 0 ) )
 {
@@ -442,7 +438,7 @@ void CTPPSDirectProtonSimulation::processProton(const HepMC::GenVertex* in_vtx, 
             << " mm, y = " << h_loc.y() << " mm, z = " << h_loc.z() << " mm" << std::endl;
         }
 
-        bool module3By2 = (find(rpsWith2By2Pixels_.begin(), rpsWith2By2Pixels_.end(), rpDecId) == rpsWith2By2Pixels_.end());
+        bool module3By2 = (geometry.getSensor(detIdInt)->sensorType() != DDD_CTPPS_PIXELS_SENSOR_TYPE_2x2);
         if (checkIsHit_ && !CTPPSPixelTopology::isPixelHit(h_loc.x(), h_loc.y(), module3By2))
           continue;
 
@@ -499,7 +495,6 @@ void CTPPSDirectProtonSimulation::fillDescriptions( edm::ConfigurationDescriptio
 
   desc.add<double>("pitchPixelsHor", 100.e-3)->setComment("x in local coordinates, in mm");
   desc.add<double>("pitchPixelsVer", 150.e-3)->setComment("y in local coordinates, in mm");
-  desc.add<std::vector<unsigned int>>("rpsWith2By2Pixels", std::vector<unsigned int>())->setComment("list of decimal ids of RPs containting 2x2 pixel modules");
 
   descriptions.add("ctppsDirectProtonSimulation", desc);
 }
