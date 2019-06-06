@@ -31,6 +31,9 @@
 #include "CondFormats/CTPPSReadoutObjects/interface/CTPPSBeamParameters.h"
 #include "CondFormats/DataRecord/interface/CTPPSBeamParametersRcd.h"
 
+#include "CondFormats/RunInfo/interface/LHCInfo.h"
+#include "CondFormats/DataRecord/interface/LHCInfoRcd.h"
+
 #include "Geometry/VeryForwardGeometryBuilder/interface/CTPPSGeometry.h"
 #include "Geometry/Records/interface/VeryForwardMisalignedGeometryRecord.h"
 #include "Geometry/VeryForwardRPTopology/interface/RPTopology.h"
@@ -55,7 +58,7 @@ class CTPPSDirectProtonSimulation : public edm::stream::EDProducer<>
     void produce( edm::Event&, const edm::EventSetup& ) override;
 
     void processProton(const HepMC::GenVertex* in_vtx, const HepMC::GenParticle* in_trk,
-      const CTPPSGeometry &geometry, const CTPPSBeamParameters &beamParameters,
+      const CTPPSGeometry &geometry, const LHCInfo &lhcInfo, const CTPPSBeamParameters &beamParameters,
       const LHCInterpolatedOpticalFunctionsSetCollection &opticalFunctions,
       std::vector<CTPPSLocalTrackLite> &out_tracks,
 
@@ -71,6 +74,7 @@ class CTPPSDirectProtonSimulation : public edm::stream::EDProducer<>
     // ------------ config file parameters ------------
 
     /// input
+    std::string lhcInfoLabel_;
     std::string opticsLabel_;
 
     edm::EDGetTokenT<edm::HepMCProduct> hepMCToken_;
@@ -83,8 +87,8 @@ class CTPPSDirectProtonSimulation : public edm::stream::EDProducer<>
     bool checkApertures_;
 
     bool useEmpiricalApertures_;
-    double empiricalAperture45_xi0_, empiricalAperture45_a_;
-    double empiricalAperture56_xi0_, empiricalAperture56_a_;
+    double empiricalAperture45_xi0_int_, empiricalAperture45_xi0_slp_, empiricalAperture45_a_int_, empiricalAperture45_a_slp_;
+    double empiricalAperture56_xi0_int_, empiricalAperture56_xi0_slp_, empiricalAperture56_a_int_, empiricalAperture56_a_slp_;
 
     bool produceHitsRelativeToBeam_;
     bool roundToPitch_;
@@ -107,6 +111,7 @@ class CTPPSDirectProtonSimulation : public edm::stream::EDProducer<>
 //----------------------------------------------------------------------------------------------------
 
 CTPPSDirectProtonSimulation::CTPPSDirectProtonSimulation( const edm::ParameterSet& iConfig ) :
+  lhcInfoLabel_(iConfig.getParameter<std::string>("lhcInfoLabel")),
   opticsLabel_(iConfig.getParameter<std::string>("opticsLabel")),
   hepMCToken_( consumes<edm::HepMCProduct>( iConfig.getParameter<edm::InputTag>( "hepMCTag" ) ) ),
 
@@ -114,10 +119,14 @@ CTPPSDirectProtonSimulation::CTPPSDirectProtonSimulation( const edm::ParameterSe
   produceRecHits_( iConfig.getParameter<bool>( "produceRecHits" ) ),
 
   useEmpiricalApertures_( iConfig.getParameter<bool>( "useEmpiricalApertures" ) ),
-  empiricalAperture45_xi0_( iConfig.getParameter<double>( "empiricalAperture45_xi0" ) ),
-  empiricalAperture45_a_( iConfig.getParameter<double>( "empiricalAperture45_a" ) ),
-  empiricalAperture56_xi0_( iConfig.getParameter<double>( "empiricalAperture56_xi0" ) ),
-  empiricalAperture56_a_( iConfig.getParameter<double>( "empiricalAperture56_a" ) ),
+  empiricalAperture45_xi0_int_( iConfig.getParameter<double>( "empiricalAperture45_xi0_int" ) ),
+  empiricalAperture45_xi0_slp_( iConfig.getParameter<double>( "empiricalAperture45_xi0_slp" ) ),
+  empiricalAperture45_a_int_( iConfig.getParameter<double>( "empiricalAperture45_a_int" ) ),
+  empiricalAperture45_a_slp_( iConfig.getParameter<double>( "empiricalAperture45_a_slp" ) ),
+  empiricalAperture56_xi0_int_( iConfig.getParameter<double>( "empiricalAperture56_xi0_int" ) ),
+  empiricalAperture56_xi0_slp_( iConfig.getParameter<double>( "empiricalAperture56_xi0_slp" ) ),
+  empiricalAperture56_a_int_( iConfig.getParameter<double>( "empiricalAperture56_a_int" ) ),
+  empiricalAperture56_a_slp_( iConfig.getParameter<double>( "empiricalAperture56_a_slp" ) ),
 
   produceHitsRelativeToBeam_( iConfig.getParameter<bool>( "produceHitsRelativeToBeam" ) ),
   roundToPitch_( iConfig.getParameter<bool>( "roundToPitch" ) ),
@@ -158,6 +167,9 @@ void CTPPSDirectProtonSimulation::produce( edm::Event& iEvent, const edm::EventS
   iEvent.getByToken(hepMCToken_, hepmc_prod);
 
   // get conditions
+  edm::ESHandle<LHCInfo> hLHCInfo;
+  iSetup.get<LHCInfoRcd>().get(lhcInfoLabel_, hLHCInfo);
+
   edm::ESHandle<CTPPSBeamParameters> hBeamParameters;
   iSetup.get<CTPPSBeamParametersRcd>().get(hBeamParameters);
 
@@ -196,7 +208,7 @@ void CTPPSDirectProtonSimulation::produce( edm::Event& iEvent, const edm::EventS
       if ( part->status() != 1 && part->status() < 83 )
         continue;
 
-      processProton(vtx, part, *geometry, *hBeamParameters, *hOpticalFunctions,
+      processProton(vtx, part, *geometry, *hLHCInfo, *hBeamParameters, *hOpticalFunctions,
           *pTracks, *pStripRecHits, *pPixelRecHits, *pDiamondRecHits,
           *pStripRecHitsPerParticle, *pPixelRecHitsPerParticle, *pDiamondRecHitsPerParticle
         );
@@ -221,7 +233,7 @@ void CTPPSDirectProtonSimulation::produce( edm::Event& iEvent, const edm::EventS
 //----------------------------------------------------------------------------------------------------
 
 void CTPPSDirectProtonSimulation::processProton(const HepMC::GenVertex* in_vtx, const HepMC::GenParticle* in_trk,
-  const CTPPSGeometry &geometry, const CTPPSBeamParameters &beamParameters,
+  const CTPPSGeometry &geometry, const LHCInfo &lhcInfo, const CTPPSBeamParameters &beamParameters,
   const LHCInterpolatedOpticalFunctionsSetCollection &opticalFunctions,
   std::vector<CTPPSLocalTrackLite> &out_tracks, edm::DetSetVector<TotemRPRecHit>& out_strip_hits,
   edm::DetSetVector<CTPPSPixelRecHit> &out_pixel_hits, edm::DetSetVector<CTPPSDiamondRecHit> &out_diamond_hits,
@@ -247,7 +259,8 @@ void CTPPSDirectProtonSimulation::processProton(const HepMC::GenVertex* in_vtx, 
   double z_sign;
   double beamMomentum = 0.;
   double xangle = 0.;
-  double empiricalAperture_xi0, empiricalAperture_a;
+  double empiricalAperture_xi0_int, empiricalAperture_xi0_slp;
+  double empiricalAperture_a_int, empiricalAperture_a_slp;
 
   if (mom_lhc.z() < 0)  // sector 45
   {
@@ -255,15 +268,19 @@ void CTPPSDirectProtonSimulation::processProton(const HepMC::GenVertex* in_vtx, 
     z_sign = -1;
     beamMomentum = beamParameters.getBeamMom45();
     xangle = beamParameters.getHalfXangleX45();
-    empiricalAperture_xi0 = empiricalAperture45_xi0_;
-    empiricalAperture_a = empiricalAperture45_a_;
+    empiricalAperture_xi0_int = empiricalAperture45_xi0_int_;
+    empiricalAperture_xi0_slp = empiricalAperture45_xi0_slp_;
+    empiricalAperture_a_int = empiricalAperture45_a_int_;
+    empiricalAperture_a_slp = empiricalAperture45_a_slp_;
   } else {  // sector 56
     arm = 1;
     z_sign = +1;
     beamMomentum = beamParameters.getBeamMom56();
     xangle = beamParameters.getHalfXangleX56();
-    empiricalAperture_xi0 = empiricalAperture56_xi0_;
-    empiricalAperture_a = empiricalAperture56_a_;
+    empiricalAperture_xi0_int = empiricalAperture56_xi0_int_;
+    empiricalAperture_xi0_slp = empiricalAperture56_xi0_slp_;
+    empiricalAperture_a_int = empiricalAperture56_a_int_;
+    empiricalAperture_a_slp = empiricalAperture56_a_slp_;
   }
 
   // calculate kinematics for optics parametrisation
@@ -283,7 +300,11 @@ void CTPPSDirectProtonSimulation::processProton(const HepMC::GenVertex* in_vtx, 
   // check empirical aperture
   if (useEmpiricalApertures_)
   {
-    const double xi_th = empiricalAperture_xi0 + th_x_phys * empiricalAperture_a;
+    const auto &xangle = lhcInfo.crossingAngle();
+    const double xi_th =
+      (empiricalAperture_xi0_int + xangle * empiricalAperture_xi0_slp)
+      + (empiricalAperture_a_int + xangle * empiricalAperture_a_slp) * th_x_phys;
+
     if (xi > xi_th)
     {
       if (verbosity_)
@@ -477,16 +498,23 @@ void CTPPSDirectProtonSimulation::fillDescriptions( edm::ConfigurationDescriptio
   edm::ParameterSetDescription desc;
   desc.addUntracked<unsigned int>("verbosity", 0);
 
+  desc.add<std::string>("lhcInfoLabel", "")->setComment("label of the LHCInfo record");
   desc.add<std::string>("opticsLabel", "")->setComment("label of the optics records");
   desc.add<edm::InputTag>("hepMCTag", edm::InputTag("generator", "unsmeared"));
 
   desc.add<bool>("produceScoringPlaneHits", true);
   desc.add<bool>("produceRecHits", true);
+
   desc.add<bool>("useEmpiricalApertures", false);
-  desc.add<double>("empiricalAperture45_xi0", 0.);
-  desc.add<double>("empiricalAperture45_a", 0.);
-  desc.add<double>("empiricalAperture56_xi0", 0.);
-  desc.add<double>("empiricalAperture56_a", 0.);
+  desc.add<double>("empiricalAperture45_xi0_int", 0.);
+  desc.add<double>("empiricalAperture45_xi0_slp", 0.);
+  desc.add<double>("empiricalAperture45_a_int", 0.);
+  desc.add<double>("empiricalAperture45_a_slp", 0.);
+  desc.add<double>("empiricalAperture56_xi0_int", 0.);
+  desc.add<double>("empiricalAperture56_xi0_slp", 0.);
+  desc.add<double>("empiricalAperture56_a_int", 0.);
+  desc.add<double>("empiricalAperture56_a_slp", 0.);
+
   desc.add<bool>("produceHitsRelativeToBeam", false);
   desc.add<bool>("roundToPitch", true);
   desc.add<bool>("checkIsHit", true);
