@@ -55,9 +55,9 @@ config_2017 = cms.PSet(
   validityRange = cms.EventRange("0:min - 999999:max"),
 
   opticalFunctions = cms.VPSet(
-    cms.PSet( xangle = cms.double(120), fileName = cms.FileInPath("CalibPPS/ESProducers/data/optical_functions/2017/version3/120urad.root") ),
-    cms.PSet( xangle = cms.double(130), fileName = cms.FileInPath("CalibPPS/ESProducers/data/optical_functions/2017/version3/130urad.root") ),
-    cms.PSet( xangle = cms.double(140), fileName = cms.FileInPath("CalibPPS/ESProducers/data/optical_functions/2017/version3/140urad.root") )
+    cms.PSet( xangle = cms.double(120), fileName = cms.FileInPath("CalibPPS/ESProducers/data/optical_functions/2017/version4/120urad.root") ),
+    cms.PSet( xangle = cms.double(130), fileName = cms.FileInPath("CalibPPS/ESProducers/data/optical_functions/2017/version4/130urad.root") ),
+    cms.PSet( xangle = cms.double(140), fileName = cms.FileInPath("CalibPPS/ESProducers/data/optical_functions/2017/version4/140urad.root") )
   ),
 
   scoringPlanes = cms.VPSet(
@@ -106,7 +106,6 @@ from IOMC.EventVertexGenerators.beamDivergenceVtxGenerator_cfi import *
 from Validation.CTPPS.ctppsDirectProtonSimulation_cfi import *
 ctppsDirectProtonSimulation.verbosity = 0
 ctppsDirectProtonSimulation.hepMCTag = cms.InputTag('beamDivergenceVtxGenerator')
-ctppsDirectProtonSimulation.useEmpiricalApertures = True
 ctppsDirectProtonSimulation.roundToPitch = True
 ctppsDirectProtonSimulation.pitchStrips = 66E-3 * 12 / 19 # effective value to reproduce real RP resolution
 ctppsDirectProtonSimulation.pitchPixelsHor = 50E-3
@@ -114,6 +113,16 @@ ctppsDirectProtonSimulation.pitchPixelsVer = 80E-3
 ctppsDirectProtonSimulation.produceHitsRelativeToBeam = True
 ctppsDirectProtonSimulation.produceScoringPlaneHits = False
 ctppsDirectProtonSimulation.produceRecHits = True
+
+ctppsDirectProtonSimulation.useEmpiricalApertures = True
+ctppsDirectProtonSimulation.empiricalAperture45_xi0_int = 0.066
+ctppsDirectProtonSimulation.empiricalAperture45_xi0_slp = 3.54E-4
+ctppsDirectProtonSimulation.empiricalAperture45_a_int = +56
+ctppsDirectProtonSimulation.empiricalAperture45_a_slp = 0.38
+ctppsDirectProtonSimulation.empiricalAperture56_xi0_int = 0.062
+ctppsDirectProtonSimulation.empiricalAperture56_xi0_slp = 5.96E-4
+ctppsDirectProtonSimulation.empiricalAperture56_a_int = -39
+ctppsDirectProtonSimulation.empiricalAperture56_a_slp = 1.36
 
 # local reconstruction
 from RecoCTPPS.TotemRPLocal.totemRPLocalReconstruction_cff import *
