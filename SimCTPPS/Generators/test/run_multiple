@@ -9,17 +9,20 @@ base_dir="$cwd"
 
 function RunOne()
 {
-	version="version2"
+	tag="$version/$baseDir/m_X_$mass/xangle_$xangle/$period"
+	dir="output/$tag"
+	eos_dir="/eos/cms/store/group/phys_pps/ppxz/$tag"
 
-	dir="output/$version/$baseDir/m_X_$mass/xangle_$xangle"
-	eos_dir="/eos/cms/store/group/phys_pps/ppxz/$version/$baseDir/m_X_$mass/xangle_$xangle"
-
-	echo "* $dir"
+	echo "* $tag"
 
 	mkdir -p "$dir"
-	eos mkdir -p "$eos_dir"
+	
+	if [ "$save_ntuples" == "True" ]
+	then
+		mkdir -p "$eos_dir"
+	fi
 
-	dir_settings="settings/2017_preTS2"
+	dir_settings="settings/$period"
 
 	cp $dir_settings/*.* "$dir"
 
@@ -65,7 +68,10 @@ function RunMultiple()
 	do
 		for xangle in ${xangles[*]}
 		do
-			RunOne
+			for period in ${periods[*]}
+			do
+				RunOne
+			done
 		done
 	done
 }
@@ -89,19 +95,21 @@ function RunMultiple()
 
 #----------------------------------------------------------------------------------------------------
 
+version="version4"
+
 masses=(
-	800
-	1000
-	1200
-	1400
-	1600
+	#800
+	#1000
+	#1200
+	#1400
+	#1600
 )
 
-#masses=()
-#for mass in {780..1650..60}
-#do
-#	masses+=($mass)
-#done
+###   masses=()
+###   for mass in {780..1650..60}
+###   do
+###   	masses+=($mass)
+###   done
 
 xangles=(
 	120
@@ -110,14 +118,19 @@ xangles=(
 	150
 )
 
-#n_events=400000
-n_events=100000
-#n_events=4000
+periods=(
+	"2017_preTS2"
+	"2017_postTS2"
+)
 
-save_ntuples="False"
+n_events=400000
+#n_events=100000
+#n_events=10000
+
+save_ntuples="True"
 
 RunMultiple "Z" "UseSettingsZ"
-#RunMultiple "gamma" "UseSettingsGamma"
+RunMultiple "gamma" "UseSettingsGamma"
 
 echo "To submit:"
 echo "    condor_submit \"$sub_script\""

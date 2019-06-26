@@ -15,45 +15,50 @@ function CheckMultiple()
 	do
 		for xangle in ${xangles[*]}
 		do
-			dir="$baseDir/m_X_$mass/xangle_$xangle"
-			eos_dir="/eos/cms/store/group/phys_pps/ppxz/$baseDir/m_X_$mass/xangle_$xangle"
+			for period in ${periods[*]}
+			do
+				tag="$version/$baseDir/m_X_$mass/xangle_$xangle/$period"
+				dir="output/$tag"
+				eos_dir="/eos/cms/store/group/phys_pps/ppxz/$tag"
 
-			error="n"
+				error="n"
 
-			if [ ! -f "$dir/success" ]
-			then
-				error="y"
-			fi
+				if [ ! -f "$dir/success" ]
+				then
+					error="y"
+				fi
 
-			if [ ! -f "$eos_dir/ntuple.root" ]
-			then
-				size="0"
-			else
-				size=$(ls -l "$eos_dir/ntuple.root" |awk '{print $5}')
-			fi
+				if [ ! -f "$eos_dir/ntuple.root" ]
+				then
+					size="0"
+				else
+					size=$(ls -l "$eos_dir/ntuple.root" |awk '{print $5}')
+				fi
 
-			if [ $size -lt 50000000 ]
-			then
-				error="y"
-			fi
+				if [ $size -lt 50000000 ]
+				then
+					error="y"
+				fi
 
-			if [ "$error" == "y" ]
-			then
-				echo "ERROR: $dir"
-			fi
-
+				if [ "$error" == "y" ]
+				then
+					echo "ERROR: $tag"
+				fi
+			done
 		done
 	done
 }
 
 #----------------------------------------------------------------------------------------------------
 
+version="version4"
+
 masses=(
-	#800
-	#1000
-	#1200
-	#1400
-	#1600
+	800
+	1000
+	1200
+	1400
+	1600
 )
 
 masses=()
@@ -69,9 +74,10 @@ xangles=(
 	150
 )
 
-n_events=400000
-#n_events=100000
-#n_events=4000
+periods=(
+	"2017_preTS2"
+	"2017_postTS2"
+)
 
 CheckMultiple "Z"
 CheckMultiple "gamma"
