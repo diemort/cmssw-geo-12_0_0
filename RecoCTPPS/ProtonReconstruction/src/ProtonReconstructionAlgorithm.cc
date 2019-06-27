@@ -226,9 +226,9 @@ reco::ForwardProton ProtonReconstructionAlgorithm::reconstructFromMultiRP(const 
 
   if (verbosity_)
     os
-      << "ProtonReconstructionAlgorithm::reconstructFromMultiRP(" << armId << ")" << std::endl
+      << "ProtonReconstructionAlgorithm::reconstructFromMultiRP(arm=" << armId << ")" << std::endl
       << "    initial estimate: xi_init = " << xi_init << ", th_x_init = " << th_x_init
-      << ", th_y_init = " << th_y_init << ", vtx_y_init = " << vtx_y_init << "." << std::endl;
+      << ", th_y_init = " << th_y_init << ", vtx_y_init = " << vtx_y_init << std::endl;
 
   // minimisation
   fitter_->Config().ParSettings(0).Set("xi", xi_init, 0.005);
@@ -255,7 +255,9 @@ reco::ForwardProton ProtonReconstructionAlgorithm::reconstructFromMultiRP(const 
       << ", th_x=" << params[1] << " +-" << result.Error(1)
       << ", th_y=" << params[2] << " +-" << result.Error(2)
       << ", vtx_y=" << params[3] << " +-" << result.Error(3)
-      << ", chiSq = " << result.Chi2() << std::endl;
+      << ", chiSq=" << result.Chi2()
+      << ", valid=" << result.IsValid()
+      << std::endl;
 
   // save reco candidate
   using FP = reco::ForwardProton;
@@ -305,7 +307,7 @@ reco::ForwardProton ProtonReconstructionAlgorithm::reconstructFromSingleRP(const
   CTPPSDetId rpId(track->getRPId());
 
   if (verbosity_)
-    os << "reconstructFromSingleRP(" << rpId.arm()*100 + rpId.station()*10 + rpId.rp() << ")" << std::endl;
+    os << "reconstructFromSingleRP(rp=" << rpId.arm()*100 + rpId.station()*10 + rpId.rp() << ")" << std::endl;
 
   // make sure optics is available for the track
   auto oit = m_rp_optics_.find(track->getRPId());
@@ -328,7 +330,7 @@ reco::ForwardProton ProtonReconstructionAlgorithm::reconstructFromSingleRP(const
   const double th_y_unc = th_y * sqrt( pow(track->getYUnc() / track->getY(), 2.) + pow(dL_y_dxi * xi_unc / L_y, 2.) );
 
   if (verbosity_)
-    os << "    xi = " << xi << " +- " << xi_unc << ", th_y = " << th_y << " +- " << th_y_unc << "." << std::endl;
+    os << "    xi = " << xi << " +- " << xi_unc << ", th_y = " << th_y << " +- " << th_y_unc << std::endl;
 
   using FP = reco::ForwardProton;
 
