@@ -20,6 +20,7 @@
 #include "DataFormats/ProtonReco/interface/ForwardProton.h"
 #include "DataFormats/ProtonReco/interface/ForwardProtonFwd.h"
 #include "DataFormats/CTPPSReco/interface/CTPPSLocalTrackLite.h"
+#include "DataFormats/CTPPSReco/interface/CTPPSLocalTrackLiteFwd.h"
 #include "DataFormats/Common/interface/DetSetVector.h"
 #include "DataFormats/CTPPSReco/interface/TotemRPRecHit.h"
 #include "DataFormats/CTPPSReco/interface/CTPPSPixelRecHit.h"
@@ -49,6 +50,8 @@ class CTPPSProtonReconstructionEfficiencyEstimator : public edm::one::EDAnalyzer
     edm::EDGetTokenT<std::map<int, edm::DetSetVector<TotemRPRecHit>>> tokenStripRecHitsPerParticle_;
     edm::EDGetTokenT<std::map<int, edm::DetSetVector<CTPPSPixelRecHit>>> tokenPixelRecHitsPerParticle_;
 
+    edm::EDGetTokenT<CTPPSLocalTrackLiteCollection> tracksToken_;
+
     edm::EDGetTokenT<reco::ForwardProtonCollection> tokenRecoProtonsMultiRP_;
 
     std::string lhcInfoLabel_;
@@ -64,14 +67,20 @@ class CTPPSProtonReconstructionEfficiencyEstimator : public edm::one::EDAnalyzer
     {
       std::unique_ptr<TProfile> p_eff_vs_xi;
 
+      std::unique_ptr<TH1D> h_n_part_acc_nr, h_n_part_acc_fr;
+
       PlotGroup() :
-        p_eff_vs_xi(new TProfile("", ";#xi_{simu};efficiency", 19, 0.015, 0.205))
+        p_eff_vs_xi(new TProfile("", ";#xi_{simu};efficiency", 19, 0.015, 0.205)),
+        h_n_part_acc_nr(new TH1D("", ";n particles in acceptance", 6, -0.5, +5.5)),
+        h_n_part_acc_fr(new TH1D("", ";n particles in acceptance", 6, -0.5, +5.5))
       {
       }
 
       void write() const
       {
         p_eff_vs_xi->Write("p_eff_vs_xi");
+        h_n_part_acc_nr->Write("h_n_part_acc_nr");
+        h_n_part_acc_fr->Write("h_n_part_acc_fr");
       }
     };
 
@@ -90,6 +99,7 @@ CTPPSProtonReconstructionEfficiencyEstimator::CTPPSProtonReconstructionEfficienc
   tokenHepMCAfterSmearing_(consumes<edm::HepMCProduct>(iConfig.getParameter<edm::InputTag>("tagHepMCAfterSmearing"))),
   tokenStripRecHitsPerParticle_(consumes<std::map<int, edm::DetSetVector<TotemRPRecHit>>>(iConfig.getParameter<edm::InputTag>("tagStripRecHitsPerParticle"))),
   tokenPixelRecHitsPerParticle_(consumes<std::map<int, edm::DetSetVector<CTPPSPixelRecHit>>>(iConfig.getParameter<edm::InputTag>("tagPixelRecHitsPerParticle"))),
+  tracksToken_(consumes<CTPPSLocalTrackLiteCollection>( iConfig.getParameter<edm::InputTag>( "tagTracks" ) ) ),
   tokenRecoProtonsMultiRP_ (consumes<reco::ForwardProtonCollection>(iConfig.getParameter<InputTag>("tagRecoProtonsMultiRP"))),
   lhcInfoLabel_(iConfig.getParameter<std::string>("lhcInfoLabel")),
 
@@ -118,7 +128,17 @@ CTPPSProtonReconstructionEfficiencyEstimator::CTPPSProtonReconstructionEfficienc
 
 void CTPPSProtonReconstructionEfficiencyEstimator::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
-  //printf("--------------------------------------------------\n");
+  bool verbosity = false;
+
+  const auto eid = iEvent.id().event();
+  //if (eid == 46 || eid == 741 || eid == 1649 || eid == 4223 || eid == 4279)
+  //  verbosity = true;
+
+  if (verbosity)
+  {
+    printf("--------------------------------------------------\n");
+    printf("event %llu\n", eid);
+  }
 
   // get conditions
   edm::ESHandle<LHCInfo> hLHCInfo;
@@ -135,6 +155,9 @@ void CTPPSProtonReconstructionEfficiencyEstimator::analyze(const edm::Event& iEv
   edm::Handle<std::map<int, edm::DetSetVector<CTPPSPixelRecHit>>> hPixelRecHitsPerParticle;
   iEvent.getByToken(tokenPixelRecHitsPerParticle_, hPixelRecHitsPerParticle);
 
+  edm::Handle<CTPPSLocalTrackLiteCollection> tracks;
+  iEvent.getByToken( tracksToken_, tracks );
+
   Handle<reco::ForwardProtonCollection> hRecoProtonsMultiRP;
   iEvent.getByToken(tokenRecoProtonsMultiRP_, hRecoProtonsMultiRP);
 
@@ -144,10 +167,10 @@ void CTPPSProtonReconstructionEfficiencyEstimator::analyze(const edm::Event& iEv
     unsigned int arm = 2;
     double xi = 0.;
     std::map<unsigned int, unsigned int> recHitsPerRP;
-    bool inAcceptance = false;
+    bool inAcceptanceNear=false, inAcceptanceFar=false, inAcceptance=false;
   };
 
-  std::map<int, ParticleInfo> particleInfo;
+  std::map<int, ParticleInfo> particleInfo; // barcode --> info
 
   // process HepMC
   for (auto it = hepMCEventAfterSmearing->particles_begin(); it != hepMCEventAfterSmearing->particles_end(); ++it)
@@ -204,10 +227,12 @@ void CTPPSProtonReconstructionEfficiencyEstimator::analyze(const edm::Event& iEv
     }
   }
 
+  std::map<unsigned int, bool> isStripRPNear, isStripRPFar;
+
   for (auto &pp : particleInfo)
   {
-    bool near_in_acceptance = false;
-    bool far_in_acceptance = false;
+    if (verbosity)
+      printf("* barcode=%i, arm=%u, xi=%.3f\n", pp.first, pp.second.arm, pp.second.xi);
 
     for (const auto &rpp : pp.second.recHitsPerRP)
     {
@@ -218,26 +243,58 @@ void CTPPSProtonReconstructionEfficiencyEstimator::analyze(const edm::Event& iEv
       if (rpId.subdetId() == CTPPSDetId::sdTrackingPixel)
         needed_rec_hits = 3;
 
+      unsigned int rpDecId = rpId.arm()*100 + rpId.station()*10 + rpId.rp();
+
+      if (rpId.subdetId() == CTPPSDetId::sdTrackingStrip)
+      {
+        if (rpDecId == rpDecId_near_[rpId.arm()]) isStripRPNear[rpId.arm()] = true;
+        if (rpDecId == rpDecId_far_[rpId.arm()]) isStripRPFar[rpId.arm()] = true;
+      }
+
       if (rpp.second >= needed_rec_hits)
       {
-        unsigned int rpDecId = rpId.arm()*100 + rpId.station()*10 + rpId.rp();
-
-        if (rpDecId == rpDecId_near_[rpId.arm()]) near_in_acceptance = true;
-        if (rpDecId == rpDecId_far_[rpId.arm()]) far_in_acceptance = true;
+        if (rpDecId == rpDecId_near_[rpId.arm()]) pp.second.inAcceptanceNear = true;
+        if (rpDecId == rpDecId_far_[rpId.arm()]) pp.second.inAcceptanceFar = true;
       }
+
+      if (verbosity)
+        printf("    RP %u: %u hits\n", rpDecId, rpp.second);
     }
 
-    pp.second.inAcceptance = near_in_acceptance && far_in_acceptance;
+    pp.second.inAcceptance = pp.second.inAcceptanceNear && pp.second.inAcceptanceFar;
 
-    //printf("barcode=%i, arm=%u, xi=%.3f, inAcceptance=%u\n", pp.first, pp.second.arm, pp.second.xi, pp.second.inAcceptance);
+    if (verbosity)
+    {
+      printf("    inAcceptance: near=%u, far=%u, global=%u\n", pp.second.inAcceptanceNear, pp.second.inAcceptanceFar, pp.second.inAcceptance);
+    }
   }
 
   // count particles in acceptance
-  std::map<unsigned int, unsigned int> nParticlesInAcceptance;
+  struct ArmCounter
+  {
+    unsigned int near=0, far=0, global=0;
+  };
+  std::map<unsigned int, ArmCounter> nParticlesInAcceptance;
   for (auto &pp : particleInfo)
   {
+    auto &counter = nParticlesInAcceptance[pp.second.arm];
+    if (pp.second.inAcceptanceNear)
+      counter.near++;
+    if (pp.second.inAcceptanceFar)
+      counter.far++;
     if (pp.second.inAcceptance)
-      nParticlesInAcceptance[pp.second.arm]++;
+      counter.global++;
+  }
+
+  // count reconstructed tracks
+  std::map<unsigned int, ArmCounter> nReconstructedTracks;
+  for (const auto &tr : *tracks)
+  {
+    CTPPSDetId rpId(tr.getRPId());
+    unsigned int rpDecId = rpId.arm()*100 + rpId.station()*10 + rpId.rp();
+
+    if (rpDecId == rpDecId_near_[rpId.arm()]) nReconstructedTracks[rpId.arm()].near++;
+    if (rpDecId == rpDecId_far_[rpId.arm()]) nReconstructedTracks[rpId.arm()].far++;
   }
 
   // count reconstructed protons
@@ -260,20 +317,39 @@ void CTPPSProtonReconstructionEfficiencyEstimator::analyze(const edm::Event& iEv
   for (unsigned int arm = 0; arm < 2; arm++)
   {
     const auto &npa = nParticlesInAcceptance[arm];
+    const auto &nrt = nReconstructedTracks[arm];
 
-    if (npa < 1)
+    if (verbosity)
+    {
+      printf("* arm %u: nRecoProtons=%u (tracks near=%u, far=%u), nAcc=%u (near=%u, far=%u)\n", arm,
+        nReconstructedProtons[arm], nReconstructedTracks[arm].near, nReconstructedTracks[arm].far,
+        npa.global, npa.near, npa.far);
+    }
+
+    // skip event if no track in global acceptance
+    if (npa.global < 1)
       continue;
 
-    const double eff = double(nReconstructedProtons[arm]) / npa;
+    const auto &p = plots_[arm][npa.global];
 
-    //printf("arm=%u: nReco=%u, nAcc=%u, eff=%.3f\n", arm, nReconstructedProtons[arm], npa, eff);
+    p.h_n_part_acc_nr->Fill(npa.near);
+    p.h_n_part_acc_fr->Fill(npa.far);
+
+    // skip events with some local reconstruction inefficiency
+    if (nrt.near != npa.near || nrt.far != npa.far)
+      continue;
+
+    const double eff = double(nReconstructedProtons[arm]) / npa.global;
+
+    if (verbosity)
+      printf("    eff=%.3f\n", eff);
 
     for (auto &pp : particleInfo)
     {
       if (pp.second.arm != arm || !pp.second.inAcceptance)
         continue;
 
-      plots_[arm][npa].p_eff_vs_xi->Fill(pp.second.xi, eff);
+      p.p_eff_vs_xi->Fill(pp.second.xi, eff);
     }
   }
 }
