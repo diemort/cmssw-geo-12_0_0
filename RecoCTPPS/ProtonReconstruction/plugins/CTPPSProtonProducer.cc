@@ -413,6 +413,8 @@ void CTPPSProtonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
             sel_tracks.push_back(CTPPSLocalTrackLiteRef(hTracks, i));
             sel_tracks.push_back(CTPPSLocalTrackLiteRef(hTracks, j));
 
+            CTPPSLocalTrackLiteRefVector sel_track_for_kin_reco = sel_tracks;
+
             // process timing-RP data
             double sw=0., swt=0.;
             for (const auto &ti : matched_timing_track_indices[pr_idx])
@@ -444,7 +446,7 @@ void CTPPSProtonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
               ssLog << std::endl << "    time = " << time << " +- " << time_unc << std::endl;
 
             // process tracking-RP data
-            reco::ForwardProton proton = algorithm_.reconstructFromMultiRP(sel_tracks, *hLHCInfo, ssLog);
+            reco::ForwardProton proton = algorithm_.reconstructFromMultiRP(sel_track_for_kin_reco, *hLHCInfo, ssLog);
 
             // save combined output
             proton.setContributingLocalTracks(sel_tracks);
