@@ -1,10 +1,13 @@
 import FWCore.ParameterSet.Config as cms
 
-from RecoCTPPS.ProtonReconstruction.ctppsProtons_cfi import *
+# import default alignment settings
+from CalibPPS.ESProducers.ctppsAlignment_cff import *
 
-# TODO: add alignment cff file for symmetry ?
-
+# import default optics settings
 from CalibPPS.ESProducers.ctppsOpticalFunctions_cff import *
+
+# import and adjust proton-reconstructions settings
+from RecoCTPPS.ProtonReconstruction.ctppsProtons_cfi import *
 ctppsProtons.lhcInfoLabel = ctppsLHCInfoLabel
 
 from Configuration.Eras.Modifier_ctpps_2016_cff import ctpps_2016
