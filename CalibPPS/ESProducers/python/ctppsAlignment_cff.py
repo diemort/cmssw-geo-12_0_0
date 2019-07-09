@@ -10,7 +10,7 @@ ctppsRPAlignmentCorrectionsDataESSourceXML.RealFiles = cms.vstring(
   #"CalibPPS/ESProducers/data/alignment/alignment_export_2019_03_18.5.xml",
   #"CalibPPS/ESProducers/data/alignment/alignment_export_2019_04_18.1.xml",
   #"CalibPPS/ESProducers/data/alignment/alignment_export_2019_05_09.1.xml",
-  "CalibPPS/ESProducers/data/alignment/alignment_export_2019_07_01.xml",
+  "CalibPPS/ESProducers/data/alignment/alignment_export_2019_07_08.xml",
 
   # alignment of timing RPs (diamonds and UFSDs)
   #"CalibPPS/ESProducers/data/alignment/timing_RP_2017_preTS2_v1.xml",
