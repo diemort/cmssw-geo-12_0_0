@@ -19,7 +19,8 @@ ctppsRPAlignmentCorrectionsDataESSourceXML.RealFiles = cms.vstring(
   #"CalibPPS/ESProducers/data/alignment/timing_RP_2017_postTS2_v1.xml",
   "CalibPPS/ESProducers/data/alignment/timing_RP_2017_postTS2_v2.xml",
   #"CalibPPS/ESProducers/data/alignment/timing_RP_2018_v1.xml"
-  "CalibPPS/ESProducers/data/alignment/timing_RP_2018_v2.xml"
+  #"CalibPPS/ESProducers/data/alignment/timing_RP_2018_v2.xml"
+  "CalibPPS/ESProducers/data/alignment/timing_RP_2018_v4.xml"
 )
 
 esPreferLocalAlignment = cms.ESPrefer("CTPPSRPAlignmentCorrectionsDataESSourceXML", "ctppsRPAlignmentCorrectionsDataESSourceXML")
