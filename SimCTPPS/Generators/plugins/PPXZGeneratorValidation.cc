@@ -101,7 +101,7 @@ class PPXZGeneratorValidation : public edm::one::EDAnalyzer<>
 
         h_xi2_vs_xi1 = new TH2D("", ";#xi_{1};#xi_{2}", 50., 0., 0.20, 50., 0., 0.20);
 
-        h_p_T_X = new TH1D("", "p_{T}(X)   (GeV)", 100, 0., 170.);
+        h_p_T_X = new TH1D("", "p_{T}(X)   (GeV)", 100, 0., 180.);
         h_p_z_X = new TH1D("", "p_{z}(X)   (GeV)", 100, -1500., 1500.);
         h_p_tot_X = new TH1D("", "p(X)   (GeV)", 100, 0., 1500.);
         h_theta_X = new TH1D("", "theta(X)", 100, -0.1, 3.3);
