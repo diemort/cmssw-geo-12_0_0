@@ -1,7 +1,7 @@
 /****************************************************************************
  *
  * Authors:
- *   Jan Kašpar, Lorenzo Marini, Francesco Turini, Nicola Turini
+ *   Jan Kašpar, Lorenzo Marini, Lorenzo Pagliai, Francesco Turini, Nicola Turini
  *
  ****************************************************************************/
 
@@ -158,7 +158,8 @@ void PPXZGenerator::produce(edm::Event &e, const edm::EventSetup& es)
     const double p_z_LAB_2p = CLHEP::RandFlat::shoot(engine, p_z_LAB_2p_min, p_z_LAB_2p_max);
 
     // generate spherical angles in the CMS frame of the X-Z system
-    const double theta_c = CLHEP::RandFlat::shoot(engine) * M_PI;
+    const double cos_theta_c = 2. * CLHEP::RandFlat::shoot(engine) - 1.;
+    const double sin_theta_c = sqrt(1. - cos_theta_c * cos_theta_c);
     const double phi_c = CLHEP::RandFlat::shoot(engine) * 2. * M_PI;
 
     // determine xi's of the protons
@@ -183,16 +184,16 @@ void PPXZGenerator::produce(edm::Event &e, const edm::EventSetup& es)
       printf("  p_c = %.3f\n", p_c);
 
     CLHEP::HepLorentzVector momentum_X_CMS(
-      + p_c * sin(theta_c) * cos(phi_c),
-      + p_c * sin(theta_c) * sin(phi_c),
-      + p_c * cos(theta_c),
+      + p_c * sin_theta_c * cos(phi_c),
+      + p_c * sin_theta_c * sin(phi_c),
+      + p_c * cos_theta_c,
       sqrt(p_c*p_c + m_X*m_X)
     );
 
     CLHEP::HepLorentzVector momentum_Z_CMS(
-      - p_c * sin(theta_c) * cos(phi_c),
-      - p_c * sin(theta_c) * sin(phi_c),
-      - p_c * cos(theta_c),
+      - p_c * sin_theta_c * cos(phi_c),
+      - p_c * sin_theta_c * sin(phi_c),
+      - p_c * cos_theta_c,
       sqrt(p_c*p_c + m_Z*m_Z)
     );
 
@@ -260,7 +261,8 @@ void PPXZGenerator::produce(edm::Event &e, const edm::EventSetup& es)
   if (decayX)
   {
     // generate decay angles in X's rest frame;
-    const double theta_d = CLHEP::RandFlat::shoot(engine) * M_PI;
+    const double cos_theta_d = 2. * CLHEP::RandFlat::shoot(engine) - 1.;
+    const double sin_theta_d = sqrt(1. - cos_theta_d * cos_theta_d);
     const double phi_d = CLHEP::RandFlat::shoot(engine) * 2. * M_PI;
 
     // product momentum and energy in X's rest frame
@@ -271,16 +273,16 @@ void PPXZGenerator::produce(edm::Event &e, const edm::EventSetup& es)
 
     // product four-momenta in X's rest frame
     CLHEP::HepLorentzVector momentum_pr1(
-      p_pr * sin(theta_d) * cos(phi_d),
-      p_pr * sin(theta_d) * sin(phi_d),
-      p_pr * cos(theta_d),
+      p_pr * sin_theta_d * cos(phi_d),
+      p_pr * sin_theta_d * sin(phi_d),
+      p_pr * cos_theta_d,
       E_pr1
     );
 
     CLHEP::HepLorentzVector momentum_pr2(
-      -p_pr * sin(theta_d) * cos(phi_d),
-      -p_pr * sin(theta_d) * sin(phi_d),
-      -p_pr * cos(theta_d),
+      -p_pr * sin_theta_d * cos(phi_d),
+      -p_pr * sin_theta_d * sin(phi_d),
+      -p_pr * cos_theta_d,
       E_pr2
     );
 
@@ -317,7 +319,8 @@ void PPXZGenerator::produce(edm::Event &e, const edm::EventSetup& es)
     if (decayZToMuons) m_l = m_mu, particleId_l_mi = particleId_mu_mi, particleId_l_pl = particleId_mu_pl;
 
     // generate decay angles in Z's rest frame;
-    const double theta_d = CLHEP::RandFlat::shoot(engine) * M_PI;
+    const double cos_theta_d = 2. * CLHEP::RandFlat::shoot(engine) - 1.;
+    const double sin_theta_d = sqrt(1. - cos_theta_d * cos_theta_d);
     const double phi_d = CLHEP::RandFlat::shoot(engine) * 2. * M_PI;
 
     // lepton momentum and energy in Z's rest frame
@@ -326,16 +329,16 @@ void PPXZGenerator::produce(edm::Event &e, const edm::EventSetup& es)
 
     // lepton four-momenta in Z's rest frame
     CLHEP::HepLorentzVector momentum_l_mi(
-      p_l * sin(theta_d) * cos(phi_d),
-      p_l * sin(theta_d) * sin(phi_d),
-      p_l * cos(theta_d),
+      p_l * sin_theta_d * cos(phi_d),
+      p_l * sin_theta_d * sin(phi_d),
+      p_l * cos_theta_d,
       E_l
     );
 
     CLHEP::HepLorentzVector momentum_l_pl(
-      -p_l * sin(theta_d) * cos(phi_d),
-      -p_l * sin(theta_d) * sin(phi_d),
-      -p_l * cos(theta_d),
+      -p_l * sin_theta_d * cos(phi_d),
+      -p_l * sin_theta_d * sin(phi_d),
+      -p_l * cos_theta_d,
       E_l
     );
 
