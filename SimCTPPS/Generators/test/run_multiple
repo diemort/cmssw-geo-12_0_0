@@ -95,21 +95,21 @@ function RunMultiple()
 
 #----------------------------------------------------------------------------------------------------
 
-version="version4"
+#version="version4"
+#version="version5" # version4 of the 2017 optics used also for 2017 post-TS2
+version="version6" # after bugfix of spherical uniform distribution (at 7c33cd172bed4d4703726407dc4a35e66913b133)
 
-masses=(
-	#800
-	#1000
-	#1200
-	#1400
-	#1600
-)
+masses=()
+for mass in {780..1650..60}
+do
+	masses+=($mass)
+done
 
-###   masses=()
-###   for mass in {780..1650..60}
-###   do
-###   	masses+=($mass)
-###   done
+masses+=(800)
+masses+=(1000)
+#masses+=(1200)
+masses+=(1400)
+masses+=(1600)
 
 xangles=(
 	120

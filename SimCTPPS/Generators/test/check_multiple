@@ -51,21 +51,19 @@ function CheckMultiple()
 
 #----------------------------------------------------------------------------------------------------
 
-version="version4"
-
-masses=(
-	800
-	1000
-	1200
-	1400
-	1600
-)
+version="version6"
 
 masses=()
 for mass in {780..1650..60}
 do
 	masses+=($mass)
 done
+
+masses+=(800)
+masses+=(1000)
+#masses+=(1200)
+masses+=(1400)
+masses+=(1600)
 
 xangles=(
 	120

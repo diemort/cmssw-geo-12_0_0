@@ -9,7 +9,7 @@ source "/cvmfs/cms.cern.ch/cmsset_default.sh"
 cd "$CMSSW_BASE"
 eval `scramv1 runtime -sh`
 
-export CMSSW_SEARCH_PATH="$CMSSW_SEARCH_PATH:/afs/cern.ch/work/j/jkaspar/software/ctpps/cms-data"
+export CMSSW_SEARCH_PATH="$CMSSW_SEARCH_PATH:/afs/cern.ch/work/j/jkaspar/work/software/ctpps/cms-data"
 export CMSSW_DATA_PATH="/afs"
 
 # go to work directory
