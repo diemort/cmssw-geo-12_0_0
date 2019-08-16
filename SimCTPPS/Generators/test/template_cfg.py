@@ -1,22 +1,18 @@
 import FWCore.ParameterSet.Config as cms
 
-from Configuration.StandardSequences.Eras import eras
-process = cms.Process('CTPPSDirectSimulation', eras.ctpps_2016)
+# load config
+from Validation.CTPPS.simu_config.year_$config_cff import *
 
-# load common code
-process.load("direct_simu_reco_cff")
-from customisation_cff import *
-SetDefaults(process)
+process = cms.Process('CTPPSDirectSimulation', era)
+
+process.load("Validation.CTPPS.simu_config.year_$config_cff")
 UseCrossingAngle($xangle, process)
-
-process.ctppsRPAlignmentCorrectionsDataESSourceXML.MisalignedFiles = ["$RD/alignment.xml"]
-process.ctppsRPAlignmentCorrectionsDataESSourceXML.RealFiles = ["$RD/alignment.xml"]
 
 # minimal logger settings
 process.MessageLogger = cms.Service("MessageLogger",
     statistics = cms.untracked.vstring(),
-    destinations = cms.untracked.vstring('cerr'),
-    cerr = cms.untracked.PSet(
+    destinations = cms.untracked.vstring('cout'),
+    cout = cms.untracked.PSet(
         threshold = cms.untracked.string('WARNING')
     )
 )
