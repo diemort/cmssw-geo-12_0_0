@@ -29,7 +29,7 @@ config_2016_postTS2 = cms.PSet(
 
   opticalFunctions = cms.VPSet(
     # fake placeholder at the moment
-    cms.PSet( xangle = cms.double(140), fileName = cms.FileInPath("CalibPPS/ESProducers/data/optical_functions/2016_postTS2/placeholder_v1/140urad.root") )
+    cms.PSet( xangle = cms.double(140), fileName = cms.FileInPath("CalibPPS/ESProducers/data/optical_functions/2016_postTS2/version1/140urad.root") )
   ),
 
   scoringPlanes = cms.VPSet(
