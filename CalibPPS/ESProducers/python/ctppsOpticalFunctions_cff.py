@@ -28,8 +28,7 @@ config_2016_postTS2 = cms.PSet(
   validityRange = cms.EventRange("282730:min - 284044:max"),
 
   opticalFunctions = cms.VPSet(
-    # fake placeholder at the moment
-    cms.PSet( xangle = cms.double(140), fileName = cms.FileInPath("CalibPPS/ESProducers/data/optical_functions/2016_postTS2/version1/140urad.root") )
+    cms.PSet( xangle = cms.double(140), fileName = cms.FileInPath("CalibPPS/ESProducers/data/optical_functions/2016_postTS2/version2/140urad.root") )
   ),
 
   scoringPlanes = cms.VPSet(
