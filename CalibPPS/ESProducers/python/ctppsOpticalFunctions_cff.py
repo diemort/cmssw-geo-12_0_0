@@ -63,6 +63,7 @@ config_base_2017 = cms.PSet(
 ctppsOpticalFunctionsESSource.configuration.append(config_base_2017.clone(validityRange = cms.EventRange("297046:min - 297723:max"))) # pre-TS2 begin to Jul alig. run
 ctppsOpticalFunctionsESSource.configuration.append(config_base_2017.clone(validityRange = cms.EventRange("298653:min - 302663:max"))) # Jul alig. run to pre-TS2 end
 ctppsOpticalFunctionsESSource.configuration.append(config_base_2017.clone(validityRange = cms.EventRange("303719:min - 306462:max"))) # post-TS2: beginning to end
+ctppsOpticalFunctionsESSource.configuration.append(config_base_2017.clone(validityRange = cms.EventRange("306896:min - 307082:max"))) # W-mass runs
 
 # add config for 2018 data
 config_base_2018 = cms.PSet(
