@@ -132,6 +132,7 @@ class CTPPSProtonReconstructionPlotter : public edm::one::EDAnalyzer<>
       std::unique_ptr<TH1D> h_multiplicity;
       std::unique_ptr<TH1D> h_xi, h_th_x, h_th_y, h_vtx_y, h_t_unif, h_t, h_chi_sq, h_log_chi_sq, h_chi_sq_norm;
       std::unique_ptr<TH1D> h_t_xi_range1, h_t_xi_range2, h_t_xi_range3;
+      std::unique_ptr<TH1D> h_time;
       std::unique_ptr<TH1D> h_n_tracking_RPs, h_n_timing_RPs;
       std::unique_ptr<TH2D> h2_th_x_vs_xi, h2_th_y_vs_xi, h2_vtx_y_vs_xi, h2_t_vs_xi;
       std::unique_ptr<TProfile> p_th_x_vs_xi, p_th_y_vs_xi, p_vtx_y_vs_xi;
@@ -147,6 +148,7 @@ class CTPPSProtonReconstructionPlotter : public edm::one::EDAnalyzer<>
         h_chi_sq(new TH1D("", ";#chi^{2}", 100, 0., 10.)),
         h_log_chi_sq(new TH1D("", ";log_{10} #chi^{2}", 100, -20., 5.)),
         h_chi_sq_norm(new TH1D("", ";#chi^{2}/ndf", 100, 0., 5.)),
+        h_time(new TH1D("", ";time", 100, -2., +2.)),
         h_n_tracking_RPs(new TH1D("", ";n of tracking RPs", 4, -0.5, +3.5)),
         h_n_timing_RPs(new TH1D("", ";n of timing RPs", 4, -0.5, +3.5)),
         h2_th_x_vs_xi(new TH2D("", ";#xi;#theta_{x}   (rad)", 100, 0., 0.3, 100, -500E-6, +500E-6)),
@@ -213,6 +215,8 @@ class CTPPSProtonReconstructionPlotter : public edm::one::EDAnalyzer<>
         if (p.xi() > 0.07 && p.xi() < 0.10) h_t_xi_range2->Fill(mt);
         if (p.xi() > 0.10 && p.xi() < 0.13) h_t_xi_range3->Fill(mt);
 
+        h_time->Fill(p.time());
+
         h2_th_x_vs_xi->Fill(p.xi(), th_x);
         h2_th_y_vs_xi->Fill(p.xi(), th_y);
         h2_vtx_y_vs_xi->Fill(p.xi(), p.vertex().y());
@@ -270,6 +274,8 @@ class CTPPSProtonReconstructionPlotter : public edm::one::EDAnalyzer<>
         h_t_xi_range3->Write("h_t_xi_range3");
 
         h2_t_vs_xi->Write("h2_t_vs_xi");
+
+        h_time->Write("h_time");
 
         TDirectory *d_top = gDirectory;
 
