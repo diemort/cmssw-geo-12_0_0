@@ -1,8 +1,13 @@
 #!/bin/bash
 
+# directory naming:
+#  JOB_DIR: where configs and output plot ROOT files are stored
+#  EXE_DIR: where the job is executed (may be different for local and Condor jobs)
+#  EOS_DIR: where ntuples are stored
+
 sub_script="condor.sub"
 
-cwd=`pwd -P`
+cwd=`pwd`
 base_dir="$cwd"
 
 #----------------------------------------------------------------------------------------------------
@@ -22,6 +27,8 @@ function RunOne()
 		mkdir -p "$eos_dir"
 	fi
 
+	job_dir="$(pwd -P)/$dir"
+
 	RD_base=$(pwd -P)
 	RD_base=${RD_base#*/src/}
 
@@ -30,14 +37,15 @@ function RunOne()
 			s|\$mass|$mass|g;\
 			s|\$xangle|$xangle|g;\
 			s|\$n_events|$n_events|g;\
-			s|\$eos_dir|$eos_dir|g;\
+			s|\$JOB_DIR|$job_dir|g;\
 			s|\$save_ntuples|$save_ntuples|g;\
 			s|\$settings_function|$settingsFunction|g;\
 			s|\$RD|$RD_base/$dir|g;\
 		" > "$dir/cfg.py"
 
 	cat "template_job"|sed "\
-			s|\$WORK_DIR|$cwd/$dir|;\
+			s|\$JOB_DIR|$job_dir|;\
+			s|\$EOS_DIR|$eos_dir|;\
 			s|\$CMSSW_BASE|$CMSSW_BASE|;\
 		" > "$dir/job"
 
@@ -82,7 +90,14 @@ function RunMultiple()
 	echo "error = $base_dir/\$(dir)/err"
 	echo "log = $base_dir/condor.log"
 
-	echo "+MaxRuntime = 14400" # in s
+	echo ""
+	echo "+MAX_REMAP_RECURSIONS = 50"
+	echo "should_transfer_files = NO"
+
+	echo ""
+	#echo "+MaxRuntime = 600" # in s
+	#echo "+MaxRuntime = 14400" # in s
+	echo "+MaxRuntime = 82800" # in s
 
 	#echo "+JobBatchName = \"$output_dir\""
 
@@ -95,10 +110,11 @@ function RunMultiple()
 #version="version4"
 #version="version5" # version4 of the 2017 optics used also for 2017 post-TS2
 #version="version6" # after bugfix of spherical uniform distribution (at 7c33cd172bed4d4703726407dc4a35e66913b133)
-version="version7" # new config hierarchy, also configs with optics v1
+#version="version7" # new config hierarchy, also configs with optics v1
+version="version8" # updated submission scripts, 4E6 events simulated, added more low-mass points
 
 masses=()
-for mass in {780..1650..60}
+for mass in {600..1650..60}
 do
 	masses+=($mass)
 done
@@ -120,16 +136,16 @@ configs=(
 	"2017_preTS2"
 	"2017_postTS2"
 
-	"2017_preTS2_opt_v1_simu"
+	#"2017_preTS2_opt_v1_simu"
 	"2017_preTS2_opt_v1_simu_reco"
 
-	"2017_postTS2_opt_v1_simu"
+	#"2017_postTS2_opt_v1_simu"
 	"2017_postTS2_opt_v1_simu_reco"
 )
 
-n_events=400000
-#n_events=100000
-#n_events=10000
+n_events="4E6"
+#n_events="4E5"
+#n_events="1E4"
 
 save_ntuples="True"
 

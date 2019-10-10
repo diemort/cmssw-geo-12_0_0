@@ -21,28 +21,31 @@ function CheckMultiple()
 				dir="output/$tag"
 				eos_dir="/eos/cms/store/group/phys_pps/ppxz/$tag"
 
-				error="n"
+				error=""
 
 				if [ ! -f "$dir/success" ]
 				then
-					error="y"
+					error="${error}1"
 				fi
 
 				if [ ! -f "$eos_dir/ntuple.root" ]
 				then
 					size="0"
+					error="${error}2"
 				else
 					size=$(ls -l "$eos_dir/ntuple.root" |awk '{print $5}')
+
+					if [ $size -lt 50000000 ]
+					then
+						error="${error}3"
+					fi
 				fi
 
-				if [ $size -lt 50000000 ]
+				if [ -n "$error" ]
 				then
-					error="y"
-				fi
-
-				if [ "$error" == "y" ]
-				then
-					echo "ERROR: $tag"
+					echo "ERROR: $tag ($error)"
+				else
+					echo "OK: $tag"
 				fi
 			done
 		done
@@ -51,10 +54,10 @@ function CheckMultiple()
 
 #----------------------------------------------------------------------------------------------------
 
-version="version7"
+version="version8"
 
 masses=()
-for mass in {780..1650..60}
+for mass in {600..1650..60}
 do
 	masses+=($mass)
 done
@@ -76,8 +79,8 @@ configs=(
 	"2017_preTS2"
 	"2017_postTS2"
 
-	"2017_preTS2_opt_v1_simu"
-	"2017_preTS2_opt_v1_simu_reco"
+	#"2017_preTS2_opt_v1_simu"
+	#"2017_preTS2_opt_v1_simu_reco"
 
 	"2017_postTS2_opt_v1_simu"
 	"2017_postTS2_opt_v1_simu_reco"

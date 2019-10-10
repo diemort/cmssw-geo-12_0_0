@@ -19,7 +19,7 @@ process.MessageLogger = cms.Service("MessageLogger",
 
 # number of events
 process.maxEvents = cms.untracked.PSet(
-  input = cms.untracked.int32($n_events)
+  input = cms.untracked.int32(int($n_events))
 )
 
 # redefine particle generator
@@ -33,7 +33,7 @@ process.generator.decayX = True
 # distribution plotter
 process.ctppsTrackDistributionPlotter = cms.EDAnalyzer("CTPPSTrackDistributionPlotter",
   tagTracks = cms.InputTag("ctppsLocalTrackLiteProducer"),
-  outputFile = cms.string("output_shape_smear.root")
+  outputFile = cms.string("$JOB_DIR/output_shape_smear.root")
 )
 
 # acceptance plotter
@@ -46,7 +46,7 @@ process.ctppsAcceptancePlotter = cms.EDAnalyzer("CTPPSAcceptancePlotter",
   rpId_56_N = process.rpIds.rp_56_N,
   rpId_56_F = process.rpIds.rp_56_F,
 
-  outputFile = cms.string("acceptance.root")
+  outputFile = cms.string("$JOB_DIR/acceptance.root")
 )
 
 # generator plots
@@ -57,7 +57,7 @@ process.ppxzGeneratorValidation.tagRecoProtonsSingleRP = cms.InputTag("ctppsProt
 process.ppxzGeneratorValidation.tagRecoProtonsMultiRP = cms.InputTag("ctppsProtons", "multiRP")
 process.ppxzGeneratorValidation.referenceRPDecId_45 = process.rpIds.rp_45_F
 process.ppxzGeneratorValidation.referenceRPDecId_56 = process.rpIds.rp_56_F
-process.ppxzGeneratorValidation.outputFile = "ppxzGeneratorValidation.root"
+process.ppxzGeneratorValidation.outputFile = "$JOB_DIR/ppxzGeneratorValidation.root"
 
 # processing path
 process.p = cms.Path(
@@ -76,11 +76,11 @@ process.p = cms.Path(
 
 # output configuration
 process.output = cms.OutputModule("PoolOutputModule",
-  fileName = cms.untracked.string("file://$eos_dir/ntuple.root"),
+  fileName = cms.untracked.string("file://ntuple.root"),
   splitLevel = cms.untracked.int32(0),
   eventAutoFlushCompressedSize=cms.untracked.int32(-900),
   compressionAlgorithm=cms.untracked.string("LZMA"),
-  compressionLevel=cms.untracked.int32(4),
+  compressionLevel=cms.untracked.int32(9),
   outputCommands = cms.untracked.vstring(
     'drop *',
     'keep edmHepMCProduct_*_*_*',
