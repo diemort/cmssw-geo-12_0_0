@@ -46,6 +46,7 @@ class CTPPSProtonProducer : public edm::stream::EDProducer<>
     edm::EDGetTokenT<CTPPSLocalTrackLiteCollection> tracksToken_;
 
     std::string lhcInfoLabel_;
+    std::string opticsLabel_;
 
     unsigned int verbosity_;
 
@@ -112,6 +113,7 @@ class CTPPSProtonProducer : public edm::stream::EDProducer<>
 CTPPSProtonProducer::CTPPSProtonProducer(const edm::ParameterSet& iConfig) :
   tracksToken_                (consumes<CTPPSLocalTrackLiteCollection>(iConfig.getParameter<edm::InputTag>("tagLocalTrackLite"))),
   lhcInfoLabel_               (iConfig.getParameter<std::string>("lhcInfoLabel")),
+  opticsLabel_                (iConfig.getParameter<std::string>("opticsLabel")),
   verbosity_                  (iConfig.getUntrackedParameter<unsigned int>("verbosity", 0)),
   doSingleRPReconstruction_   (iConfig.getParameter<bool>("doSingleRPReconstruction")),
   doMultiRPReconstruction_    (iConfig.getParameter<bool>("doMultiRPReconstruction")),
@@ -152,6 +154,8 @@ void CTPPSProtonProducer::fillDescriptions(edm::ConfigurationDescriptions& descr
 
   desc.add<std::string>("lhcInfoLabel", "")
     ->setComment("label of the LHCInfo record");
+  desc.add<std::string>("opticsLabel", "")
+    ->setComment("label of the optics record");
 
   desc.addUntracked<unsigned int>("verbosity", 0)->setComment("verbosity level");
 
@@ -212,7 +216,7 @@ void CTPPSProtonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
     iSetup.get<LHCInfoRcd>().get(lhcInfoLabel_, hLHCInfo);
 
     edm::ESHandle<LHCInterpolatedOpticalFunctionsSetCollection> hOpticalFunctions;
-    iSetup.get<CTPPSInterpolatedOpticsRcd>().get(hOpticalFunctions);
+    iSetup.get<CTPPSInterpolatedOpticsRcd>().get(opticsLabel_, hOpticalFunctions);
 
     edm::ESHandle<CTPPSGeometry> hGeometry;
     iSetup.get<VeryForwardRealGeometryRecord>().get(hGeometry);
