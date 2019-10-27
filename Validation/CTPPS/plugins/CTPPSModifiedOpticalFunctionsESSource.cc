@@ -1,24 +1,17 @@
 // authors: Jan Kaspar (jan.kaspar@gmail.com)
 
-// TODO: clean up
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/Framework/interface/EventSetup.h"
-#include "FWCore/Framework/interface/ModuleFactory.h"
 #include "FWCore/Framework/interface/ESProducer.h"
+#include "FWCore/Framework/interface/ModuleFactory.h"
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
-#include "CondFormats/DataRecord/interface/LHCInfoRcd.h"
-#include "CondFormats/DataRecord/interface/CTPPSOpticsRcd.h"
 #include "CondFormats/DataRecord/interface/CTPPSInterpolatedOpticsRcd.h"
-
-#include "CondFormats/RunInfo/interface/LHCInfo.h"
-#include "CondFormats/CTPPSReadoutObjects/interface/LHCOpticalFunctionsSetCollection.h"
 #include "CondFormats/CTPPSReadoutObjects/interface/LHCInterpolatedOpticalFunctionsSetCollection.h"
 
 #include "DataFormats/CTPPSDetId/interface/CTPPSDetId.h"
-
 
 class CTPPSModifiedOpticalFunctionsESSource : public edm::ESProducer
 {
@@ -115,7 +108,7 @@ std::shared_ptr<LHCInterpolatedOpticalFunctionsSetCollection> CTPPSModifiedOptic
   {
     const auto &arm = ap.first;
 
-    printf("* arm %u\n", arm);
+    //printf("* arm %u\n", arm);
 
     auto &of_N = output->find(ap.second.rpId_N)->second;
     auto &of_F = output->find(ap.second.rpId_F)->second;
@@ -124,7 +117,7 @@ std::shared_ptr<LHCInterpolatedOpticalFunctionsSetCollection> CTPPSModifiedOptic
     const double z_F = of_F.getScoringPlaneZ();
     const double de_z = (arm == 0) ? z_N - z_F : z_F - z_N;
 
-    printf("  z_N = %.3f m, z_F = %.3f m\n", z_N*1E-2, z_F*1E-2);
+    //printf("  z_N = %.3f m, z_F = %.3f m\n", z_N*1E-2, z_F*1E-2);
 
     if (of_N.m_xi_values.size() != of_N.m_xi_values.size())
       throw cms::Exception("CTPPSModifiedOpticalFunctionsESSource") << "Different xi sampling of optical functions in near and far RP.";
@@ -141,7 +134,6 @@ std::shared_ptr<LHCInterpolatedOpticalFunctionsSetCollection> CTPPSModifiedOptic
       double L_x_F = of_F.m_fcn_values[LHCOpticalFunctionsSet::eLx][i];
       double Lp_x = of_N.m_fcn_values[LHCOpticalFunctionsSet::eLpx][i];
 
-      // TODO: remove
       //printf("  xi = %.3f, Lp_x = %.3f, %.3f\n", xi, Lp_x, (L_x_F - L_x_N) / de_z);
 
       // apply modification scenario
