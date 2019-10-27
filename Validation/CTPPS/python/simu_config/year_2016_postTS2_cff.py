@@ -33,16 +33,15 @@ from CalibPPS.ESProducers.ctppsInterpolatedOpticalFunctionsESSource_cfi import *
 ctppsInterpolatedOpticalFunctionsESSource.lhcInfoLabel = ""
 
 # aperture cuts
-# TODO: needs updating
 ctppsDirectProtonSimulation.useEmpiricalApertures = True
-ctppsDirectProtonSimulation.empiricalAperture45_xi0_int = 0.073
-ctppsDirectProtonSimulation.empiricalAperture45_xi0_slp = 4.1E-4
-ctppsDirectProtonSimulation.empiricalAperture45_a_int = +40
-ctppsDirectProtonSimulation.empiricalAperture45_a_slp = 0.76
-ctppsDirectProtonSimulation.empiricalAperture56_xi0_int = 0.067
-ctppsDirectProtonSimulation.empiricalAperture56_xi0_slp = 6.82E-4
-ctppsDirectProtonSimulation.empiricalAperture56_a_int = -49
-ctppsDirectProtonSimulation.empiricalAperture56_a_slp = 1.73
+ctppsDirectProtonSimulation.empiricalAperture45_xi0_int = 0.104
+ctppsDirectProtonSimulation.empiricalAperture45_xi0_slp = 0.000E+00
+ctppsDirectProtonSimulation.empiricalAperture45_a_int = 116.4
+ctppsDirectProtonSimulation.empiricalAperture45_a_slp = -0.000
+ctppsDirectProtonSimulation.empiricalAperture56_xi0_int = 0.130
+ctppsDirectProtonSimulation.empiricalAperture56_xi0_slp = 0.000E+00
+ctppsDirectProtonSimulation.empiricalAperture56_a_int = 150.0
+ctppsDirectProtonSimulation.empiricalAperture56_a_slp = -0.000
 
 # defaults
 def SetDefaults(process):

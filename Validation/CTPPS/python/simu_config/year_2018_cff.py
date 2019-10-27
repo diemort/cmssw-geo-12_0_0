@@ -42,16 +42,15 @@ ctppsRPAlignmentCorrectionsDataESSourceXML.MisalignedFiles = [alignmentFile]
 ctppsRPAlignmentCorrectionsDataESSourceXML.RealFiles = [alignmentFile]
 
 # aperture cuts
-# TODO: needs updating
 ctppsDirectProtonSimulation.useEmpiricalApertures = True
-ctppsDirectProtonSimulation.empiricalAperture45_xi0_int = 0.073
-ctppsDirectProtonSimulation.empiricalAperture45_xi0_slp = 4.1E-4
-ctppsDirectProtonSimulation.empiricalAperture45_a_int = +40
-ctppsDirectProtonSimulation.empiricalAperture45_a_slp = 0.76
-ctppsDirectProtonSimulation.empiricalAperture56_xi0_int = 0.067
-ctppsDirectProtonSimulation.empiricalAperture56_xi0_slp = 6.82E-4
-ctppsDirectProtonSimulation.empiricalAperture56_a_int = -49
-ctppsDirectProtonSimulation.empiricalAperture56_a_slp = 1.73
+ctppsDirectProtonSimulation.empiricalAperture45_xi0_int = 0.079
+ctppsDirectProtonSimulation.empiricalAperture45_xi0_slp = 4.211E-04
+ctppsDirectProtonSimulation.empiricalAperture45_a_int = 42.8
+ctppsDirectProtonSimulation.empiricalAperture45_a_slp = 0.669
+ctppsDirectProtonSimulation.empiricalAperture56_xi0_int = 0.074
+ctppsDirectProtonSimulation.empiricalAperture56_xi0_slp = 6.604E-04
+ctppsDirectProtonSimulation.empiricalAperture56_a_int = -22.7
+ctppsDirectProtonSimulation.empiricalAperture56_a_slp = 1.600
 
 # local reconstruction
 ctppsLocalTrackLiteProducer.includeStrips = False

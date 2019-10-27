@@ -11,10 +11,10 @@ ctppsRPAlignmentCorrectionsDataESSourceXML.RealFiles = [alignmentFile]
 # aperture cuts
 ctppsDirectProtonSimulation.useEmpiricalApertures = True
 ctppsDirectProtonSimulation.empiricalAperture45_xi0_int = 0.066
-ctppsDirectProtonSimulation.empiricalAperture45_xi0_slp = 3.54E-4
-ctppsDirectProtonSimulation.empiricalAperture45_a_int = +56
-ctppsDirectProtonSimulation.empiricalAperture45_a_slp = 0.38
+ctppsDirectProtonSimulation.empiricalAperture45_xi0_slp = 3.536E-04
+ctppsDirectProtonSimulation.empiricalAperture45_a_int = 47.7
+ctppsDirectProtonSimulation.empiricalAperture45_a_slp = 0.447
 ctppsDirectProtonSimulation.empiricalAperture56_xi0_int = 0.062
-ctppsDirectProtonSimulation.empiricalAperture56_xi0_slp = 5.96E-4
-ctppsDirectProtonSimulation.empiricalAperture56_a_int = -39
-ctppsDirectProtonSimulation.empiricalAperture56_a_slp = 1.36
+ctppsDirectProtonSimulation.empiricalAperture56_xi0_slp = 5.956E-04
+ctppsDirectProtonSimulation.empiricalAperture56_a_int = -31.9
+ctppsDirectProtonSimulation.empiricalAperture56_a_slp = 1.323
