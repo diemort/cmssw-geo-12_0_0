@@ -9,7 +9,7 @@ config_2016_preTS2 = cms.PSet(
   validityRange = cms.EventRange("273725:min - 280385:max"),
 
   opticalFunctions = cms.VPSet(
-    cms.PSet( xangle = cms.double(185), fileName = cms.FileInPath("CalibPPS/ESProducers/data/optical_functions/2016_preTS2/version1/optical_functions.root") )
+    cms.PSet( xangle = cms.double(185), fileName = cms.FileInPath("CalibPPS/ESProducers/data/optical_functions/2016_preTS2/version2/optical_functions.root") )
   ),
 
   scoringPlanes = cms.VPSet(
