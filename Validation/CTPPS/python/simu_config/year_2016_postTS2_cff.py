@@ -38,10 +38,10 @@ ctppsDirectProtonSimulation.empiricalAperture45_xi0_int = 0.104
 ctppsDirectProtonSimulation.empiricalAperture45_xi0_slp = 0.000E+00
 ctppsDirectProtonSimulation.empiricalAperture45_a_int = 116.4
 ctppsDirectProtonSimulation.empiricalAperture45_a_slp = -0.000
-ctppsDirectProtonSimulation.empiricalAperture56_xi0_int = 0.130
-ctppsDirectProtonSimulation.empiricalAperture56_xi0_slp = 0.000E+00
+ctppsDirectProtonSimulation.empiricalAperture56_xi0_int = 0.110
+ctppsDirectProtonSimulation.empiricalAperture56_xi0_slp = 0.
 ctppsDirectProtonSimulation.empiricalAperture56_a_int = 150.0
-ctppsDirectProtonSimulation.empiricalAperture56_a_slp = -0.000
+ctppsDirectProtonSimulation.empiricalAperture56_a_slp = 0.
 
 # defaults
 def SetDefaults(process):
