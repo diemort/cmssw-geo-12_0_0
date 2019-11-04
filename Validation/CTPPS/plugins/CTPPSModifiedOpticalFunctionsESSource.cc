@@ -142,7 +142,7 @@ std::shared_ptr<LHCInterpolatedOpticalFunctionsSetCollection> CTPPSModifiedOptic
 
       if (scenario_ == "Lx")
       {
-        const double a = 3200., b = 40.; // cm
+        const double a = 3180., b = 40.; // cm
         const double de_L_x = factor_ * (a*xi + b);
         L_x_N += de_L_x;
         L_x_F += de_L_x;
@@ -151,7 +151,7 @@ std::shared_ptr<LHCInterpolatedOpticalFunctionsSetCollection> CTPPSModifiedOptic
 
       if (scenario_ == "Lpx")
       {
-        const double a = 0.41, b = 0.015; // dimensionless
+        const double a = 0.42, b = 0.015; // dimensionless
         const double de_Lp_x = factor_ * (a*xi + b) * Lp_x;
         Lp_x += de_Lp_x;
         L_x_N -= de_Lp_x * de_z / 2.;
