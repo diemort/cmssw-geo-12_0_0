@@ -18,6 +18,9 @@
 #include "DataFormats/ProtonReco/interface/ForwardProton.h"
 #include "DataFormats/ProtonReco/interface/ForwardProtonFwd.h"
 
+#include "Geometry/Records/interface/VeryForwardRealGeometryRecord.h"
+#include "Geometry/VeryForwardGeometryBuilder/interface/CTPPSGeometry.h"
+
 #include "TFile.h"
 #include "TGraphErrors.h"
 #include "TH1D.h"
@@ -68,6 +71,9 @@ class CTPPSProtonReconstructionPlotter : public edm::one::EDAnalyzer<>
         g->SetPointError(idx, 0., si_unc);
       }
     }
+
+    void CalculateTimingTrackingDistance(const reco::ForwardProton &proton,
+      const CTPPSLocalTrackLite &tr, const CTPPSGeometry &geometry, double &de_x, double &de_x_unc);
 
     struct SingleRPPlots
     {
@@ -133,14 +139,18 @@ class CTPPSProtonReconstructionPlotter : public edm::one::EDAnalyzer<>
       std::unique_ptr<TH1D> h_xi, h_th_x, h_th_y, h_vtx_y, h_t_unif, h_t, h_chi_sq, h_log_chi_sq, h_chi_sq_norm;
       std::unique_ptr<TH1D> h_t_xi_range1, h_t_xi_range2, h_t_xi_range3;
       std::unique_ptr<TH1D> h_time;
-      std::unique_ptr<TH1D> h_n_tracking_RPs, h_n_timing_RPs;
+      std::unique_ptr<TH1D> h_n_contrib_tracking_tracks, h_n_contrib_timing_tracks;
       std::unique_ptr<TH2D> h2_th_x_vs_xi, h2_th_y_vs_xi, h2_vtx_y_vs_xi, h2_t_vs_xi;
       std::unique_ptr<TProfile> p_th_x_vs_xi, p_th_y_vs_xi, p_vtx_y_vs_xi;
 
+      std::unique_ptr<TH2D> h2_timing_tracks_vs_prot_mult;
+
       std::map<unsigned int, TH1D*> m_h_xi_nTracks;
 
+      std::unique_ptr<TH1D> h_de_x_timing_vs_tracking, h_de_x_rel_timing_vs_tracking, h_de_x_match_timing_vs_tracking;
+
       MultiRPPlots() :
-        h_multiplicity(new TH1D("", ";reconstructed protons", 11, -0.5, 10.5)),
+        h_multiplicity(new TH1D("", ";reconstructed protons per event", 11, -0.5, 10.5)),
         h_xi(new TH1D("", ";#xi", 100, 0., 0.3)),
         h_th_x(new TH1D("", ";#theta_{x}   (rad)", 250, -500E-6, +500E-6)),
         h_th_y(new TH1D("", ";#theta_{y}   (rad)", 250, -500E-6, +500E-6)),
@@ -149,14 +159,18 @@ class CTPPSProtonReconstructionPlotter : public edm::one::EDAnalyzer<>
         h_log_chi_sq(new TH1D("", ";log_{10} #chi^{2}", 100, -20., 5.)),
         h_chi_sq_norm(new TH1D("", ";#chi^{2}/ndf", 100, 0., 5.)),
         h_time(new TH1D("", ";time", 100, -2., +2.)),
-        h_n_tracking_RPs(new TH1D("", ";n of tracking RPs", 4, -0.5, +3.5)),
-        h_n_timing_RPs(new TH1D("", ";n of timing RPs", 4, -0.5, +3.5)),
+        h_n_contrib_tracking_tracks(new TH1D("", ";n of contrib. tracking tracks per reco proton", 4, -0.5, +3.5)),
+        h_n_contrib_timing_tracks(new TH1D("", ";n of contrib. timing tracks per reco proton", 4, -0.5, +3.5)),
         h2_th_x_vs_xi(new TH2D("", ";#xi;#theta_{x}   (rad)", 100, 0., 0.3, 100, -500E-6, +500E-6)),
         h2_th_y_vs_xi(new TH2D("", ";#xi;#theta_{y}   (rad)", 100, 0., 0.3, 100, -500E-6, +500E-6)),
         h2_vtx_y_vs_xi(new TH2D("", ";#xi;vtx_{y}   (cm)", 100, 0., 0.3, 100, -100E-3, +100E-3)),
         p_th_x_vs_xi(new TProfile("", ";#xi;#theta_{x}   (rad)", 100, 0., 0.3)),
         p_th_y_vs_xi(new TProfile("", ";#xi;#theta_{y}   (rad)", 100, 0., 0.3)),
-        p_vtx_y_vs_xi(new TProfile("", ";#xi;vtx_{y}   (cm)", 100, 0., 0.3))
+        p_vtx_y_vs_xi(new TProfile("", ";#xi;vtx_{y}   (cm)", 100, 0., 0.3)),
+        h2_timing_tracks_vs_prot_mult(new TH2D("", ";reco protons per event;timing tracks per event", 11, -0.5, 10.5, 11, -0.5, 10.5)),
+        h_de_x_timing_vs_tracking(new TH1D("", ";#Delta x   (mm)", 200, -1., +1.)),
+        h_de_x_rel_timing_vs_tracking(new TH1D("", ";#Delta x / #sigma(x)", 200, -20., +20.)),
+        h_de_x_match_timing_vs_tracking(new TH1D("", ";match between tracking and timing tracks", 2, -0.5, +1.5))
       {
         std::vector<double> v_t_bin_edges;
         for (double t = 0; t <= 5.; ) {
@@ -180,14 +194,14 @@ class CTPPSProtonReconstructionPlotter : public edm::one::EDAnalyzer<>
         if (!p.validFit())
           return;
 
-        unsigned int n_tracking_RPs=0, n_timing_RPs=0;
+        unsigned int n_contrib_tracking_tracks=0, n_contrib_timing_tracks=0;
         for (const auto &tr : p.contributingLocalTracks())
         {
           CTPPSDetId detId(tr->getRPId());
           if (detId.subdetId() == CTPPSDetId::sdTrackingStrip || detId.subdetId() == CTPPSDetId::sdTrackingPixel)
-            n_tracking_RPs++;
+            n_contrib_tracking_tracks++;
           if (detId.subdetId() == CTPPSDetId::sdTimingDiamond || detId.subdetId() == CTPPSDetId::sdTimingFastSilicon)
-            n_timing_RPs++;
+            n_contrib_timing_tracks++;
         }
 
         const double th_x = p.thetaX();
@@ -199,8 +213,8 @@ class CTPPSProtonReconstructionPlotter : public edm::one::EDAnalyzer<>
         if (p.ndof() > 0)
           h_chi_sq_norm->Fill(p.normalizedChi2());
 
-        h_n_tracking_RPs->Fill(n_tracking_RPs);
-        h_n_timing_RPs->Fill(n_timing_RPs);
+        h_n_contrib_tracking_tracks->Fill(n_contrib_tracking_tracks);
+        h_n_contrib_timing_tracks->Fill(n_contrib_timing_tracks);
 
         h_xi->Fill(p.xi());
 
@@ -239,8 +253,10 @@ class CTPPSProtonReconstructionPlotter : public edm::one::EDAnalyzer<>
         h_log_chi_sq->Write("h_log_chi_sq");
         h_chi_sq_norm->Write("h_chi_sq_norm");
 
-        h_n_tracking_RPs->Write("h_n_tracking_RPs");
-        h_n_timing_RPs->Write("h_n_timing_RPs");
+        h_n_contrib_tracking_tracks->Write("h_n_contrib_tracking_tracks");
+        h_n_contrib_timing_tracks->Write("h_n_contrib_timing_tracks");
+
+        h2_timing_tracks_vs_prot_mult->Write("h2_timing_tracks_vs_prot_mult");
 
         h_xi->Write("h_xi");
 
@@ -288,6 +304,10 @@ class CTPPSProtonReconstructionPlotter : public edm::one::EDAnalyzer<>
         }
 
         gDirectory = d_top;
+
+        h_de_x_timing_vs_tracking->Write("h_de_x_timing_vs_tracking");
+        h_de_x_rel_timing_vs_tracking->Write("h_de_x_rel_timing_vs_tracking");
+        h_de_x_match_timing_vs_tracking->Write("h_de_x_match_timing_vs_tracking");
       }
     };
 
@@ -427,7 +447,30 @@ CTPPSProtonReconstructionPlotter::CTPPSProtonReconstructionPlotter(const edm::Pa
 
 //----------------------------------------------------------------------------------------------------
 
-void CTPPSProtonReconstructionPlotter::analyze(const edm::Event &event, const edm::EventSetup&)
+void CTPPSProtonReconstructionPlotter::CalculateTimingTrackingDistance(const reco::ForwardProton &proton,
+  const CTPPSLocalTrackLite &tr_ti, const CTPPSGeometry &geometry, double &de_x, double &de_x_unc)
+{
+  // identify tracking-RP tracks
+  const auto &tr_i = * proton.contributingLocalTracks().at(0);
+  const auto &tr_j = * proton.contributingLocalTracks().at(1);
+
+  const double z_i = geometry.getRPTranslation(tr_i.getRPId()).z();
+  const double z_j = geometry.getRPTranslation(tr_j.getRPId()).z();
+
+  // interpolation from tracking RPs
+  const double z_ti = - geometry.getRPTranslation(tr_ti.getRPId()).z(); // the minus sign fixes a bug in the diamond geometry
+  const double f_i = (z_ti - z_j) / (z_i - z_j), f_j = (z_i - z_ti) / (z_i - z_j);
+  const double x_inter = f_i * tr_i.getX() + f_j * tr_j.getX();
+  const double x_inter_unc_sq = f_i*f_i * tr_i.getXUnc()*tr_i.getXUnc() + f_j*f_j * tr_j.getXUnc()*tr_j.getXUnc();
+
+  // save distance
+  de_x = tr_ti.getX() - x_inter;
+  de_x_unc = sqrt(tr_ti.getXUnc()*tr_ti.getXUnc() + x_inter_unc_sq);
+}
+
+//----------------------------------------------------------------------------------------------------
+
+void CTPPSProtonReconstructionPlotter::analyze(const edm::Event &event, const edm::EventSetup &iSetup)
 {
   // get input
   edm::Handle<CTPPSLocalTrackLiteCollection> hTracks;
@@ -445,12 +488,16 @@ void CTPPSProtonReconstructionPlotter::analyze(const edm::Event &event, const ed
   if (maxNonEmptyEvents_ > 0 && n_non_empty_events_ > maxNonEmptyEvents_)
     throw cms::Exception("CTPPSProtonReconstructionPlotter") << "Number of non empty events reached maximum.";
 
+  // get conditions
+  edm::ESHandle<CTPPSGeometry> hGeometry;
+  iSetup.get<VeryForwardRealGeometryRecord>().get(hGeometry);
+
   // track plots
   const CTPPSLocalTrackLite *tr_L_N = nullptr;
   const CTPPSLocalTrackLite *tr_L_F = nullptr;
   const CTPPSLocalTrackLite *tr_R_N = nullptr;
   const CTPPSLocalTrackLite *tr_R_F = nullptr;
-  std::map<unsigned int, unsigned int> armTrackCounter;
+  std::map<unsigned int, unsigned int> armTrackCounter, armTimingTrackCounter;
 
   for (const auto &tr : *hTracks)
   {
@@ -463,6 +510,10 @@ void CTPPSProtonReconstructionPlotter::analyze(const edm::Event &event, const ed
     if (decRPId == rpId_56_F_) tr_R_F = &tr;
 
     armTrackCounter[rpId.arm()]++;
+
+    const bool trackerRP = (rpId.subdetId() == CTPPSDetId::sdTrackingStrip || rpId.subdetId() == CTPPSDetId::sdTrackingPixel);
+    if (!trackerRP)
+      armTimingTrackCounter[rpId.arm()]++;
   }
 
   if (tr_L_N && tr_L_F)
@@ -508,7 +559,40 @@ void CTPPSProtonReconstructionPlotter::analyze(const edm::Event &event, const ed
   }
 
   for (const auto it : multiRPMultiplicity)
-    multiRPPlots_[it.first].h_multiplicity->Fill(it.second);
+  {
+    const auto &pl = multiRPPlots_[it.first];
+    pl.h_multiplicity->Fill(it.second);
+    pl.h2_timing_tracks_vs_prot_mult->Fill(it.second, armTimingTrackCounter[it.first]);
+  }
+
+  // plot distances between multi-RP protons and timing tracks in the same event
+  for (const auto &proton : *hRecoProtonsMultiRP)
+  {
+    if (!proton.validFit())
+      continue;
+
+    CTPPSDetId rpId_proton((*proton.contributingLocalTracks().begin())->getRPId());
+    unsigned int armId = rpId_proton.arm();
+    const auto &pl = multiRPPlots_[armId];
+
+    for (const auto &tr : *hTracks)
+    {
+      CTPPSDetId rpId_tr(tr.getRPId());
+      if (rpId_tr.arm() != armId)
+        continue;
+
+      const bool trackerRP = (rpId_tr.subdetId() == CTPPSDetId::sdTrackingStrip || rpId_tr.subdetId() == CTPPSDetId::sdTrackingPixel);
+      if (trackerRP)
+        continue;
+
+      double de_x=0., de_x_unc=0.;
+      CalculateTimingTrackingDistance(proton, tr, *hGeometry, de_x, de_x_unc);
+
+      pl.h_de_x_timing_vs_tracking->Fill(de_x);
+      pl.h_de_x_rel_timing_vs_tracking->Fill((de_x_unc > 0.) ? de_x / de_x_unc : -1E10);
+      pl.h_de_x_match_timing_vs_tracking->Fill(fabs(de_x / de_x_unc) <= 1. ? 1. : 0.);
+    }
+  }
 
   // make correlation plots
   for (const auto &proton_m : *hRecoProtonsMultiRP)
