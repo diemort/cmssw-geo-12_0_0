@@ -42,21 +42,39 @@ class CTPPSTrackDistributionPlotter : public edm::one::EDAnalyzer<>
 
     edm::EDGetTokenT<CTPPSLocalTrackLiteCollection> tracksToken_;
 
+    double x_pitch_pixels_;
+
     std::string outputFile_;
 
     struct RPPlots
     {
+      bool initialized;
+
       std::unique_ptr<TH2D> h2_y_vs_x;
       std::unique_ptr<TProfile> p_y_vs_x;
       std::unique_ptr<TH1D> h_x;
       std::unique_ptr<TH1D> h_y;
 
-      RPPlots() :
-        h2_y_vs_x(new TH2D("", "", 300, -10., +70., 300, -30, +30.)),
-        p_y_vs_x(new TProfile("", "", 300, -10., +70.)),
-        h_x(new TH1D("", "", 800, -10., +70.)),
-        h_y(new TH1D("", "", 300, -15., +15.))
-      {}
+      RPPlots() : initialized(false)
+      {
+      }
+
+      void init(bool pixel, double pitch)
+      {
+        const double bin_size_x = (pixel) ? pitch * cos(18.4 / 180. * M_PI) : 100E-3;
+
+        h2_y_vs_x.reset(new TH2D("", "", 300, -10., +70., 300, -30., +30.));
+        p_y_vs_x.reset(new TProfile("", "", 300, -10., +70.));
+
+        int n_mi = ceil(10. / bin_size_x);
+        int n_pl = ceil(70. / bin_size_x);
+
+        h_x.reset(new TH1D("", "", n_mi + n_pl, -n_mi * bin_size_x, +n_pl * bin_size_x));
+
+        h_y.reset(new TH1D("", "", 300, -15., +15.));
+
+        initialized = true;
+      }
 
       void fill(double x, double y)
       {
@@ -125,6 +143,7 @@ class CTPPSTrackDistributionPlotter : public edm::one::EDAnalyzer<>
 
 CTPPSTrackDistributionPlotter::CTPPSTrackDistributionPlotter( const edm::ParameterSet& iConfig ) :
   tracksToken_( consumes<CTPPSLocalTrackLiteCollection>( iConfig.getParameter<edm::InputTag>( "tagTracks" ) ) ),
+  x_pitch_pixels_( iConfig.getUntrackedParameter<double>("x_pitch_pixels", 150E-3) ),
   outputFile_( iConfig.getParameter<std::string>("outputFile") )
 {
 }
@@ -141,7 +160,13 @@ void CTPPSTrackDistributionPlotter::analyze( const edm::Event& iEvent, const edm
   for (const auto& trk : *tracks) {
     CTPPSDetId rpId(trk.getRPId());
     unsigned int rpDecId = rpId.arm()*100 + rpId.station()*10 + rpId.rp();
-    rpPlots[rpDecId].fill(trk.getX(), trk.getY());
+    bool rpPixel = (rpId.subdetId() == CTPPSDetId::sdTrackingPixel);
+
+    auto &pl = rpPlots[rpDecId];
+    if (!pl.initialized)
+      pl.init(rpPixel, x_pitch_pixels_);
+
+    pl.fill(trk.getX(), trk.getY());
   }
 
   for (const auto& t1 : *tracks) {
