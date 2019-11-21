@@ -148,6 +148,9 @@ class CTPPSProtonReconstructionPlotter : public edm::one::EDAnalyzer<>
       std::map<unsigned int, TH1D*> m_h_xi_nTracks;
 
       std::unique_ptr<TH1D> h_de_x_timing_vs_tracking, h_de_x_rel_timing_vs_tracking, h_de_x_match_timing_vs_tracking;
+      std::unique_ptr<TH1D> h_de_x_rel_timing_vs_tracking_ClCo;
+
+      std::unique_ptr<TH2D> h2_y_vs_x_tt0_ClCo, h2_y_vs_x_tt1_ClCo, h2_y_vs_x_ttm_ClCo;
 
       MultiRPPlots() :
         h_multiplicity(new TH1D("", ";reconstructed protons per event", 11, -0.5, 10.5)),
@@ -170,7 +173,11 @@ class CTPPSProtonReconstructionPlotter : public edm::one::EDAnalyzer<>
         h2_timing_tracks_vs_prot_mult(new TH2D("", ";reco protons per event;timing tracks per event", 11, -0.5, 10.5, 11, -0.5, 10.5)),
         h_de_x_timing_vs_tracking(new TH1D("", ";#Delta x   (mm)", 200, -1., +1.)),
         h_de_x_rel_timing_vs_tracking(new TH1D("", ";#Delta x / #sigma(x)", 200, -20., +20.)),
-        h_de_x_match_timing_vs_tracking(new TH1D("", ";match between tracking and timing tracks", 2, -0.5, +1.5))
+        h_de_x_match_timing_vs_tracking(new TH1D("", ";match between tracking and timing tracks", 2, -0.5, +1.5)),
+        h_de_x_rel_timing_vs_tracking_ClCo(new TH1D("", ";#Delta x / #sigma(x)", 200, -20., +20.)),
+        h2_y_vs_x_tt0_ClCo(new TH2D("", ";x   (mm);y   (mm)", 100, -5., 25., 100, -15., +15.)),
+        h2_y_vs_x_tt1_ClCo(new TH2D("", ";x   (mm);y   (mm)", 100, -5., 25., 100, -15., +15.)),
+        h2_y_vs_x_ttm_ClCo(new TH2D("", ";x   (mm);y   (mm)", 100, -5., 25., 100, -15., +15.))
       {
         std::vector<double> v_t_bin_edges;
         for (double t = 0; t <= 5.; ) {
@@ -308,6 +315,11 @@ class CTPPSProtonReconstructionPlotter : public edm::one::EDAnalyzer<>
         h_de_x_timing_vs_tracking->Write("h_de_x_timing_vs_tracking");
         h_de_x_rel_timing_vs_tracking->Write("h_de_x_rel_timing_vs_tracking");
         h_de_x_match_timing_vs_tracking->Write("h_de_x_match_timing_vs_tracking");
+        h_de_x_rel_timing_vs_tracking_ClCo->Write("h_de_x_rel_timing_vs_tracking_ClCo");
+
+        h2_y_vs_x_tt0_ClCo->Write("h2_y_vs_x_tt0_ClCo");
+        h2_y_vs_x_tt1_ClCo->Write("h2_y_vs_x_tt1_ClCo");
+        h2_y_vs_x_ttm_ClCo->Write("h2_y_vs_x_ttm_ClCo");
       }
     };
 
@@ -565,7 +577,12 @@ void CTPPSProtonReconstructionPlotter::analyze(const edm::Event &event, const ed
     pl.h2_timing_tracks_vs_prot_mult->Fill(it.second, armTimingTrackCounter[it.first]);
   }
 
-  // plot distances between multi-RP protons and timing tracks in the same event
+  // define "clean condition" for each arm
+  map<unsigned int, bool> clCo;
+  clCo[0] = (singleRPMultiplicity[rpId_45_N_] && singleRPMultiplicity[rpId_45_F_] && multiRPMultiplicity[0] == 1);
+  clCo[1] = (singleRPMultiplicity[rpId_56_N_] && singleRPMultiplicity[rpId_56_F_] && multiRPMultiplicity[1] == 1);
+
+  // plot distances between multi-RP protons and timing tracks in the same arm
   for (const auto &proton : *hRecoProtonsMultiRP)
   {
     if (!proton.validFit())
@@ -588,10 +605,41 @@ void CTPPSProtonReconstructionPlotter::analyze(const edm::Event &event, const ed
       double de_x=0., de_x_unc=0.;
       CalculateTimingTrackingDistance(proton, tr, *hGeometry, de_x, de_x_unc);
 
+      double rd = (de_x_unc > 0.) ? de_x / de_x_unc : -1E10;
+
       pl.h_de_x_timing_vs_tracking->Fill(de_x);
-      pl.h_de_x_rel_timing_vs_tracking->Fill((de_x_unc > 0.) ? de_x / de_x_unc : -1E10);
+      pl.h_de_x_rel_timing_vs_tracking->Fill(rd);
       pl.h_de_x_match_timing_vs_tracking->Fill(fabs(de_x / de_x_unc) <= 1. ? 1. : 0.);
+
+      if (clCo[armId])
+      {
+        if (armTimingTrackCounter[armId] == 1)
+          pl.h_de_x_rel_timing_vs_tracking_ClCo->Fill(rd);
+      }
     }
+  }
+
+  // plot xy maps
+  for (const auto &proton : *hRecoProtonsMultiRP)
+  {
+    if (!proton.validFit())
+      continue;
+
+    CTPPSDetId rpId((*proton.contributingLocalTracks().begin())->getRPId());
+    unsigned int armId = rpId.arm();
+    const auto &pl = multiRPPlots_[armId];
+    const auto &nTimingTracks = armTimingTrackCounter[armId];
+
+    if (!clCo[armId])
+      continue;
+
+    double x_ref=0., y_ref=0.;
+    if (armId == 0) { x_ref = tr_L_N->getX(); y_ref = tr_L_N->getY(); }
+    if (armId == 1) { x_ref = tr_R_N->getX(); y_ref = tr_R_N->getY(); }
+
+    if (nTimingTracks == 0) pl.h2_y_vs_x_tt0_ClCo->Fill(x_ref, y_ref);
+    if (nTimingTracks == 1) pl.h2_y_vs_x_tt1_ClCo->Fill(x_ref, y_ref);
+    if (nTimingTracks > 1) pl.h2_y_vs_x_ttm_ClCo->Fill(x_ref, y_ref);
   }
 
   // make correlation plots
