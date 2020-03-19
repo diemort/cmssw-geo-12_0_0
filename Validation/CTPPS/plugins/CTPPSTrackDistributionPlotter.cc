@@ -99,12 +99,15 @@ class CTPPSTrackDistributionPlotter : public edm::one::EDAnalyzer<>
     struct ArmPlots
     {
       std::unique_ptr<TH1D> h_de_x, h_de_y;
+      std::unique_ptr<TH2D> h2_de_x_vs_x, h2_de_y_vs_x;
       std::unique_ptr<TProfile> p_de_x_vs_x, p_de_y_vs_x;
       std::unique_ptr<TProfile2D> p2_de_x_vs_x_y, p2_de_y_vs_x_y;
 
       ArmPlots() :
         h_de_x(new TH1D("", ";x^{F} - x^{N}", 100, -1., +1.)),
         h_de_y(new TH1D("", ";y^{F} - y^{N}", 100, -1., +1.)),
+        h2_de_x_vs_x(new TH2D("", ";x^{N};x^{F} - x^{N}", 100, 0., 40., 100, -2., +2.)),
+        h2_de_y_vs_x(new TH2D("", ";x^{N};y^{F} - y^{N}", 100, 0., 40., 100, -2., +2.)),
         p_de_x_vs_x(new TProfile("", ";x^{N};x^{F} - x^{N}", 40, 0., 40.)),
         p_de_y_vs_x(new TProfile("", ";x^{N};y^{F} - y^{N}", 40, 0., 40.)),
         p2_de_x_vs_x_y(new TProfile2D("", ";x;y", 40, 0., 40., 40, -20., +20.)),
@@ -115,6 +118,9 @@ class CTPPSTrackDistributionPlotter : public edm::one::EDAnalyzer<>
       {
         h_de_x->Fill(x_F - x_N);
         h_de_y->Fill(y_F - y_N);
+
+        h2_de_x_vs_x->Fill(x_N, x_F - x_N);
+        h2_de_y_vs_x->Fill(x_N, y_F - y_N);
 
         p_de_x_vs_x->Fill(x_N, x_F - x_N);
         p_de_y_vs_x->Fill(x_N, y_F - y_N);
@@ -127,6 +133,9 @@ class CTPPSTrackDistributionPlotter : public edm::one::EDAnalyzer<>
       {
         h_de_x->Write("h_de_x");
         h_de_y->Write("h_de_y");
+
+        h2_de_x_vs_x->Write("h2_de_x_vs_x");
+        h2_de_y_vs_x->Write("h2_de_y_vs_x");
 
         p_de_x_vs_x->Write("p_de_x_vs_x");
         p_de_y_vs_x->Write("p_de_y_vs_x");
