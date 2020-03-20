@@ -24,7 +24,7 @@
 #include "DataFormats/ProtonReco/interface/ForwardProtonFwd.h"
 
 #include "TFile.h"
-#include "TGraph.h"
+#include "TGraphErrors.h"
 
 #include <map>
 #include <set>
@@ -235,15 +235,27 @@ void CTPPSEventCategoryPlotter::endJob()
 
   printf(">> CTPPSEventCategoryPlotter::endJob\n");
 
+  {
+    printf("    denominator: %u\n", denominator_);
+
+    TGraphErrors *g = new TGraphErrors();
+
+    g->SetPoint(0, 1., denominator_);
+
+    g->Write("g_denominator");
+  }
+
   for (const auto &p : counter_)
   {
     const double r = double(p.second) / denominator_;
+    const double r_unc = sqrt(r * (1. - r) / denominator_);
 
-    printf("    %s: %0.3f\n", p.first.c_str(), r);
+    printf("    %s: %0.3f +- %0.3f\n", p.first.c_str(), r, r_unc);
 
-    TGraph *g = new TGraph();
+    TGraphErrors *g = new TGraphErrors();
 
-    g->SetPoint(0, 0., r);
+    g->SetPoint(0, 1., r);
+    g->SetPointError(0, 1., r_unc);
 
     g->Write(("g_" + p.first).c_str());
   }
