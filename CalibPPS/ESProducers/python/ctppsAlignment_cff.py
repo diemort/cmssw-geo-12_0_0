@@ -16,7 +16,8 @@ ctppsRPAlignmentCorrectionsDataESSourceXML.RealFiles = cms.vstring(
   #"CalibPPS/ESProducers/data/alignment/alignment_export_2019_09_25.xml",
   #"CalibPPS/ESProducers/data/alignment/alignment_export_2019_09_29.xml",
   #"CalibPPS/ESProducers/data/alignment/alignment_export_2019_10_29.xml",
-  "CalibPPS/ESProducers/data/alignment/alignment_export_2019_12_04.xml",
+  #"CalibPPS/ESProducers/data/alignment/alignment_export_2019_12_04.xml", # alignment used for UL re-reco of Run2
+  "CalibPPS/ESProducers/data/alignment/alignment_export_2020_03_23.xml", # test version of 2018 vertical alignment
 
   # alignment of timing RPs (diamonds and UFSDs)
   #"CalibPPS/ESProducers/data/alignment/timing_RP_2017_preTS2_v1.xml",
