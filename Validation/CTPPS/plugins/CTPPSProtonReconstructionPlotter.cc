@@ -82,17 +82,19 @@ private:
     std::unique_ptr<TProfile> p_th_y_vs_xi;
 
     std::map<unsigned int, TH1D *> m_h_xi_nTracks;
+    std::unique_ptr<TH1D> h_xi_n1f1;
 
     SingleRPPlots()
         : h_multiplicity(new TH1D("", ";reconstructed protons", 11, -0.5, 10.5)),
           h_xi(new TH1D("", ";#xi", 100, 0., 0.3)),
           h2_th_y_vs_xi(new TH2D("", ";#xi;#theta_{y}   (rad)", 100, 0., 0.3, 100, -500E-6, +500E-6)),
-          p_th_y_vs_xi(new TProfile("", ";#xi;#theta_{y}   (rad)", 100, 0., 0.3)) {
+          p_th_y_vs_xi(new TProfile("", ";#xi;#theta_{y}   (rad)", 100, 0., 0.3)),
+          h_xi_n1f1(new TH1D("", ";#xi", 100, 0., 0.3)) {
       for (unsigned int n = 2; n <= 10; ++n)
         m_h_xi_nTracks[n] = new TH1D(*h_xi);
     }
 
-    void fill(const reco::ForwardProton &p, unsigned int nTracks) {
+    void fill(const reco::ForwardProton &p, unsigned int nTracks, bool n1f1) {
       if (p.validFit()) {
         h_xi->Fill(p.xi());
 
@@ -103,6 +105,9 @@ private:
         auto it = m_h_xi_nTracks.find(nTracks);
         if (it != m_h_xi_nTracks.end())
           it->second->Fill(p.xi());
+
+        if (n1f1)
+          h_xi_n1f1->Fill(p.xi());
       }
     }
 
@@ -123,6 +128,8 @@ private:
       }
 
       gDirectory = d_top;
+
+      h_xi_n1f1->Write("h_xi_n1f1");
     }
   };
 
@@ -140,6 +147,7 @@ private:
     std::unique_ptr<TH2D> h2_timing_tracks_vs_prot_mult;
 
     std::map<unsigned int, TH1D *> m_h_xi_nTracks;
+    std::unique_ptr<TH1D> h_xi_n1f1;
 
     std::unique_ptr<TH1D> h_de_x_timing_vs_tracking, h_de_x_rel_timing_vs_tracking, h_de_x_match_timing_vs_tracking;
     std::unique_ptr<TH1D> h_de_x_rel_timing_vs_tracking_ClCo;
@@ -166,6 +174,7 @@ private:
           p_vtx_y_vs_xi(new TProfile("", ";#xi;vtx_{y}   (cm)", 100, 0., 0.3)),
           h2_timing_tracks_vs_prot_mult(
               new TH2D("", ";reco protons per event;timing tracks per event", 11, -0.5, 10.5, 11, -0.5, 10.5)),
+          h_xi_n1f1(new TH1D("", ";#xi", 100, 0., 0.3)),
           h_de_x_timing_vs_tracking(new TH1D("", ";#Delta x   (mm)", 200, -1., +1.)),
           h_de_x_rel_timing_vs_tracking(new TH1D("", ";#Delta x / #sigma(x)", 200, -20., +20.)),
           h_de_x_match_timing_vs_tracking(new TH1D("", ";match between tracking and timing tracks", 2, -0.5, +1.5)),
@@ -191,7 +200,7 @@ private:
         m_h_xi_nTracks[n] = new TH1D(*h_xi);
     }
 
-    void fill(const reco::ForwardProton &p, unsigned int nTracks) {
+    void fill(const reco::ForwardProton &p, unsigned int nTracks, bool n1f1) {
       if (!p.validFit())
         return;
 
@@ -246,6 +255,9 @@ private:
       auto it = m_h_xi_nTracks.find(nTracks);
       if (it != m_h_xi_nTracks.end())
         it->second->Fill(p.xi());
+
+      if (n1f1)
+        h_xi_n1f1->Fill(p.xi());
     }
 
     void write() const {
@@ -305,6 +317,8 @@ private:
       }
 
       gDirectory = d_top;
+
+      h_xi_n1f1->Write("h_xi_n1f1");
 
       h_de_x_timing_vs_tracking->Write("h_de_x_timing_vs_tracking");
       h_de_x_rel_timing_vs_tracking->Write("h_de_x_rel_timing_vs_tracking");
@@ -461,10 +475,12 @@ void CTPPSProtonReconstructionPlotter::CalculateTimingTrackingDistance(const rec
   const double z_j = geometry.getRPTranslation(tr_j.getRPId()).z();
 
   // interpolation from tracking RPs
-  const double z_ti = -geometry.getRPTranslation(tr_ti.getRPId()).z();  // the minus sign fixes a bug in the diamond geometry
+  const double z_ti =
+      -geometry.getRPTranslation(tr_ti.getRPId()).z();  // the minus sign fixes a bug in the diamond geometry
   const double f_i = (z_ti - z_j) / (z_i - z_j), f_j = (z_i - z_ti) / (z_i - z_j);
   const double x_inter = f_i * tr_i.getX() + f_j * tr_j.getX();
-  const double x_inter_unc_sq = f_i * f_i * tr_i.getXUnc() * tr_i.getXUnc() + f_j * f_j * tr_j.getXUnc() * tr_j.getXUnc();
+  const double x_inter_unc_sq =
+      f_i * f_i * tr_i.getXUnc() * tr_i.getXUnc() + f_j * f_j * tr_j.getXUnc() * tr_j.getXUnc();
 
   // save distance
   de_x = tr_ti.getX() - x_inter;
@@ -500,19 +516,28 @@ void CTPPSProtonReconstructionPlotter::analyze(const edm::Event &event, const ed
   const CTPPSLocalTrackLite *tr_R_N = nullptr;
   const CTPPSLocalTrackLite *tr_R_F = nullptr;
   std::map<unsigned int, unsigned int> armTrackCounter, armTimingTrackCounter;
+  std::map<unsigned int, unsigned int> armTrackCounter_N, armTrackCounter_F;
 
   for (const auto &tr : *hTracks) {
     CTPPSDetId rpId(tr.getRPId());
     unsigned int decRPId = rpId.arm() * 100 + rpId.station() * 10 + rpId.rp();
 
-    if (decRPId == rpId_45_N_)
+    if (decRPId == rpId_45_N_) {
       tr_L_N = &tr;
-    if (decRPId == rpId_45_F_)
+      armTrackCounter_N[0]++;
+    }
+    if (decRPId == rpId_45_F_) {
       tr_L_F = &tr;
-    if (decRPId == rpId_56_N_)
+      armTrackCounter_F[0]++;
+    }
+    if (decRPId == rpId_56_N_) {
       tr_R_N = &tr;
-    if (decRPId == rpId_56_F_)
+      armTrackCounter_N[1]++;
+    }
+    if (decRPId == rpId_56_F_) {
       tr_R_F = &tr;
+      armTrackCounter_F[1]++;
+    }
 
     armTrackCounter[rpId.arm()]++;
 
@@ -542,7 +567,10 @@ void CTPPSProtonReconstructionPlotter::analyze(const edm::Event &event, const ed
   for (const auto &proton : *hRecoProtonsSingleRP) {
     CTPPSDetId rpId((*proton.contributingLocalTracks().begin())->getRPId());
     unsigned int decRPId = rpId.arm() * 100 + rpId.station() * 10 + rpId.rp();
-    singleRPPlots_[decRPId].fill(proton, armTrackCounter[rpId.arm()]);
+
+    const bool n1f1 = (armTrackCounter_N[rpId.arm()] == 1 && armTrackCounter_F[rpId.arm()] == 1);
+
+    singleRPPlots_[decRPId].fill(proton, armTrackCounter[rpId.arm()], n1f1);
 
     if (proton.validFit())
       singleRPMultiplicity[decRPId]++;
@@ -555,7 +583,10 @@ void CTPPSProtonReconstructionPlotter::analyze(const edm::Event &event, const ed
   for (const auto &proton : *hRecoProtonsMultiRP) {
     CTPPSDetId rpId((*proton.contributingLocalTracks().begin())->getRPId());
     unsigned int armId = rpId.arm();
-    multiRPPlots_[armId].fill(proton, armTrackCounter[armId]);
+
+    const bool n1f1 = (armTrackCounter_N[armId] == 1 && armTrackCounter_F[armId] == 1);
+
+    multiRPPlots_[armId].fill(proton, armTrackCounter[armId], n1f1);
 
     if (proton.validFit())
       multiRPMultiplicity[armId]++;
