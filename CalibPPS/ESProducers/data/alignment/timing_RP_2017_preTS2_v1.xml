@@ -1,0 +1,126 @@
+<xml DocumentType="AlignmentDescription">
+  <iov first="294730:0" last="302664:0">
+    <!-- RP 16, plane 0, Si piece 0 -->
+      <!-- channel  0 --> <det id="2054160384" sh_x=" +1767.2" sh_x_e="   +10.7"/>
+      <!-- channel 11 --> <det id="2054205440" sh_x=" +1767.2" sh_x_e="   +10.7"/>
+      <!-- channel  1 --> <det id="2054164480" sh_x=" +1767.2" sh_x_e="   +10.7"/>
+      <!-- channel 10 --> <det id="2054201344" sh_x=" +1767.2" sh_x_e="   +10.7"/>
+      <!-- channel  2 --> <det id="2054168576" sh_x=" +1767.2" sh_x_e="   +10.7"/>
+    <!-- RP 16, plane 0, Si piece 1 -->
+      <!-- channel  9 --> <det id="2054197248" sh_x=" +1904.2" sh_x_e="   +27.8"/>
+      <!-- channel  3 --> <det id="2054172672" sh_x=" +1904.2" sh_x_e="   +27.8"/>
+      <!-- channel  8 --> <det id="2054193152" sh_x=" +1904.2" sh_x_e="   +27.8"/>
+      <!-- channel  4 --> <det id="2054176768" sh_x=" +1904.2" sh_x_e="   +27.8"/>
+    <!-- RP 16, plane 0, Si piece 2 -->
+      <!-- channel  7 --> <det id="2054189056" sh_x=" +1980.0" sh_x_e="    +0.0"/>
+      <!-- channel  5 --> <det id="2054180864" sh_x=" +1980.0" sh_x_e="    +0.0"/>
+    <!-- RP 16, plane 0, Si piece 3 -->
+      <!-- channel  6 --> <det id="2054184960" sh_x=" +1980.0" sh_x_e="    +0.0"/>
+    <!-- RP 16, plane 1, Si piece 0 -->
+      <!-- channel  0 --> <det id="2054291456" sh_x=" +1626.7" sh_x_e="    +7.1"/>
+      <!-- channel 11 --> <det id="2054336512" sh_x=" +1626.7" sh_x_e="    +7.1"/>
+      <!-- channel  1 --> <det id="2054295552" sh_x=" +1626.7" sh_x_e="    +7.1"/>
+      <!-- channel 10 --> <det id="2054332416" sh_x=" +1626.7" sh_x_e="    +7.1"/>
+      <!-- channel  2 --> <det id="2054299648" sh_x=" +1626.7" sh_x_e="    +7.1"/>
+    <!-- RP 16, plane 1, Si piece 1 -->
+      <!-- channel  9 --> <det id="2054328320" sh_x=" +1768.8" sh_x_e="   +21.7"/>
+      <!-- channel  3 --> <det id="2054303744" sh_x=" +1768.8" sh_x_e="   +21.7"/>
+      <!-- channel  8 --> <det id="2054324224" sh_x=" +1768.8" sh_x_e="   +21.7"/>
+      <!-- channel  4 --> <det id="2054307840" sh_x=" +1768.8" sh_x_e="   +21.7"/>
+    <!-- RP 16, plane 1, Si piece 2 -->
+      <!-- channel  7 --> <det id="2054320128" sh_x=" +1950.0" sh_x_e="    +0.0"/>
+      <!-- channel  5 --> <det id="2054311936" sh_x=" +1950.0" sh_x_e="    +0.0"/>
+    <!-- RP 16, plane 1, Si piece 3 -->
+      <!-- channel  6 --> <det id="2054316032" sh_x=" +1950.0" sh_x_e="    +0.0"/>
+    <!-- RP 16, plane 2, Si piece 0 -->
+      <!-- channel  0 --> <det id="2054422528" sh_x=" +1455.0" sh_x_e="    +9.4"/>
+      <!-- channel 11 --> <det id="2054467584" sh_x=" +1455.0" sh_x_e="    +9.4"/>
+      <!-- channel  1 --> <det id="2054426624" sh_x=" +1455.0" sh_x_e="    +9.4"/>
+      <!-- channel 10 --> <det id="2054463488" sh_x=" +1455.0" sh_x_e="    +9.4"/>
+    <!-- RP 16, plane 2, Si piece 1 -->
+      <!-- channel  2 --> <det id="2054430720" sh_x=" +1646.3" sh_x_e="   +12.0"/>
+      <!-- channel  9 --> <det id="2054459392" sh_x=" +1646.3" sh_x_e="   +12.0"/>
+      <!-- channel  3 --> <det id="2054434816" sh_x=" +1646.3" sh_x_e="   +12.0"/>
+      <!-- channel  8 --> <det id="2054455296" sh_x=" +1646.3" sh_x_e="   +12.0"/>
+      <!-- channel  4 --> <det id="2054438912" sh_x=" +1646.3" sh_x_e="   +12.0"/>
+    <!-- RP 16, plane 2, Si piece 2 -->
+      <!-- channel  7 --> <det id="2054451200" sh_x=" +1321.7" sh_x_e="    +0.0"/>
+    <!-- RP 16, plane 2, Si piece 3 -->
+      <!-- channel  5 --> <det id="2054443008" sh_x=" +1321.7" sh_x_e="    +0.0"/>
+      <!-- channel  6 --> <det id="2054447104" sh_x=" +1321.7" sh_x_e="    +0.0"/>
+    <!-- RP 16, plane 3, Si piece 0 -->
+      <!-- channel  0 --> <det id="2054553600" sh_x=" +1925.2" sh_x_e="    +7.0"/>
+      <!-- channel  1 --> <det id="2054557696" sh_x=" +1925.2" sh_x_e="    +7.0"/>
+      <!-- channel  2 --> <det id="2054561792" sh_x=" +1925.2" sh_x_e="    +7.0"/>
+      <!-- channel  3 --> <det id="2054565888" sh_x=" +1925.2" sh_x_e="    +7.0"/>
+      <!-- channel  4 --> <det id="2054569984" sh_x=" +1925.2" sh_x_e="    +7.0"/>
+      <!-- channel  5 --> <det id="2054574080" sh_x=" +1925.2" sh_x_e="    +7.0"/>
+      <!-- channel  6 --> <det id="2054578176" sh_x=" +1925.2" sh_x_e="    +7.0"/>
+      <!-- channel  7 --> <det id="2054582272" sh_x=" +1925.2" sh_x_e="    +7.0"/>
+      <!-- channel  8 --> <det id="2054586368" sh_x=" +1925.2" sh_x_e="    +7.0"/>
+      <!-- channel  9 --> <det id="2054590464" sh_x=" +1925.2" sh_x_e="    +7.0"/>
+      <!-- channel 10 --> <det id="2054594560" sh_x=" +1925.2" sh_x_e="    +7.0"/>
+      <!-- channel 11 --> <det id="2054598656" sh_x=" +1925.2" sh_x_e="    +7.0"/>
+    <!-- RP 116, plane 0, Si piece 0 -->
+      <!-- channel  0 --> <det id="2070937600" sh_x=" +1577.0" sh_x_e="   +16.9"/>
+      <!-- channel 11 --> <det id="2070982656" sh_x=" +1577.0" sh_x_e="   +16.9"/>
+      <!-- channel  1 --> <det id="2070941696" sh_x=" +1577.0" sh_x_e="   +16.9"/>
+      <!-- channel 10 --> <det id="2070978560" sh_x=" +1577.0" sh_x_e="   +16.9"/>
+      <!-- channel  2 --> <det id="2070945792" sh_x=" +1577.0" sh_x_e="   +16.9"/>
+    <!-- RP 116, plane 0, Si piece 1 -->
+      <!-- channel  9 --> <det id="2070974464" sh_x=" +1676.2" sh_x_e="   +28.0"/>
+      <!-- channel  3 --> <det id="2070949888" sh_x=" +1676.2" sh_x_e="   +28.0"/>
+      <!-- channel  8 --> <det id="2070970368" sh_x=" +1676.2" sh_x_e="   +28.0"/>
+      <!-- channel  4 --> <det id="2070953984" sh_x=" +1676.2" sh_x_e="   +28.0"/>
+    <!-- RP 116, plane 0, Si piece 2 -->
+      <!-- channel  7 --> <det id="2070966272" sh_x=" +1865.0" sh_x_e="    +0.0"/>
+      <!-- channel  5 --> <det id="2070958080" sh_x=" +1865.0" sh_x_e="    +0.0"/>
+    <!-- RP 116, plane 0, Si piece 3 -->
+      <!-- channel  6 --> <det id="2070962176" sh_x=" +1865.0" sh_x_e="    +0.0"/>
+    <!-- RP 116, plane 1, Si piece 0 -->
+      <!-- channel  0 --> <det id="2071068672" sh_x=" +1713.7" sh_x_e="   +14.3"/>
+      <!-- channel 11 --> <det id="2071113728" sh_x=" +1713.7" sh_x_e="   +14.3"/>
+      <!-- channel  1 --> <det id="2071072768" sh_x=" +1713.7" sh_x_e="   +14.3"/>
+      <!-- channel 10 --> <det id="2071109632" sh_x=" +1713.7" sh_x_e="   +14.3"/>
+      <!-- channel  2 --> <det id="2071076864" sh_x=" +1713.7" sh_x_e="   +14.3"/>
+    <!-- RP 116, plane 1, Si piece 1 -->
+      <!-- channel  9 --> <det id="2071105536" sh_x=" +1886.1" sh_x_e="   +19.9"/>
+      <!-- channel  3 --> <det id="2071080960" sh_x=" +1886.1" sh_x_e="   +19.9"/>
+      <!-- channel  8 --> <det id="2071101440" sh_x=" +1886.1" sh_x_e="   +19.9"/>
+      <!-- channel  4 --> <det id="2071085056" sh_x=" +1886.1" sh_x_e="   +19.9"/>
+    <!-- RP 116, plane 1, Si piece 2 -->
+      <!-- channel  7 --> <det id="2071097344" sh_x=" +1975.0" sh_x_e="    +0.0"/>
+      <!-- channel  5 --> <det id="2071089152" sh_x=" +1975.0" sh_x_e="    +0.0"/>
+    <!-- RP 116, plane 1, Si piece 3 -->
+      <!-- channel  6 --> <det id="2071093248" sh_x=" +1975.0" sh_x_e="    +0.0"/>
+    <!-- RP 116, plane 2, Si piece 0 -->
+      <!-- channel  0 --> <det id="2071199744" sh_x=" +1605.0" sh_x_e="   +44.9"/>
+      <!-- channel 11 --> <det id="2071244800" sh_x=" +1605.0" sh_x_e="   +44.9"/>
+      <!-- channel  1 --> <det id="2071203840" sh_x=" +1605.0" sh_x_e="   +44.9"/>
+      <!-- channel 10 --> <det id="2071240704" sh_x=" +1605.0" sh_x_e="   +44.9"/>
+    <!-- RP 116, plane 2, Si piece 1 -->
+      <!-- channel  2 --> <det id="2071207936" sh_x=" +1773.3" sh_x_e="   +25.7"/>
+      <!-- channel  9 --> <det id="2071236608" sh_x=" +1773.3" sh_x_e="   +25.7"/>
+      <!-- channel  3 --> <det id="2071212032" sh_x=" +1773.3" sh_x_e="   +25.7"/>
+      <!-- channel  8 --> <det id="2071232512" sh_x=" +1773.3" sh_x_e="   +25.7"/>
+      <!-- channel  4 --> <det id="2071216128" sh_x=" +1773.3" sh_x_e="   +25.7"/>
+    <!-- RP 116, plane 2, Si piece 2 -->
+      <!-- channel  7 --> <det id="2071228416" sh_x="    -0.0" sh_x_e="    +0.0"/>
+    <!-- RP 116, plane 2, Si piece 3 -->
+      <!-- channel  5 --> <det id="2071220224" sh_x="    -0.0" sh_x_e="    +0.0"/>
+      <!-- channel  6 --> <det id="2071224320" sh_x="    -0.0" sh_x_e="    +0.0"/>
+    <!-- RP 116, plane 3, Si piece 0 -->
+      <!-- channel  0 --> <det id="2071330816" sh_x=" +1814.7" sh_x_e="    +7.0"/>
+      <!-- channel  1 --> <det id="2071334912" sh_x=" +1814.7" sh_x_e="    +7.0"/>
+      <!-- channel  2 --> <det id="2071339008" sh_x=" +1814.7" sh_x_e="    +7.0"/>
+      <!-- channel  3 --> <det id="2071343104" sh_x=" +1814.7" sh_x_e="    +7.0"/>
+      <!-- channel  4 --> <det id="2071347200" sh_x=" +1814.7" sh_x_e="    +7.0"/>
+      <!-- channel  5 --> <det id="2071351296" sh_x=" +1814.7" sh_x_e="    +7.0"/>
+      <!-- channel  6 --> <det id="2071355392" sh_x=" +1814.7" sh_x_e="    +7.0"/>
+      <!-- channel  7 --> <det id="2071359488" sh_x=" +1814.7" sh_x_e="    +7.0"/>
+      <!-- channel  8 --> <det id="2071363584" sh_x=" +1814.7" sh_x_e="    +7.0"/>
+      <!-- channel  9 --> <det id="2071367680" sh_x=" +1814.7" sh_x_e="    +7.0"/>
+      <!-- channel 10 --> <det id="2071371776" sh_x=" +1814.7" sh_x_e="    +7.0"/>
+      <!-- channel 11 --> <det id="2071375872" sh_x=" +1814.7" sh_x_e="    +7.0"/>
+  </iov>
+</xml>
