@@ -91,6 +91,8 @@ private:
     std::unique_ptr<TH1D> h_de_x, h_de_y;
     std::unique_ptr<TProfile> p_de_x_vs_x, p_de_y_vs_x;
     std::unique_ptr<TProfile2D> p2_de_x_vs_x_y, p2_de_y_vs_x_y;
+    std::unique_ptr<TH2D> h2_de_x_vs_x, h2_de_y_vs_x;
+    std::unique_ptr<TH2D> h2_de_y_vs_de_x;
 
     ArmPlots()
         : h_de_x(new TH1D("", ";x^{F} - x^{N}", 100, -1., +1.)),
@@ -98,7 +100,11 @@ private:
           p_de_x_vs_x(new TProfile("", ";x^{N};x^{F} - x^{N}", 40, 0., 40.)),
           p_de_y_vs_x(new TProfile("", ";x^{N};y^{F} - y^{N}", 40, 0., 40.)),
           p2_de_x_vs_x_y(new TProfile2D("", ";x;y", 40, 0., 40., 40, -20., +20.)),
-          p2_de_y_vs_x_y(new TProfile2D("", ";x;y", 40, 0., 40., 40, -20., +20.)) {}
+          p2_de_y_vs_x_y(new TProfile2D("", ";x;y", 40, 0., 40., 40, -20., +20.)),
+          h2_de_x_vs_x(new TH2D("", ";x^{N};x^{F} - x^{N}", 80, 0., 40., 100, -1., +1.)),
+          h2_de_y_vs_x(new TH2D("", ";x^{N};y^{F} - y^{N}", 80, 0., 40., 100, -1., +1.)),
+          h2_de_y_vs_de_x(new TH2D("", ";x^{F} - x^{N};y^{F} - y^{N}", 100, -1., +1., 100, -1., +1.))
+    {}
 
     void fill(double x_N, double y_N, double x_F, double y_F) {
       h_de_x->Fill(x_F - x_N);
@@ -109,6 +115,11 @@ private:
 
       p2_de_x_vs_x_y->Fill(x_N, y_N, x_F - x_N);
       p2_de_y_vs_x_y->Fill(x_N, y_N, y_F - y_N);
+
+      h2_de_x_vs_x->Fill(x_N, x_F - x_N);
+      h2_de_y_vs_x->Fill(x_N, y_F - y_N);
+
+      h2_de_y_vs_de_x->Fill(x_F - x_N, y_F - y_N);
     }
 
     void write() const {
@@ -120,6 +131,11 @@ private:
 
       p2_de_x_vs_x_y->Write("p2_de_x_vs_x_y");
       p2_de_y_vs_x_y->Write("p2_de_y_vs_x_y");
+
+      h2_de_x_vs_x->Write("h2_de_x_vs_x");
+      h2_de_y_vs_x->Write("h2_de_y_vs_x");
+
+      h2_de_y_vs_de_x->Write("h2_de_y_vs_de_x");
     }
   };
 
@@ -162,6 +178,7 @@ void CTPPSTrackDistributionPlotter::analyze(const edm::Event& iEvent, const edm:
       if (rpId1.arm() != rpId2.arm())
         continue;
 
+      // TODO: fix this
       if (rpId1.station() == 0 && rpId2.station() == 2)
         armPlots[rpId1.arm()].fill(t1.getX(), t1.getY(), t2.getX(), t2.getY());
     }
