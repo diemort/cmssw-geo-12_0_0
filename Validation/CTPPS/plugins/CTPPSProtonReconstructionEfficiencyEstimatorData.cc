@@ -10,6 +10,7 @@
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/ESHandle.h"
+#include "FWCore/Framework/interface/ESWatcher.h"
 
 #include "CondFormats/DataRecord/interface/CTPPSInterpolatedOpticsRcd.h"
 #include "CondFormats/CTPPSReadoutObjects/interface/LHCInterpolatedOpticalFunctionsSetCollection.h"
@@ -57,8 +58,12 @@ private:
 
   std::string outputFile_;
 
+  edm::ESWatcher<CTPPSInterpolatedOpticsRcd> opticsWatcher_;
+
   struct ArmData {
     unsigned int rpId_N, rpId_F;
+
+    std::shared_ptr<const TSpline3> s_x_to_xi_N;
 
     unsigned int n_events_with_tracks;
 
@@ -75,20 +80,26 @@ private:
     struct EffPlots
     {
       std::unique_ptr<TProfile> p_eff1_vs_x_N;
+      std::unique_ptr<TProfile> p_eff1_vs_xi_N;
 
       std::unique_ptr<TProfile> p_eff2_vs_x_N;
+      std::unique_ptr<TProfile> p_eff2_vs_xi_N;
 
       EffPlots() :
           p_eff1_vs_x_N(new TProfile("", ";x_{N}   (mm);efficiency", 50, 0., 25.)),
+          p_eff1_vs_xi_N(new TProfile("", ";#xi_{si,N};efficiency", 50, 0., 0.25)),
 
-          p_eff2_vs_x_N(new TProfile("", ";x_{N}   (mm);efficiency", 50, 0., 25.))
+          p_eff2_vs_x_N(new TProfile("", ";x_{N}   (mm);efficiency", 50, 0., 25.)),
+          p_eff2_vs_xi_N(new TProfile("", ";#xi_{si,N};efficiency", 50, 0., 0.25))
       {}
 
       void write() const
       {
         p_eff1_vs_x_N->Write("p_eff1_vs_x_N");
+        p_eff1_vs_xi_N->Write("p_eff1_vs_xi_N");
 
         p_eff2_vs_x_N->Write("p_eff2_vs_x_N");
+        p_eff2_vs_xi_N->Write("p_eff2_vs_xi_N");
       }
     };
 
@@ -162,6 +173,33 @@ private:
       }     
 
       gDirectory = d_top;
+    }
+
+    void UpdateOptics(const LHCInterpolatedOpticalFunctionsSetCollection &ofc)
+    {
+      const LHCInterpolatedOpticalFunctionsSet *of = NULL;
+
+      for (const auto &p : ofc)
+      {
+        CTPPSDetId rpId(p.first);
+        unsigned int decRPId = rpId.arm()*100 + rpId.station()*10 + rpId.rp();
+
+        if (decRPId == rpId_N)
+        {
+          of = &p.second;
+          break;
+        }
+      }
+
+      if (!of)
+      {
+        edm::LogError("ArmData::UpdateOptics") << "Cannot find optical functions for RP " << rpId_N;
+        return;
+      }
+
+      std::vector<double> xiValues = of->getXiValues();  // local copy made since the TSpline constructor needs non-const parameters
+      std::vector<double> xDValues = of->getFcnValues()[LHCOpticalFunctionsSet::exd];
+      s_x_to_xi_N = std::make_shared<TSpline3>("", xDValues.data(), xiValues.data(), xiValues.size());
     }
   };
 
@@ -247,6 +285,13 @@ void CTPPSProtonReconstructionEfficiencyEstimatorData::analyze(const edm::Event 
   // get conditions
   edm::ESHandle<LHCInterpolatedOpticalFunctionsSetCollection> hOpticalFunctions;
   iSetup.get<CTPPSInterpolatedOpticsRcd>().get(opticsLabel_, hOpticalFunctions);
+
+  // check optics change
+  if (opticsWatcher_.check(iSetup))
+  {
+    data_[0].UpdateOptics(*hOpticalFunctions);
+    data_[1].UpdateOptics(*hOpticalFunctions);
+  }
 
   // get input
   edm::Handle<CTPPSLocalTrackLiteCollection> hTracks;
@@ -573,29 +618,40 @@ void CTPPSProtonReconstructionEfficiencyEstimatorData::analyze(const edm::Event 
       for (unsigned int tri : ap.second.matched_track_idc[nsi])
       {
         const double x_N = (*hTracks)[tri].getX();
-        // TODO: add xi
+        const double xi_N = ad.s_x_to_xi_N->Eval(x_N * 1E-1); // conversion mm to cm
+
+        printf("x_N = %.3f --> xi_N = %.3f\n", x_N, xi_N);
 
         ad.effPlots[0][nsi].p_eff1_vs_x_N->Fill(x_N, eff);
+        ad.effPlots[0][nsi].p_eff1_vs_xi_N->Fill(xi_N, eff);
+
         ad.effPlots[n_exp_prot][nsi].p_eff1_vs_x_N->Fill(x_N, eff);
+        ad.effPlots[n_exp_prot][nsi].p_eff1_vs_xi_N->Fill(xi_N, eff);
       }
 
       // update method 2 plots
       for (const auto &tri : ap.second.matched_track_with_prot_idc[nsi])
       {
         const double x_N = (*hTracks)[tri].getX();
-        // TODO: add xi
+        const double xi_N = ad.s_x_to_xi_N->Eval(x_N * 1E-1); // conversion mm to cm
         
         ad.effPlots[0][nsi].p_eff2_vs_x_N->Fill(x_N, 1.);
+        ad.effPlots[0][nsi].p_eff2_vs_xi_N->Fill(xi_N, 1.);
+
         ad.effPlots[n_exp_prot][nsi].p_eff2_vs_x_N->Fill(x_N, 1.);
+        ad.effPlots[n_exp_prot][nsi].p_eff2_vs_xi_N->Fill(xi_N, 1.);
       }
 
       for (const auto &tri : ap.second.matched_track_without_prot_idc[nsi])
       {
         const double x_N = (*hTracks)[tri].getX();
-        // TODO: add xi
+        const double xi_N = ad.s_x_to_xi_N->Eval(x_N * 1E-1); // conversion mm to cm
         
         ad.effPlots[0][nsi].p_eff2_vs_x_N->Fill(x_N, 0.);
+        ad.effPlots[0][nsi].p_eff2_vs_xi_N->Fill(xi_N, 0.);
+
         ad.effPlots[n_exp_prot][nsi].p_eff2_vs_x_N->Fill(x_N, 0.);
+        ad.effPlots[n_exp_prot][nsi].p_eff2_vs_xi_N->Fill(xi_N, 0.);
       }
     }
   }
