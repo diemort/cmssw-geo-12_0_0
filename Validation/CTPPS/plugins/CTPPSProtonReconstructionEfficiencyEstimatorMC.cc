@@ -36,9 +36,9 @@
 
 //----------------------------------------------------------------------------------------------------
 
-class CTPPSProtonReconstructionEfficiencyEstimator : public edm::one::EDAnalyzer<> {
+class CTPPSProtonReconstructionEfficiencyEstimatorMC : public edm::one::EDAnalyzer<> {
 public:
-  explicit CTPPSProtonReconstructionEfficiencyEstimator(const edm::ParameterSet &);
+  explicit CTPPSProtonReconstructionEfficiencyEstimatorMC(const edm::ParameterSet &);
 
 private:
   void analyze(const edm::Event &, const edm::EventSetup &) override;
@@ -90,7 +90,7 @@ using namespace HepMC;
 
 //----------------------------------------------------------------------------------------------------
 
-CTPPSProtonReconstructionEfficiencyEstimator::CTPPSProtonReconstructionEfficiencyEstimator(
+CTPPSProtonReconstructionEfficiencyEstimatorMC::CTPPSProtonReconstructionEfficiencyEstimatorMC(
     const edm::ParameterSet &iConfig)
     : tokenHepMCAfterSmearing_(
           consumes<edm::HepMCProduct>(iConfig.getParameter<edm::InputTag>("tagHepMCAfterSmearing"))),
@@ -124,7 +124,7 @@ CTPPSProtonReconstructionEfficiencyEstimator::CTPPSProtonReconstructionEfficienc
 
 //----------------------------------------------------------------------------------------------------
 
-void CTPPSProtonReconstructionEfficiencyEstimator::analyze(const edm::Event &iEvent, const edm::EventSetup &iSetup) {
+void CTPPSProtonReconstructionEfficiencyEstimatorMC::analyze(const edm::Event &iEvent, const edm::EventSetup &iSetup) {
   bool verbosity = false;
 
   const auto eid = iEvent.id().event();
@@ -348,7 +348,7 @@ void CTPPSProtonReconstructionEfficiencyEstimator::analyze(const edm::Event &iEv
 
 //----------------------------------------------------------------------------------------------------
 
-void CTPPSProtonReconstructionEfficiencyEstimator::endJob() {
+void CTPPSProtonReconstructionEfficiencyEstimatorMC::endJob() {
   auto f_out = std::make_unique<TFile>(outputFile_.c_str(), "recreate");
 
   for (const auto &ait : plots_) {
@@ -368,4 +368,4 @@ void CTPPSProtonReconstructionEfficiencyEstimator::endJob() {
 
 //----------------------------------------------------------------------------------------------------
 
-DEFINE_FWK_MODULE(CTPPSProtonReconstructionEfficiencyEstimator);
+DEFINE_FWK_MODULE(CTPPSProtonReconstructionEfficiencyEstimatorMC);
