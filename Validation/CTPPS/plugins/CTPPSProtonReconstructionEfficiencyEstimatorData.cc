@@ -11,6 +11,9 @@
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 
+#include "CondFormats/DataRecord/interface/CTPPSInterpolatedOpticsRcd.h"
+#include "CondFormats/CTPPSReadoutObjects/interface/LHCInterpolatedOpticalFunctionsSetCollection.h"
+
 #include "DataFormats/CTPPSDetId/interface/CTPPSDetId.h"
 
 #include "DataFormats/ProtonReco/interface/ForwardProton.h"
@@ -34,6 +37,8 @@ class CTPPSProtonReconstructionEfficiencyEstimatorData : public edm::one::EDAnal
 public:
   explicit CTPPSProtonReconstructionEfficiencyEstimatorData(const edm::ParameterSet &);
 
+  static void fillDescriptions(edm::ConfigurationDescriptions &descriptions);
+
 private:
   void analyze(const edm::Event &, const edm::EventSetup &) override;
   void endJob() override;
@@ -42,7 +47,13 @@ private:
 
   edm::EDGetTokenT<reco::ForwardProtonCollection> tokenRecoProtonsMultiRP_;
 
-  unsigned int n_prep_events = 1000;
+  std::string opticsLabel_;
+
+  unsigned int n_prep_events_;
+
+  unsigned int n_exp_prot_max_;
+
+  std::vector<double> n_sigmas_;
 
   std::string outputFile_;
 
@@ -59,7 +70,7 @@ private:
 
     std::vector<double> n_sigmas;
 
-    unsigned int n_exp_part_max = 5;
+    unsigned int n_exp_prot_max;
 
     struct EffPlots
     {
@@ -81,8 +92,8 @@ private:
       }
     };
 
-    // (n exp particles, index in n_sigmas) --> plots
-    // n exp particles = 0 --> no condition (summary case)
+    // (n exp protons, index in n_sigmas) --> plots
+    // n exp protons = 0 --> no condition (summary case)
     std::map<unsigned int, std::map<unsigned int, EffPlots>> effPlots;
 
     ArmData() :
@@ -93,11 +104,9 @@ private:
         h2_de_y_vs_de_x(new TH2D("", ";x_{F} - x_{N}   (mm);y_{F} - y_{N}   (mm)", 100, -1., +1., 100, -1., +1.)),
 
         de_x_mean(0.), de_x_sigma(0.),
-        de_y_mean(0.), de_y_sigma(0.),
-
-        n_sigmas({3., 5., 7.})
+        de_y_mean(0.), de_y_sigma(0.)
     {
-        for (unsigned int nep = 0; nep <= n_exp_part_max; ++nep)
+        for (unsigned int nep = 0; nep <= n_exp_prot_max; ++nep)
         {
           for (unsigned int nsi = 0; nsi < n_sigmas.size(); ++nsi)
           {
@@ -134,9 +143,9 @@ private:
       for (const auto &nep_p : effPlots)
       {
         if (nep_p.first == 0)
-          sprintf(buf, "exp part all");
+          sprintf(buf, "exp prot all");
         else
-          sprintf(buf, "exp part %u", nep_p.first);
+          sprintf(buf, "exp prot %u", nep_p.first);
 
         TDirectory *d_nep = d_top->mkdir(buf);
 
@@ -175,15 +184,51 @@ CTPPSProtonReconstructionEfficiencyEstimatorData::CTPPSProtonReconstructionEffic
       tokenRecoProtonsMultiRP_(
           consumes<reco::ForwardProtonCollection>(iConfig.getParameter<InputTag>("tagRecoProtonsMultiRP"))),
 
+      opticsLabel_(iConfig.getParameter<std::string>("opticsLabel")),
+      n_prep_events_(iConfig.getParameter<unsigned int>("n_prep_events")),
+      n_exp_prot_max_(iConfig.getParameter<unsigned int>("n_exp_prot_max")),
+      n_sigmas_(iConfig.getParameter<std::vector<double>>("n_sigmas")),
+
       outputFile_(iConfig.getParameter<string>("outputFile")),
 
       ff_(new TF1("ff", "[0] * exp(- (x-[1])*(x-[1]) / 2 / [2]/[2]) + [4]"))
 {
+  data_[0].n_exp_prot_max = n_exp_prot_max_;
+  data_[0].n_sigmas = n_sigmas_;
   data_[0].rpId_N = iConfig.getParameter<unsigned int>("rpId_45_N");
   data_[0].rpId_F = iConfig.getParameter<unsigned int>("rpId_45_F");
 
+  data_[1].n_exp_prot_max = n_exp_prot_max_;
+  data_[1].n_sigmas = n_sigmas_;
   data_[1].rpId_N = iConfig.getParameter<unsigned int>("rpId_56_N");
   data_[1].rpId_F = iConfig.getParameter<unsigned int>("rpId_56_F");
+}
+
+//----------------------------------------------------------------------------------------------------
+
+void CTPPSProtonReconstructionEfficiencyEstimatorData::fillDescriptions(edm::ConfigurationDescriptions &descriptions)
+{
+  edm::ParameterSetDescription desc;
+
+  desc.add<edm::InputTag>("tagTracks", edm::InputTag())->setComment("input tag for local lite tracks");
+  desc.add<edm::InputTag>("tagRecoProtonsMultiRP", edm::InputTag())->setComment("input tag for multi-RP reco protons");
+
+  desc.add<std::string>("opticsLabel", "")->setComment("label of the optics records");
+
+  desc.add<unsigned int>("n_prep_events", 1000)->setComment("number of preparatory events (to determine de x and de y window)");
+
+  desc.add<unsigned int>("n_exp_prot_max", 5)->setComment("maximum number of expected protons per event and per arm");
+
+  desc.add<std::vector<double>>("n_sigmas", {3., 5., 7.})->setComment("list of n_sigma values");
+
+  desc.add<unsigned int>("rpId_45_N", 0)->setComment("decimal RP id for 45 near");
+  desc.add<unsigned int>("rpId_45_F", 0)->setComment("decimal RP id for 45 far");
+  desc.add<unsigned int>("rpId_56_N", 0)->setComment("decimal RP id for 56 near");
+  desc.add<unsigned int>("rpId_56_F", 0)->setComment("decimal RP id for 56 far");
+
+  desc.add<std::string>("outputFile", "output.root")->setComment("output file name");
+
+  descriptions.add("ctppsProtonReconstructionEfficiencyEstimatorData", desc);
 }
 
 //----------------------------------------------------------------------------------------------------
@@ -198,6 +243,10 @@ void CTPPSProtonReconstructionEfficiencyEstimatorData::analyze(const edm::Event 
     printf("--------------------------------------------------\n");
     printf("event %llu\n", eid);
   }
+
+  // get conditions
+  edm::ESHandle<LHCInterpolatedOpticalFunctionsSetCollection> hOpticalFunctions;
+  iSetup.get<CTPPSInterpolatedOpticsRcd>().get(opticsLabel_, hOpticalFunctions);
 
   // get input
   edm::Handle<CTPPSLocalTrackLiteCollection> hTracks;
@@ -261,7 +310,7 @@ void CTPPSProtonReconstructionEfficiencyEstimatorData::analyze(const edm::Event 
       const double de_x = tr_j.getX() - tr_i.getX();
       const double de_y = tr_j.getY() - tr_i.getY();
 
-      if (ad.n_events_with_tracks < n_prep_events)
+      if (ad.n_events_with_tracks < n_prep_events_)
       {
         ad.h_de_x->Fill(de_x);
         ad.h_de_y->Fill(de_y);
@@ -283,7 +332,7 @@ void CTPPSProtonReconstructionEfficiencyEstimatorData::analyze(const edm::Event 
   {
     auto &ad = ap.second;
 
-    if (ad.n_events_with_tracks == n_prep_events)
+    if (ad.n_events_with_tracks == n_prep_events_)
     {
       if (ad.de_x_sigma > 0. && ad.de_y_sigma > 0.)
         continue;
@@ -515,7 +564,7 @@ void CTPPSProtonReconstructionEfficiencyEstimatorData::analyze(const edm::Event 
       const unsigned int n_rec_prot = ap.second.reco_proton_idc.size();
 
       // stop if N(expected protons) out of range
-      if (n_exp_prot < 1 || n_exp_prot > ad.n_exp_part_max)
+      if (n_exp_prot < 1 || n_exp_prot > ad.n_exp_prot_max)
         continue;
 
       // update method 1 plots
@@ -524,6 +573,7 @@ void CTPPSProtonReconstructionEfficiencyEstimatorData::analyze(const edm::Event 
       for (unsigned int tri : ap.second.matched_track_idc[nsi])
       {
         const double x_N = (*hTracks)[tri].getX();
+        // TODO: add xi
 
         ad.effPlots[0][nsi].p_eff1_vs_x_N->Fill(x_N, eff);
         ad.effPlots[n_exp_prot][nsi].p_eff1_vs_x_N->Fill(x_N, eff);
@@ -533,6 +583,7 @@ void CTPPSProtonReconstructionEfficiencyEstimatorData::analyze(const edm::Event 
       for (const auto &tri : ap.second.matched_track_with_prot_idc[nsi])
       {
         const double x_N = (*hTracks)[tri].getX();
+        // TODO: add xi
         
         ad.effPlots[0][nsi].p_eff2_vs_x_N->Fill(x_N, 1.);
         ad.effPlots[n_exp_prot][nsi].p_eff2_vs_x_N->Fill(x_N, 1.);
@@ -541,6 +592,7 @@ void CTPPSProtonReconstructionEfficiencyEstimatorData::analyze(const edm::Event 
       for (const auto &tri : ap.second.matched_track_without_prot_idc[nsi])
       {
         const double x_N = (*hTracks)[tri].getX();
+        // TODO: add xi
         
         ad.effPlots[0][nsi].p_eff2_vs_x_N->Fill(x_N, 0.);
         ad.effPlots[n_exp_prot][nsi].p_eff2_vs_x_N->Fill(x_N, 0.);
