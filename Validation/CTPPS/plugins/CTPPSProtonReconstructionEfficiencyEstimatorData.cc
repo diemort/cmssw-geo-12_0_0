@@ -620,8 +620,6 @@ void CTPPSProtonReconstructionEfficiencyEstimatorData::analyze(const edm::Event 
         const double x_N = (*hTracks)[tri].getX();
         const double xi_N = ad.s_x_to_xi_N->Eval(x_N * 1E-1); // conversion mm to cm
 
-        printf("x_N = %.3f --> xi_N = %.3f\n", x_N, xi_N);
-
         ad.effPlots[0][nsi].p_eff1_vs_x_N->Fill(x_N, eff);
         ad.effPlots[0][nsi].p_eff1_vs_xi_N->Fill(xi_N, eff);
 
