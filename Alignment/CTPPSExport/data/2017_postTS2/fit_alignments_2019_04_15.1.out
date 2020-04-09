@@ -1,0 +1,396 @@
+
+[fill 6239]
+id=3,sh_x=-3.430,sh_x_unc=+0.150,sh_y=+3.960,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-41.985,sh_x_unc=+0.150,sh_y=+2.645,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.435,sh_x_unc=+0.150,sh_y=+3.676,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-41.985,sh_x_unc=+0.150,sh_y=+2.685,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6240]
+id=3,sh_x=-3.431,sh_x_unc=+0.150,sh_y=+3.961,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-41.986,sh_x_unc=+0.150,sh_y=+2.646,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.438,sh_x_unc=+0.150,sh_y=+3.679,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-41.987,sh_x_unc=+0.150,sh_y=+2.687,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6241]
+id=3,sh_x=-3.432,sh_x_unc=+0.150,sh_y=+3.962,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-41.987,sh_x_unc=+0.150,sh_y=+2.646,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.441,sh_x_unc=+0.150,sh_y=+3.682,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-41.989,sh_x_unc=+0.150,sh_y=+2.688,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6243]
+id=3,sh_x=-3.434,sh_x_unc=+0.150,sh_y=+3.963,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-41.990,sh_x_unc=+0.150,sh_y=+2.648,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.446,sh_x_unc=+0.150,sh_y=+3.687,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-41.993,sh_x_unc=+0.150,sh_y=+2.692,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6245]
+id=3,sh_x=-3.436,sh_x_unc=+0.150,sh_y=+3.964,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-41.992,sh_x_unc=+0.150,sh_y=+2.649,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.452,sh_x_unc=+0.150,sh_y=+3.693,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-41.997,sh_x_unc=+0.150,sh_y=+2.696,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6247]
+id=3,sh_x=-3.438,sh_x_unc=+0.150,sh_y=+3.965,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-41.994,sh_x_unc=+0.150,sh_y=+2.650,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.458,sh_x_unc=+0.150,sh_y=+3.698,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.001,sh_x_unc=+0.150,sh_y=+2.700,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6252]
+id=3,sh_x=-3.444,sh_x_unc=+0.150,sh_y=+3.968,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-41.999,sh_x_unc=+0.150,sh_y=+2.654,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.473,sh_x_unc=+0.150,sh_y=+3.713,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.011,sh_x_unc=+0.150,sh_y=+2.709,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6253]
+id=3,sh_x=-3.445,sh_x_unc=+0.150,sh_y=+3.969,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.000,sh_x_unc=+0.150,sh_y=+2.655,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.476,sh_x_unc=+0.150,sh_y=+3.715,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.013,sh_x_unc=+0.150,sh_y=+2.711,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6255]
+id=3,sh_x=-3.447,sh_x_unc=+0.150,sh_y=+3.970,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.003,sh_x_unc=+0.150,sh_y=+2.656,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.482,sh_x_unc=+0.150,sh_y=+3.721,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.018,sh_x_unc=+0.150,sh_y=+2.714,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6258]
+id=3,sh_x=-3.450,sh_x_unc=+0.150,sh_y=+3.972,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.006,sh_x_unc=+0.150,sh_y=+2.658,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.490,sh_x_unc=+0.150,sh_y=+3.729,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.024,sh_x_unc=+0.150,sh_y=+2.720,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6259]
+id=3,sh_x=-3.451,sh_x_unc=+0.150,sh_y=+3.973,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.007,sh_x_unc=+0.150,sh_y=+2.659,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.493,sh_x_unc=+0.150,sh_y=+3.732,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.026,sh_x_unc=+0.150,sh_y=+2.722,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6261]
+id=3,sh_x=-3.454,sh_x_unc=+0.150,sh_y=+3.974,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.009,sh_x_unc=+0.150,sh_y=+2.660,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.499,sh_x_unc=+0.150,sh_y=+3.738,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.030,sh_x_unc=+0.150,sh_y=+2.725,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6262]
+id=3,sh_x=-3.455,sh_x_unc=+0.150,sh_y=+3.975,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.010,sh_x_unc=+0.150,sh_y=+2.661,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.502,sh_x_unc=+0.150,sh_y=+3.741,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.032,sh_x_unc=+0.150,sh_y=+2.727,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6263]
+id=3,sh_x=-3.456,sh_x_unc=+0.150,sh_y=+3.975,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.011,sh_x_unc=+0.150,sh_y=+2.661,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.505,sh_x_unc=+0.150,sh_y=+3.743,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.034,sh_x_unc=+0.150,sh_y=+2.729,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6266]
+id=3,sh_x=-3.459,sh_x_unc=+0.150,sh_y=+3.977,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.014,sh_x_unc=+0.150,sh_y=+2.663,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.514,sh_x_unc=+0.150,sh_y=+3.752,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.040,sh_x_unc=+0.150,sh_y=+2.734,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6268]
+id=3,sh_x=-3.461,sh_x_unc=+0.150,sh_y=+3.978,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.017,sh_x_unc=+0.150,sh_y=+2.665,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.520,sh_x_unc=+0.150,sh_y=+3.757,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.044,sh_x_unc=+0.150,sh_y=+2.738,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6269]
+id=3,sh_x=-3.462,sh_x_unc=+0.150,sh_y=+3.979,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.018,sh_x_unc=+0.150,sh_y=+2.665,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.523,sh_x_unc=+0.150,sh_y=+3.760,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.046,sh_x_unc=+0.150,sh_y=+2.740,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6271]
+id=3,sh_x=-3.464,sh_x_unc=+0.150,sh_y=+3.980,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.020,sh_x_unc=+0.150,sh_y=+2.667,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.529,sh_x_unc=+0.150,sh_y=+3.766,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.051,sh_x_unc=+0.150,sh_y=+2.744,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6272]
+id=3,sh_x=-3.465,sh_x_unc=+0.150,sh_y=+3.981,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.021,sh_x_unc=+0.150,sh_y=+2.668,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.531,sh_x_unc=+0.150,sh_y=+3.769,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.053,sh_x_unc=+0.150,sh_y=+2.745,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6275]
+id=3,sh_x=-3.469,sh_x_unc=+0.150,sh_y=+3.983,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.024,sh_x_unc=+0.150,sh_y=+2.670,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.540,sh_x_unc=+0.150,sh_y=+3.777,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.059,sh_x_unc=+0.150,sh_y=+2.751,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6276]
+id=3,sh_x=-3.470,sh_x_unc=+0.150,sh_y=+3.983,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.025,sh_x_unc=+0.150,sh_y=+2.670,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.543,sh_x_unc=+0.150,sh_y=+3.780,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.061,sh_x_unc=+0.150,sh_y=+2.753,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6278]
+id=3,sh_x=-3.472,sh_x_unc=+0.150,sh_y=+3.985,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.027,sh_x_unc=+0.150,sh_y=+2.672,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.549,sh_x_unc=+0.150,sh_y=+3.785,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.065,sh_x_unc=+0.150,sh_y=+2.756,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6279]
+id=3,sh_x=-3.473,sh_x_unc=+0.150,sh_y=+3.985,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.028,sh_x_unc=+0.150,sh_y=+2.672,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.552,sh_x_unc=+0.150,sh_y=+3.788,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.067,sh_x_unc=+0.150,sh_y=+2.758,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6283]
+id=3,sh_x=-3.477,sh_x_unc=+0.150,sh_y=+3.988,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.033,sh_x_unc=+0.150,sh_y=+2.675,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.564,sh_x_unc=+0.150,sh_y=+3.799,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.075,sh_x_unc=+0.150,sh_y=+2.766,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6284]
+id=3,sh_x=-3.478,sh_x_unc=+0.150,sh_y=+3.988,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.034,sh_x_unc=+0.150,sh_y=+2.676,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.567,sh_x_unc=+0.150,sh_y=+3.802,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.077,sh_x_unc=+0.150,sh_y=+2.767,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6285]
+id=3,sh_x=-3.479,sh_x_unc=+0.150,sh_y=+3.989,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.035,sh_x_unc=+0.150,sh_y=+2.676,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.570,sh_x_unc=+0.150,sh_y=+3.805,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.079,sh_x_unc=+0.150,sh_y=+2.769,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6287]
+id=3,sh_x=-3.482,sh_x_unc=+0.150,sh_y=+3.990,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.037,sh_x_unc=+0.150,sh_y=+2.678,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.575,sh_x_unc=+0.150,sh_y=+3.811,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.083,sh_x_unc=+0.150,sh_y=+2.773,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6288]
+id=3,sh_x=-3.483,sh_x_unc=+0.150,sh_y=+3.991,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.038,sh_x_unc=+0.150,sh_y=+2.678,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.578,sh_x_unc=+0.150,sh_y=+3.813,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.086,sh_x_unc=+0.150,sh_y=+2.775,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6291]
+id=3,sh_x=-3.486,sh_x_unc=+0.150,sh_y=+3.993,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.041,sh_x_unc=+0.150,sh_y=+2.681,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.587,sh_x_unc=+0.150,sh_y=+3.822,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.092,sh_x_unc=+0.150,sh_y=+2.780,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6297]
+id=3,sh_x=-3.492,sh_x_unc=+0.150,sh_y=+3.996,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.048,sh_x_unc=+0.150,sh_y=+2.685,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.605,sh_x_unc=+0.150,sh_y=+3.839,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.104,sh_x_unc=+0.150,sh_y=+2.791,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6298]
+id=3,sh_x=-3.494,sh_x_unc=+0.150,sh_y=+3.997,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.049,sh_x_unc=+0.150,sh_y=+2.685,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.608,sh_x_unc=+0.150,sh_y=+3.841,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.106,sh_x_unc=+0.150,sh_y=+2.793,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6300]
+id=3,sh_x=-3.496,sh_x_unc=+0.150,sh_y=+3.998,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.051,sh_x_unc=+0.150,sh_y=+2.687,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.614,sh_x_unc=+0.150,sh_y=+3.847,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.110,sh_x_unc=+0.150,sh_y=+2.797,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6303]
+id=3,sh_x=-3.499,sh_x_unc=+0.150,sh_y=+4.000,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.054,sh_x_unc=+0.150,sh_y=+2.689,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.622,sh_x_unc=+0.150,sh_y=+3.855,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.116,sh_x_unc=+0.150,sh_y=+2.802,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6304]
+id=3,sh_x=-3.500,sh_x_unc=+0.150,sh_y=+4.001,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.055,sh_x_unc=+0.150,sh_y=+2.689,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.625,sh_x_unc=+0.150,sh_y=+3.858,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.119,sh_x_unc=+0.150,sh_y=+2.804,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6305]
+id=3,sh_x=-3.501,sh_x_unc=+0.150,sh_y=+4.001,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.056,sh_x_unc=+0.150,sh_y=+2.690,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.628,sh_x_unc=+0.150,sh_y=+3.861,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.121,sh_x_unc=+0.150,sh_y=+2.806,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6306]
+id=3,sh_x=-3.502,sh_x_unc=+0.150,sh_y=+4.002,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.058,sh_x_unc=+0.150,sh_y=+2.691,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.631,sh_x_unc=+0.150,sh_y=+3.864,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.123,sh_x_unc=+0.150,sh_y=+2.808,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6307]
+id=3,sh_x=-3.503,sh_x_unc=+0.150,sh_y=+4.003,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.059,sh_x_unc=+0.150,sh_y=+2.691,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.634,sh_x_unc=+0.150,sh_y=+3.867,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.125,sh_x_unc=+0.150,sh_y=+2.810,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6308]
+id=3,sh_x=-3.504,sh_x_unc=+0.150,sh_y=+4.003,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.060,sh_x_unc=+0.150,sh_y=+2.692,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.637,sh_x_unc=+0.150,sh_y=+3.869,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.127,sh_x_unc=+0.150,sh_y=+2.812,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6309]
+id=3,sh_x=-3.505,sh_x_unc=+0.150,sh_y=+4.004,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.061,sh_x_unc=+0.150,sh_y=+2.693,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.640,sh_x_unc=+0.150,sh_y=+3.872,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.129,sh_x_unc=+0.150,sh_y=+2.813,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6311]
+id=3,sh_x=-3.508,sh_x_unc=+0.150,sh_y=+4.005,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.063,sh_x_unc=+0.150,sh_y=+2.694,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.646,sh_x_unc=+0.150,sh_y=+3.878,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.133,sh_x_unc=+0.150,sh_y=+2.817,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6312]
+id=3,sh_x=-3.509,sh_x_unc=+0.150,sh_y=+4.006,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.064,sh_x_unc=+0.150,sh_y=+2.695,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.649,sh_x_unc=+0.150,sh_y=+3.881,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.135,sh_x_unc=+0.150,sh_y=+2.819,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6313]
+id=3,sh_x=-3.510,sh_x_unc=+0.150,sh_y=+4.006,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.065,sh_x_unc=+0.150,sh_y=+2.696,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.652,sh_x_unc=+0.150,sh_y=+3.883,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.137,sh_x_unc=+0.150,sh_y=+2.821,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6314]
+id=3,sh_x=-3.511,sh_x_unc=+0.150,sh_y=+4.007,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.066,sh_x_unc=+0.150,sh_y=+2.696,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.655,sh_x_unc=+0.150,sh_y=+3.886,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.139,sh_x_unc=+0.150,sh_y=+2.823,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6315]
+id=3,sh_x=-3.512,sh_x_unc=+0.150,sh_y=+4.008,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.067,sh_x_unc=+0.150,sh_y=+2.697,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.658,sh_x_unc=+0.150,sh_y=+3.889,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.141,sh_x_unc=+0.150,sh_y=+2.824,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6317]
+id=3,sh_x=-3.514,sh_x_unc=+0.150,sh_y=+4.009,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.069,sh_x_unc=+0.150,sh_y=+2.698,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.663,sh_x_unc=+0.150,sh_y=+3.895,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.145,sh_x_unc=+0.150,sh_y=+2.828,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6318]
+id=3,sh_x=-3.515,sh_x_unc=+0.150,sh_y=+4.010,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.070,sh_x_unc=+0.150,sh_y=+2.699,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.666,sh_x_unc=+0.150,sh_y=+3.897,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.147,sh_x_unc=+0.150,sh_y=+2.830,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6323]
+id=3,sh_x=-3.520,sh_x_unc=+0.150,sh_y=+4.013,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.076,sh_x_unc=+0.150,sh_y=+2.702,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.681,sh_x_unc=+0.150,sh_y=+3.912,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.158,sh_x_unc=+0.150,sh_y=+2.839,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6324]
+id=3,sh_x=-3.522,sh_x_unc=+0.150,sh_y=+4.013,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.077,sh_x_unc=+0.150,sh_y=+2.703,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.684,sh_x_unc=+0.150,sh_y=+3.914,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.160,sh_x_unc=+0.150,sh_y=+2.841,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6325]
+id=3,sh_x=-3.523,sh_x_unc=+0.150,sh_y=+4.014,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.078,sh_x_unc=+0.150,sh_y=+2.704,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.687,sh_x_unc=+0.150,sh_y=+3.917,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.162,sh_x_unc=+0.150,sh_y=+2.843,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6337]
+id=3,sh_x=-3.536,sh_x_unc=+0.150,sh_y=+4.021,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.091,sh_x_unc=+0.150,sh_y=+2.712,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.722,sh_x_unc=+0.150,sh_y=+3.951,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.187,sh_x_unc=+0.150,sh_y=+2.865,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6341]
+id=3,sh_x=-3.540,sh_x_unc=+0.150,sh_y=+4.024,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.095,sh_x_unc=+0.150,sh_y=+2.715,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.734,sh_x_unc=+0.150,sh_y=+3.962,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.195,sh_x_unc=+0.150,sh_y=+2.872,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6343]
+id=3,sh_x=-3.542,sh_x_unc=+0.150,sh_y=+4.025,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.097,sh_x_unc=+0.150,sh_y=+2.716,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.740,sh_x_unc=+0.150,sh_y=+3.968,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.199,sh_x_unc=+0.150,sh_y=+2.876,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6344]
+id=3,sh_x=-3.543,sh_x_unc=+0.150,sh_y=+4.026,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.099,sh_x_unc=+0.150,sh_y=+2.717,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.743,sh_x_unc=+0.150,sh_y=+3.970,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.201,sh_x_unc=+0.150,sh_y=+2.878,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6346]
+id=3,sh_x=-3.545,sh_x_unc=+0.150,sh_y=+4.027,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.101,sh_x_unc=+0.150,sh_y=+2.718,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.748,sh_x_unc=+0.150,sh_y=+3.976,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.205,sh_x_unc=+0.150,sh_y=+2.881,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6347]
+id=3,sh_x=-3.546,sh_x_unc=+0.150,sh_y=+4.028,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.102,sh_x_unc=+0.150,sh_y=+2.719,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.751,sh_x_unc=+0.150,sh_y=+3.979,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.207,sh_x_unc=+0.150,sh_y=+2.883,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6348]
+id=3,sh_x=-3.547,sh_x_unc=+0.150,sh_y=+4.028,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.103,sh_x_unc=+0.150,sh_y=+2.719,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.754,sh_x_unc=+0.150,sh_y=+3.982,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.209,sh_x_unc=+0.150,sh_y=+2.885,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6349]
+id=3,sh_x=-3.549,sh_x_unc=+0.150,sh_y=+4.029,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.104,sh_x_unc=+0.150,sh_y=+2.720,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.757,sh_x_unc=+0.150,sh_y=+3.984,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.211,sh_x_unc=+0.150,sh_y=+2.887,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6351]
+id=3,sh_x=-3.551,sh_x_unc=+0.150,sh_y=+4.030,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.106,sh_x_unc=+0.150,sh_y=+2.722,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.763,sh_x_unc=+0.150,sh_y=+3.990,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.215,sh_x_unc=+0.150,sh_y=+2.890,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6355]
+id=3,sh_x=-3.555,sh_x_unc=+0.150,sh_y=+4.033,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.110,sh_x_unc=+0.150,sh_y=+2.724,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.775,sh_x_unc=+0.150,sh_y=+4.001,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.224,sh_x_unc=+0.150,sh_y=+2.898,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6356]
+id=3,sh_x=-3.556,sh_x_unc=+0.150,sh_y=+4.033,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.111,sh_x_unc=+0.150,sh_y=+2.725,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.778,sh_x_unc=+0.150,sh_y=+4.004,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.226,sh_x_unc=+0.150,sh_y=+2.900,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6358]
+id=3,sh_x=-3.558,sh_x_unc=+0.150,sh_y=+4.035,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.114,sh_x_unc=+0.150,sh_y=+2.726,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.784,sh_x_unc=+0.150,sh_y=+4.010,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.230,sh_x_unc=+0.150,sh_y=+2.903,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6360]
+id=3,sh_x=-3.560,sh_x_unc=+0.150,sh_y=+4.036,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.116,sh_x_unc=+0.150,sh_y=+2.728,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.790,sh_x_unc=+0.150,sh_y=+4.015,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.234,sh_x_unc=+0.150,sh_y=+2.907,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6362]
+id=3,sh_x=-3.563,sh_x_unc=+0.150,sh_y=+4.037,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.118,sh_x_unc=+0.150,sh_y=+2.729,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.795,sh_x_unc=+0.150,sh_y=+4.021,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.238,sh_x_unc=+0.150,sh_y=+2.911,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6364]
+id=3,sh_x=-3.565,sh_x_unc=+0.150,sh_y=+4.038,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.120,sh_x_unc=+0.150,sh_y=+2.730,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.801,sh_x_unc=+0.150,sh_y=+4.026,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.242,sh_x_unc=+0.150,sh_y=+2.914,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6370]
+id=3,sh_x=-3.571,sh_x_unc=+0.150,sh_y=+4.042,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.127,sh_x_unc=+0.150,sh_y=+2.735,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.819,sh_x_unc=+0.150,sh_y=+4.043,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.255,sh_x_unc=+0.150,sh_y=+2.925,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+
+[fill 6371]
+id=3,sh_x=-3.572,sh_x_unc=+0.150,sh_y=+4.043,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=23,sh_x=-42.128,sh_x_unc=+0.150,sh_y=+2.735,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000
+id=103,sh_x=-2.822,sh_x_unc=+0.150,sh_y=+4.046,sh_y_unc=+0.150,rot_x=+3.1416,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.2793,rot_z_unc=+0.0000
+id=123,sh_x=-42.257,sh_x_unc=+0.150,sh_y=+2.927,sh_y_unc=+0.150,rot_x=+0.0000,rot_x_unc=+0.0000,rot_y=+0.0000,rot_y_unc=+0.0000,rot_z=+0.0000,rot_z_unc=+0.0000

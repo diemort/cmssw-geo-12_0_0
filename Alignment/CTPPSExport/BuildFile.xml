@@ -1,0 +1,7 @@
+<use name="root"/>
+<use name="FWCore/ParameterSet"/>
+<use name="DataFormats/CTPPSDetId"/>
+
+<export>
+  <lib name="1"/>
+</export>
