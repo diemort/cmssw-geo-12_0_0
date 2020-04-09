@@ -1,0 +1,34 @@
+#!/bin/bash
+
+exportDir="../../../CalibPPS/ESProducers/data/alignment/"
+
+#----------------------------------------------------------------------------------------------------
+
+function ExportOne()
+{
+	local input="$1"
+	
+	local output=${input#tracking_RP_}
+	local year="${output%%_*}"
+	output=${output#*_}
+	output="$year/tracking_RP_$output"
+
+	echo "* $input --> $output"
+
+	if [ -f "$exportDir/$output" ]
+	then
+		echo "    target file exists - SKIPPING"
+	else
+		cp "$input" "$exportDir/$output" && echo "    successfully copied"
+	fi
+}
+
+#----------------------------------------------------------------------------------------------------
+
+ExportOne "tracking_RP_2016_preTS2_version_10.xml"
+ExportOne "tracking_RP_2016_postTS2_version_10.xml"
+
+ExportOne "tracking_RP_2017_preTS2_version_10.xml"
+ExportOne "tracking_RP_2017_postTS2_version_10.xml"
+
+ExportOne "tracking_RP_2018_version_10.xml"
