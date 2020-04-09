@@ -10,14 +10,24 @@ ctppsRPAlignmentCorrectionsDataESSourceXML.RealFiles = cms.vstring(
   #"CalibPPS/ESProducers/data/alignment/common/RPixGeometryCorrections_old.xml",
   "CalibPPS/ESProducers/data/alignment/common/RPixGeometryCorrections-2017-2018.xml",
 
-  # global alignment of tracking RPs (strips and pixels)
-  "CalibPPS/ESProducers/data/alignment/common/alignment_export_2019_12_04.xml", # alignment used for UL re-reco of Run2
-  #"CalibPPS/ESProducers/data/alignment/common/alignment_export_2020_03_23.xml", # test version of 2018 vertical alignment
+  # 2016 pre-TS2
+  "CalibPPS/ESProducers/data/alignment/2016/tracking_RP_preTS2_version_10.xml",
 
-  # alignment of timing RPs (diamonds and UFSDs)
+  # 2016 post-TS2
+  "CalibPPS/ESProducers/data/alignment/2016/tracking_RP_postTS2_version_10.xml",
+
+  # 2017 pre-TS2
+  "CalibPPS/ESProducers/data/alignment/2017/tracking_RP_preTS2_version_10.xml",
+
   "CalibPPS/ESProducers/data/alignment/2017/timing_RP_preTS2_v2.xml",
 
+  # 2017 post-TS2
+  "CalibPPS/ESProducers/data/alignment/2017/tracking_RP_postTS2_version_10.xml",
+
   "CalibPPS/ESProducers/data/alignment/2017/timing_RP_postTS2_v4.xml",
+
+  # 2018
+  "CalibPPS/ESProducers/data/alignment/2018/tracking_RP_version_10.xml",
 
   "CalibPPS/ESProducers/data/alignment/2018/timing_RP_v4.xml"
 )
