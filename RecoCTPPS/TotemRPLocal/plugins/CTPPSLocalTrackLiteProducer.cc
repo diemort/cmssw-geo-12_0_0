@@ -51,6 +51,8 @@ private:
 
   double pixelTrackTxMin_, pixelTrackTxMax_, pixelTrackTyMin_, pixelTrackTyMax_;
   double timingTrackTMin_, timingTrackTMax_;
+
+  bool pixelDiscardBXShiftedTracks_;
 };
 
 //----------------------------------------------------------------------------------------------------
@@ -65,7 +67,10 @@ CTPPSLocalTrackLiteProducer::CTPPSLocalTrackLiteProducer(
       pixelTrackTyMin_(iConfig.getParameter<double>("pixelTrackTyMin")),
       pixelTrackTyMax_(iConfig.getParameter<double>("pixelTrackTyMax")),
       timingTrackTMin_(iConfig.getParameter<double>("timingTrackTMin")),
-      timingTrackTMax_(iConfig.getParameter<double>("timingTrackTMax")) {
+      timingTrackTMax_(iConfig.getParameter<double>("timingTrackTMax")),
+
+      pixelDiscardBXShiftedTracks_(iConfig.getParameter<bool>("pixelDiscardBXShiftedTracks_"))
+{
   auto tagSiStripTrack = iConfig.getParameter<edm::InputTag>("tagSiStripTrack");
   if (!tagSiStripTrack.label().empty())
     siStripTrackToken_ =
@@ -206,6 +211,14 @@ void CTPPSLocalTrackLiteProducer::produce(edm::Event &iEvent,
         for (const auto &trk : rpv) {
           if (!trk.isValid())
             continue;
+
+          if (pixelDiscardBXShiftedTracks_)
+          {
+            if (trk.getRecoInfo() == CTPPSpixelLocalTrackReconstructionInfo::allShiftedPlanes ||
+                  trk.getRecoInfo() == CTPPSpixelLocalTrackReconstructionInfo::mixedPlanes)
+              continue;
+          }
+
           if (trk.getTx() > pixelTrackTxMin_ &&
               trk.getTx() < pixelTrackTxMax_ &&
               trk.getTy() > pixelTrackTyMin_ &&
@@ -298,6 +311,9 @@ void CTPPSLocalTrackLiteProducer::fillDescriptions(
   desc.add<double>("pixelTrackTxMax", 10.0);
   desc.add<double>("pixelTrackTyMin", -10.0);
   desc.add<double>("pixelTrackTyMax", 10.0);
+
+  desc.add<bool>("pixelDiscardBXShiftedTracks_", false)
+      ->setComment("whether to discard pixel tracks build from BX-shifted planes");
 
   descr.add("ctppsLocalTrackLiteDefaultProducer", desc);
 }
