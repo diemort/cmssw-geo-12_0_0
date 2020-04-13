@@ -275,11 +275,9 @@ void CTPPSProtonReconstructionEfficiencyEstimatorData::analyze(const edm::Event 
 {
   bool verbosity = false;
 
-  const auto eid = iEvent.id().event();
-
   if (verbosity) {
     printf("--------------------------------------------------\n");
-    printf("event %llu\n", eid);
+    printf("run %u, event %llu\n", iEvent.id().run(), iEvent.id().event());
   }
 
   // get conditions
