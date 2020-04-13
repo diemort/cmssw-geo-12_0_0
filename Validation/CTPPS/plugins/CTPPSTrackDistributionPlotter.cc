@@ -23,6 +23,7 @@
 #include "TH2D.h"
 #include "TProfile.h"
 #include "TProfile2D.h"
+#include "TGraph.h"
 
 #include <map>
 
@@ -94,6 +95,13 @@ private:
     std::unique_ptr<TH2D> h2_de_x_vs_x, h2_de_y_vs_x;
     std::unique_ptr<TH2D> h2_de_y_vs_de_x;
 
+    struct Stat
+    {
+      unsigned int sN=0, s1=0;
+    };
+
+    std::map<unsigned int, std::map<unsigned int, Stat>> m_stat;
+
     ArmPlots()
         : h_de_x(new TH1D("", ";x^{F} - x^{N}", 100, -1., +1.)),
           h_de_y(new TH1D("", ";y^{F} - y^{N}", 100, -1., +1.)),
@@ -136,6 +144,24 @@ private:
       h2_de_y_vs_x->Write("h2_de_y_vs_x");
 
       h2_de_y_vs_de_x->Write("h2_de_y_vs_de_x");
+
+      for (const auto &rp : m_stat)
+      {
+        TGraph *g = new TGraph();
+
+        char buf[100];
+        sprintf(buf, "g_mean_track_mult_run_%u", rp.first);
+        g->SetName(buf);
+
+        for (const auto &lsp : rp.second)
+        {
+          const int idx = g->GetN();
+          const double m = (lsp.second.s1 > 0) ? double(lsp.second.sN) / lsp.second.s1 : 0.;
+          g->SetPoint(idx, lsp.first, m);
+        }
+
+        g->Write();
+      }
     }
   };
 
@@ -157,6 +183,8 @@ void CTPPSTrackDistributionPlotter::analyze(const edm::Event& iEvent, const edm:
   iEvent.getByToken(tracksToken_, tracks);
 
   // process tracks
+  std::map<unsigned int, unsigned int> m_mult;
+
   for (const auto& trk : *tracks) {
     CTPPSDetId rpId(trk.getRPId());
     unsigned int rpDecId = rpId.arm() * 100 + rpId.station() * 10 + rpId.rp();
@@ -167,6 +195,15 @@ void CTPPSTrackDistributionPlotter::analyze(const edm::Event& iEvent, const edm:
       pl.init(rpPixel, x_pitch_pixels_);
 
     pl.fill(trk.getX(), trk.getY());
+
+    m_mult[rpId.arm()]++;
+  }
+
+  for (unsigned int arm = 0; arm < 2; ++arm)
+  {
+    auto &st = armPlots[arm].m_stat[iEvent.id().run()][iEvent.id().luminosityBlock()];
+    st.s1++;
+    st.sN += m_mult[arm];
   }
 
   for (const auto& t1 : *tracks) {
