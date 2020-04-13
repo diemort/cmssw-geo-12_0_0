@@ -69,7 +69,7 @@ CTPPSLocalTrackLiteProducer::CTPPSLocalTrackLiteProducer(
       timingTrackTMin_(iConfig.getParameter<double>("timingTrackTMin")),
       timingTrackTMax_(iConfig.getParameter<double>("timingTrackTMax")),
 
-      pixelDiscardBXShiftedTracks_(iConfig.getParameter<bool>("pixelDiscardBXShiftedTracks_"))
+      pixelDiscardBXShiftedTracks_(iConfig.getParameter<bool>("pixelDiscardBXShiftedTracks"))
 {
   auto tagSiStripTrack = iConfig.getParameter<edm::InputTag>("tagSiStripTrack");
   if (!tagSiStripTrack.label().empty())
@@ -312,7 +312,7 @@ void CTPPSLocalTrackLiteProducer::fillDescriptions(
   desc.add<double>("pixelTrackTyMin", -10.0);
   desc.add<double>("pixelTrackTyMax", 10.0);
 
-  desc.add<bool>("pixelDiscardBXShiftedTracks_", false)
+  desc.add<bool>("pixelDiscardBXShiftedTracks", false)
       ->setComment("whether to discard pixel tracks build from BX-shifted planes");
 
   descr.add("ctppsLocalTrackLiteDefaultProducer", desc);
