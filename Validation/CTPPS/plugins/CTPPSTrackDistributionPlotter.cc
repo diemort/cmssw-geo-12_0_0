@@ -89,6 +89,8 @@ private:
   std::map<unsigned int, RPPlots> rpPlots;
 
   struct ArmPlots {
+    unsigned int rpId_N, rpId_F;
+
     std::unique_ptr<TH1D> h_de_x, h_de_y;
     std::unique_ptr<TProfile> p_de_x_vs_x, p_de_y_vs_x;
     std::unique_ptr<TProfile2D> p2_de_x_vs_x_y, p2_de_y_vs_x_y;
@@ -173,7 +175,14 @@ private:
 CTPPSTrackDistributionPlotter::CTPPSTrackDistributionPlotter(const edm::ParameterSet& iConfig)
     : tracksToken_(consumes<CTPPSLocalTrackLiteCollection>(iConfig.getParameter<edm::InputTag>("tagTracks"))),
       x_pitch_pixels_(iConfig.getUntrackedParameter<double>("x_pitch_pixels", 150E-3)),
-      outputFile_(iConfig.getParameter<std::string>("outputFile")) {}
+      outputFile_(iConfig.getParameter<std::string>("outputFile"))
+{
+  armPlots[0].rpId_N = iConfig.getParameter<unsigned int>("rpId_45_N");
+  armPlots[0].rpId_F = iConfig.getParameter<unsigned int>("rpId_45_F");
+
+  armPlots[1].rpId_N = iConfig.getParameter<unsigned int>("rpId_56_N");
+  armPlots[1].rpId_F = iConfig.getParameter<unsigned int>("rpId_56_F");
+}
 
 //----------------------------------------------------------------------------------------------------
 
@@ -207,17 +216,21 @@ void CTPPSTrackDistributionPlotter::analyze(const edm::Event& iEvent, const edm:
   }
 
   for (const auto& t1 : *tracks) {
-    CTPPSDetId rpId1(t1.getRPId());
+    const CTPPSDetId rpId1(t1.getRPId());
 
     for (const auto& t2 : *tracks) {
-      CTPPSDetId rpId2(t2.getRPId());
+      const CTPPSDetId rpId2(t2.getRPId());
 
       if (rpId1.arm() != rpId2.arm())
         continue;
 
-      // TODO: fix this
-      if (rpId1.station() == 0 && rpId2.station() == 2)
-        armPlots[rpId1.arm()].fill(t1.getX(), t1.getY(), t2.getX(), t2.getY());
+      auto &ap = armPlots[rpId1.arm()];
+
+      const unsigned int rpDecId1 = rpId1.arm()*100 + rpId1.station()*10 + rpId1.rp();
+      const unsigned int rpDecId2 = rpId2.arm()*100 + rpId2.station()*10 + rpId2.rp();
+
+      if (rpDecId1 == ap.rpId_N && rpDecId2 == ap.rpId_F)
+        ap.fill(t1.getX(), t1.getY(), t2.getX(), t2.getY());
     }
   }
 }
