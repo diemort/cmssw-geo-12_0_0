@@ -16,6 +16,7 @@
 #include "FWCore/Framework/interface/ValidityInterval.h"
 
 #include "DataFormats/CTPPSDetId/interface/CTPPSDetId.h"
+#include "DataFormats/CTPPSDetId/interface/CTPPSPixelDetId.h"
 
 #include "CondFormats/CTPPSReadoutObjects/interface/CTPPSRPAlignmentCorrectionsDataSequence.h"
 #include "CondFormats/CTPPSReadoutObjects/interface/CTPPSRPAlignmentCorrectionsMethods.h"
@@ -103,6 +104,11 @@ void CTPPSExportAlignment::doExport(const CTPPSGeometry &geometry) const
     edm::ValidityInterval iov(beg, end);
 
     const auto &alInput = input[fi.alignmentTag];
+
+    // stop if no corrections given for the fill
+    if (alInput.empty())
+      continue;
+
     CTPPSRPAlignmentCorrectionsData alData;
     for (const auto &p : alInput)
     {
@@ -207,6 +213,29 @@ void CTPPSExportAlignment::doExport(const CTPPSGeometry &geometry) const
           auto de = R * cm - cm;
 
           printf("    de.z = %.3f\n", de.z());
+
+          CTPPSRPAlignmentCorrectionData sensorCorrection(
+            de.x(), 0., de.y(), 0., de.z(), 0.,
+            0., 0., 0., 0., 0., 0.
+          );
+
+          alData.setSensorCorrection(planeId, sensorCorrection);
+        }
+      }
+
+      // extras for 2018: fill from 6583 to 6663
+      if (rpDecId == 103 && fi.fillNumber >= 6583 && fi.fillNumber <= 6663)
+      {
+        for (unsigned int plane = 0; plane < 6; ++plane)
+        {
+          CTPPSPixelDetId planeId(arm, station, rp, plane);
+
+          auto c = geometry.getSensorTranslation(planeId);
+          printf("  plane = %u, c_x = %.3f, c_y = %.3f, c_z = %.3f\n", plane, c.x(), c.y(), c.z());
+
+          ROOT::Math::RotationZYX R(-ar.rot_z, ar.rot_y, ar.rot_x);
+          ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double>> cm(c.x(), c.y(), c.z());
+          auto de = R * cm - cm;
 
           CTPPSRPAlignmentCorrectionData sensorCorrection(
             de.x(), 0., de.y(), 0., de.z(), 0.,
