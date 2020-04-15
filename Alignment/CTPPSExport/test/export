@@ -17,8 +17,9 @@ function ExportOne()
 
 	if [ -f "$exportDir/$output" ]
 	then
-		echo "    target file exists - SKIPPING"
-	else
+		# TODO
+		#echo "    target file exists - SKIPPING"
+	#else
 		cp "$input" "$exportDir/$output" && echo "    successfully copied"
 	fi
 }
@@ -26,9 +27,12 @@ function ExportOne()
 #----------------------------------------------------------------------------------------------------
 
 ExportOne "tracking_RP_2016_preTS2_version_10.xml"
+
 ExportOne "tracking_RP_2016_postTS2_version_10.xml"
 
 ExportOne "tracking_RP_2017_preTS2_version_10.xml"
+
 ExportOne "tracking_RP_2017_postTS2_version_10.xml"
 
-ExportOne "tracking_RP_2018_version_10.xml"
+#ExportOne "tracking_RP_2018_version_10.xml"
+ExportOne "tracking_RP_2018_version_11_test1.xml"
