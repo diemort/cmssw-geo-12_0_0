@@ -150,7 +150,7 @@ private:
     std::unique_ptr<TH1D> h_xi_n1f1;
 
     std::unique_ptr<TH1D> h_de_x_timing_vs_tracking, h_de_x_rel_timing_vs_tracking, h_de_x_match_timing_vs_tracking;
-    std::unique_ptr<TH1D> h_de_x_rel_timing_vs_tracking_ClCo;
+    std::unique_ptr<TH1D> h_de_x_timing_vs_tracking_ClCo, h_de_x_rel_timing_vs_tracking_ClCo, h_de_x_match_timing_vs_tracking_ClCo;
 
     std::unique_ptr<TH2D> h2_y_vs_x_tt0_ClCo, h2_y_vs_x_tt1_ClCo, h2_y_vs_x_ttm_ClCo;
 
@@ -175,10 +175,15 @@ private:
           h2_timing_tracks_vs_prot_mult(
               new TH2D("", ";reco protons per event;timing tracks per event", 11, -0.5, 10.5, 11, -0.5, 10.5)),
           h_xi_n1f1(new TH1D("", ";#xi", 100, 0., 0.3)),
+
           h_de_x_timing_vs_tracking(new TH1D("", ";#Delta x   (mm)", 200, -1., +1.)),
           h_de_x_rel_timing_vs_tracking(new TH1D("", ";#Delta x / #sigma(x)", 200, -20., +20.)),
           h_de_x_match_timing_vs_tracking(new TH1D("", ";match between tracking and timing tracks", 2, -0.5, +1.5)),
+
+          h_de_x_timing_vs_tracking_ClCo(new TH1D("", ";#Delta x   (mm)", 200, -1., +1.)),
           h_de_x_rel_timing_vs_tracking_ClCo(new TH1D("", ";#Delta x / #sigma(x)", 200, -20., +20.)),
+          h_de_x_match_timing_vs_tracking_ClCo(new TH1D("", ";match between tracking and timing tracks", 2, -0.5, +1.5)),
+
           h2_y_vs_x_tt0_ClCo(new TH2D("", ";x   (mm);y   (mm)", 100, -5., 25., 100, -15., +15.)),
           h2_y_vs_x_tt1_ClCo(new TH2D("", ";x   (mm);y   (mm)", 100, -5., 25., 100, -15., +15.)),
           h2_y_vs_x_ttm_ClCo(new TH2D("", ";x   (mm);y   (mm)", 100, -5., 25., 100, -15., +15.)) {
@@ -323,7 +328,10 @@ private:
       h_de_x_timing_vs_tracking->Write("h_de_x_timing_vs_tracking");
       h_de_x_rel_timing_vs_tracking->Write("h_de_x_rel_timing_vs_tracking");
       h_de_x_match_timing_vs_tracking->Write("h_de_x_match_timing_vs_tracking");
+
+      h_de_x_timing_vs_tracking_ClCo->Write("h_de_x_timing_vs_tracking_ClCo");
       h_de_x_rel_timing_vs_tracking_ClCo->Write("h_de_x_rel_timing_vs_tracking_ClCo");
+      h_de_x_match_timing_vs_tracking_ClCo->Write("h_de_x_match_timing_vs_tracking_ClCo");
 
       h2_y_vs_x_tt0_ClCo->Write("h2_y_vs_x_tt0_ClCo");
       h2_y_vs_x_tt1_ClCo->Write("h2_y_vs_x_tt1_ClCo");
@@ -631,9 +639,11 @@ void CTPPSProtonReconstructionPlotter::analyze(const edm::Event &event, const ed
       pl.h_de_x_rel_timing_vs_tracking->Fill(rd);
       pl.h_de_x_match_timing_vs_tracking->Fill(fabs(de_x / de_x_unc) <= 1. ? 1. : 0.);
 
-      if (clCo[armId]) {
-        if (armTimingTrackCounter[armId] == 1)
-          pl.h_de_x_rel_timing_vs_tracking_ClCo->Fill(rd);
+      if (clCo[armId] && armTimingTrackCounter[armId] == 1)
+      {
+        pl.h_de_x_timing_vs_tracking_ClCo->Fill(de_x);
+        pl.h_de_x_rel_timing_vs_tracking_ClCo->Fill(rd);
+        pl.h_de_x_match_timing_vs_tracking_ClCo->Fill(fabs(de_x / de_x_unc) <= 1. ? 1. : 0.);
       }
     }
   }
