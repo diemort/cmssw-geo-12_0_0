@@ -202,11 +202,19 @@ void CTPPSEventCategoryPlotter::analyze( const edm::Event& iEvent, const edm::Ev
     act_45 = a1;
   else act_45 = (suff_45) ? a2pl : a0; // multiplicity 0
 
+  std::string nac_45 = "-";
+  if (trackMultiplicity[rpId_45_N_] == 1 && trackMultiplicity[rpId_45_F_] == 1 && multiRPMultiplicity[0] == 1) nac_45 = "A";
+  if (trackMultiplicity[rpId_45_N_] == 0 && !suff_45_N && trackMultiplicity[rpId_45_F_] == 0 && multiRPMultiplicity[0] == 0) nac_45 = "B";
+
   if (multiRPMultiplicity[1] > 1)
     act_56 = a2pl;
   else if (multiRPMultiplicity[1] == 1)
     act_56 = a1;
   else act_56 = (suff_56) ? a2pl : a0; // multiplicity 0
+
+  std::string nac_56 = "-";
+  if (trackMultiplicity[rpId_56_N_] == 1 && trackMultiplicity[rpId_56_F_] == 1 && multiRPMultiplicity[1] == 1) nac_56 = "A";
+  if (trackMultiplicity[rpId_56_N_] == 0 && !suff_56_N && trackMultiplicity[rpId_56_F_] == 0 && multiRPMultiplicity[1] == 0) nac_56 = "B";
 
   // increase counters
   denominator_++;
@@ -225,6 +233,11 @@ void CTPPSEventCategoryPlotter::analyze( const edm::Event& iEvent, const edm::Ev
   if (act_45 == a0 && act_56 == a1) counter_["45_0_56_1"]++;
   if (act_45 == a1 && act_56 == a0) counter_["45_1_56_0"]++;
   if (act_45 == a1 && act_56 == a1) counter_["45_1_56_1"]++;
+
+  if (nac_45 == "A" && nac_56 == "A") counter_["45_A_56_A"]++;
+  if (nac_45 == "A" && nac_56 == "B") counter_["45_A_56_B"]++;
+  if (nac_45 == "B" && nac_56 == "A") counter_["45_B_56_A"]++;
+  if (nac_45 == "B" && nac_56 == "B") counter_["45_B_56_B"]++;
 }
 
 //----------------------------------------------------------------------------------------------------
