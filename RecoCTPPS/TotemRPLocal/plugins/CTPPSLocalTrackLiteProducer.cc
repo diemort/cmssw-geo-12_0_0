@@ -313,7 +313,7 @@ void CTPPSLocalTrackLiteProducer::fillDescriptions(
   desc.add<double>("pixelTrackTyMax", 10.0);
 
   desc.add<bool>("pixelDiscardBXShiftedTracks", false)
-      ->setComment("whether to discard pixel tracks build from BX-shifted planes");
+      ->setComment("whether to discard pixel tracks built from BX-shifted planes");
 
   descr.add("ctppsLocalTrackLiteDefaultProducer", desc);
 }
