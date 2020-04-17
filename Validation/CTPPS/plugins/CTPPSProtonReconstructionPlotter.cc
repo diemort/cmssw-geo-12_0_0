@@ -637,13 +637,13 @@ void CTPPSProtonReconstructionPlotter::analyze(const edm::Event &event, const ed
 
       pl.h_de_x_timing_vs_tracking->Fill(de_x);
       pl.h_de_x_rel_timing_vs_tracking->Fill(rd);
-      pl.h_de_x_match_timing_vs_tracking->Fill(fabs(de_x / de_x_unc) <= 1. ? 1. : 0.);
+      pl.h_de_x_match_timing_vs_tracking->Fill(fabs(de_x / de_x_unc) <= 1. ? 1. : 0.); // TODO: this is wrong, the range is now tunable
 
       if (clCo[armId] && armTimingTrackCounter[armId] == 1)
       {
         pl.h_de_x_timing_vs_tracking_ClCo->Fill(de_x);
         pl.h_de_x_rel_timing_vs_tracking_ClCo->Fill(rd);
-        pl.h_de_x_match_timing_vs_tracking_ClCo->Fill(fabs(de_x / de_x_unc) <= 1. ? 1. : 0.);
+        pl.h_de_x_match_timing_vs_tracking_ClCo->Fill(fabs(de_x / de_x_unc) <= 1. ? 1. : 0.); // TODO: this is wrong, the range is now tunable
       }
     }
   }
