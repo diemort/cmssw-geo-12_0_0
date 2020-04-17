@@ -110,6 +110,7 @@ class CTPPSProtonProducer : public edm::stream::EDProducer<>
     std::map<unsigned int, AssociationCuts> association_cuts_;  // map: arm -> AssociationCuts
 
     unsigned int max_n_timing_tracks_;
+    double default_time_;
 
     ProtonReconstructionAlgorithm algorithm_;
 
@@ -135,6 +136,7 @@ CTPPSProtonProducer::CTPPSProtonProducer(const edm::ParameterSet& iConfig) :
   localAngleYMax_             (iConfig.getParameter<double>("localAngleYMax")),
 
   max_n_timing_tracks_        (iConfig.getParameter<unsigned int>("max_n_timing_tracks")),
+  default_time_               (iConfig.getParameter<double>("default_time")),
 
   algorithm_                  (iConfig.getParameter<bool>("fitVtxY"), iConfig.getParameter<bool>("useImprovedInitialEstimate"), verbosity_),
   opticsValid_(false)
@@ -192,6 +194,8 @@ void CTPPSProtonProducer::fillDescriptions(edm::ConfigurationDescriptions& descr
   std::vector<edm::ParameterSet> config;
 
   desc.add<unsigned int>("max_n_timing_tracks", 5)->setComment("maximum number of timing tracks per RP");
+
+  desc.add<double>("default_time", 0.)->setComment("proton time to be used when no timing information available");
 
   desc.add<bool>("fitVtxY", true)
     ->setComment("for multi-RP reconstruction, flag whether y* should be free fit parameter");
@@ -447,7 +451,7 @@ void CTPPSProtonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
               swt += w * tr.getTime();
             }
 
-            float time = 0., time_unc = 0.;
+            float time = default_time_, time_unc = 0.;
             if (sw > 0.)
             {
               time = swt / sw;

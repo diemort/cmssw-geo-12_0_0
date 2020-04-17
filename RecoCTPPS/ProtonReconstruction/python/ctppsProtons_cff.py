@@ -31,6 +31,7 @@ def applyDefaultSettings(ctppsProtons):
 
   # update for re-miniAOD
   run2_miniAOD_devel.toModify(ctppsProtons,
+      default_time = -999.,
       association_cuts_45 = dict(ti_tr_min = -1.5, ti_tr_max = 2.0),
       association_cuts_56 = dict(ti_tr_min = -1.5, ti_tr_max = 2.0)
   )
