@@ -12,7 +12,8 @@ def useLocalAlignment(process):
     "CalibPPS/ESProducers/data/alignment/common/RPixGeometryCorrections-2017-2018.xml",
 
     # 2016 pre-TS2
-    "CalibPPS/ESProducers/data/alignment/2016/tracking_RP_preTS2_version_10.xml",
+    #"CalibPPS/ESProducers/data/alignment/2016/tracking_RP_preTS2_version_10.xml",
+    "CalibPPS/ESProducers/data/alignment/2016/tracking_RP_preTS2_version_11.xml", # fix for fill 5264
 
     # 2016 post-TS2
     "CalibPPS/ESProducers/data/alignment/2016/tracking_RP_postTS2_version_10.xml",
