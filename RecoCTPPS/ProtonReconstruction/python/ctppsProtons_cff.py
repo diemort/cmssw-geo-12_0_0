@@ -31,9 +31,10 @@ def applyDefaultSettings(ctppsProtons):
 
   # update for re-miniAOD
   run2_miniAOD_devel.toModify(ctppsProtons,
-      default_time = -999.,
+      pixelDiscardBXShiftedTracks = True,
       association_cuts_45 = dict(ti_tr_min = -1.5, ti_tr_max = 2.0),
-      association_cuts_56 = dict(ti_tr_min = -1.5, ti_tr_max = 2.0)
+      association_cuts_56 = dict(ti_tr_min = -1.5, ti_tr_max = 2.0),
+      default_time = -999.
   )
 
 ctpps_2016.toModify(ctppsProtons, applyDefaultSettings) # applied for all Run2 years (2016, 2017 and 2018)

@@ -48,6 +48,8 @@ private:
 
   edm::EDGetTokenT<reco::ForwardProtonCollection> tokenRecoProtonsMultiRP_;
 
+  bool pixelDiscardBXShiftedTracks_;
+
   std::string opticsLabel_;
 
   unsigned int n_prep_events_;
@@ -222,6 +224,8 @@ CTPPSProtonReconstructionEfficiencyEstimatorData::CTPPSProtonReconstructionEffic
       tokenRecoProtonsMultiRP_(
           consumes<reco::ForwardProtonCollection>(iConfig.getParameter<InputTag>("tagRecoProtonsMultiRP"))),
 
+      pixelDiscardBXShiftedTracks_(iConfig.getParameter<bool>("pixelDiscardBXShiftedTracks")),
+
       opticsLabel_(iConfig.getParameter<std::string>("opticsLabel")),
       n_prep_events_(iConfig.getParameter<unsigned int>("n_prep_events")),
       n_exp_prot_max_(iConfig.getParameter<unsigned int>("n_exp_prot_max")),
@@ -250,6 +254,9 @@ void CTPPSProtonReconstructionEfficiencyEstimatorData::fillDescriptions(edm::Con
 
   desc.add<edm::InputTag>("tagTracks", edm::InputTag())->setComment("input tag for local lite tracks");
   desc.add<edm::InputTag>("tagRecoProtonsMultiRP", edm::InputTag())->setComment("input tag for multi-RP reco protons");
+
+  desc.add<bool>("pixelDiscardBXShiftedTracks", false)
+      ->setComment("whether to discard pixel tracks built from BX-shifted planes");
 
   desc.add<std::string>("opticsLabel", "")->setComment("label of the optics records");
 
@@ -307,6 +314,14 @@ void CTPPSProtonReconstructionEfficiencyEstimatorData::analyze(const edm::Event 
       const auto &tr = (*hTracks)[i];
       CTPPSDetId rpId(tr.getRPId());
       unsigned int decRPId = rpId.arm()*100 + rpId.station()*10 + rpId.rp();
+
+      if (pixelDiscardBXShiftedTracks_)
+      {
+        if (tr.getPixelTrackRecoInfo() == CTPPSpixelLocalTrackReconstructionInfo::allShiftedPlanes ||
+              tr.getPixelTrackRecoInfo() == CTPPSpixelLocalTrackReconstructionInfo::mixedPlanes)
+          continue;
+      }
+
       printf("    [%2u] RP=%u, x=%.3f, y=%.3f\n", i, decRPId, tr.getX(), tr.getY());
     }
 
@@ -329,10 +344,24 @@ void CTPPSProtonReconstructionEfficiencyEstimatorData::analyze(const edm::Event 
     CTPPSDetId rpId_i(tr_i.getRPId());
     unsigned int decRPId_i = rpId_i.arm()*100 + rpId_i.station()*10 + rpId_i.rp();
 
+    if (pixelDiscardBXShiftedTracks_)
+    {
+      if (tr_i.getPixelTrackRecoInfo() == CTPPSpixelLocalTrackReconstructionInfo::allShiftedPlanes ||
+            tr_i.getPixelTrackRecoInfo() == CTPPSpixelLocalTrackReconstructionInfo::mixedPlanes)
+        continue;
+    }
+
     for (const auto &tr_j : *hTracks)
     {
       CTPPSDetId rpId_j(tr_j.getRPId());
       unsigned int decRPId_j = rpId_j.arm()*100 + rpId_j.station()*10 + rpId_j.rp();
+
+      if (pixelDiscardBXShiftedTracks_)
+      {
+        if (tr_j.getPixelTrackRecoInfo() == CTPPSpixelLocalTrackReconstructionInfo::allShiftedPlanes ||
+              tr_j.getPixelTrackRecoInfo() == CTPPSpixelLocalTrackReconstructionInfo::mixedPlanes)
+          continue;
+      }
       
       // check whether desired RP combination
       unsigned int arm = 123;
@@ -435,10 +464,24 @@ void CTPPSProtonReconstructionEfficiencyEstimatorData::analyze(const edm::Event 
     CTPPSDetId rpId_i(tr_i.getRPId());
     unsigned int decRPId_i = rpId_i.arm()*100 + rpId_i.station()*10 + rpId_i.rp();
 
+    if (pixelDiscardBXShiftedTracks_)
+    {
+      if (tr_i.getPixelTrackRecoInfo() == CTPPSpixelLocalTrackReconstructionInfo::allShiftedPlanes ||
+            tr_i.getPixelTrackRecoInfo() == CTPPSpixelLocalTrackReconstructionInfo::mixedPlanes)
+        continue;
+    }
+
     for (const auto &tr_j : *hTracks)
     {
       CTPPSDetId rpId_j(tr_j.getRPId());
       unsigned int decRPId_j = rpId_j.arm()*100 + rpId_j.station()*10 + rpId_j.rp();
+
+      if (pixelDiscardBXShiftedTracks_)
+      {
+        if (tr_j.getPixelTrackRecoInfo() == CTPPSpixelLocalTrackReconstructionInfo::allShiftedPlanes ||
+              tr_j.getPixelTrackRecoInfo() == CTPPSpixelLocalTrackReconstructionInfo::mixedPlanes)
+          continue;
+      }
       
       // check whether desired RP combination
       unsigned int arm = 123;

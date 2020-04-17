@@ -45,6 +45,8 @@ class CTPPSProtonProducer : public edm::stream::EDProducer<>
 
     edm::EDGetTokenT<CTPPSLocalTrackLiteCollection> tracksToken_;
 
+    bool pixelDiscardBXShiftedTracks_;
+
     std::string lhcInfoLabel_;
     std::string opticsLabel_;
 
@@ -122,6 +124,9 @@ class CTPPSProtonProducer : public edm::stream::EDProducer<>
 
 CTPPSProtonProducer::CTPPSProtonProducer(const edm::ParameterSet& iConfig) :
   tracksToken_                (consumes<CTPPSLocalTrackLiteCollection>(iConfig.getParameter<edm::InputTag>("tagLocalTrackLite"))),
+
+  pixelDiscardBXShiftedTracks_(iConfig.getParameter<bool>("pixelDiscardBXShiftedTracks")),
+
   lhcInfoLabel_               (iConfig.getParameter<std::string>("lhcInfoLabel")),
   opticsLabel_                (iConfig.getParameter<std::string>("opticsLabel")),
   verbosity_                  (iConfig.getUntrackedParameter<unsigned int>("verbosity", 0)),
@@ -162,6 +167,9 @@ void CTPPSProtonProducer::fillDescriptions(edm::ConfigurationDescriptions& descr
 
   desc.add<edm::InputTag>("tagLocalTrackLite", edm::InputTag("ctppsLocalTrackLiteProducer"))
     ->setComment("specification of the input lite-track collection");
+
+  desc.add<bool>("pixelDiscardBXShiftedTracks", false)
+      ->setComment("whether to discard pixel tracks built from BX-shifted planes");
 
   desc.add<std::string>("lhcInfoLabel", "")->setComment("label of the LHCInfo record");
   desc.add<std::string>("opticsLabel", "")->setComment("label of the optics record");
@@ -264,6 +272,13 @@ void CTPPSProtonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
         if (tr.getTx() < localAngleXMin_ || tr.getTx() > localAngleXMax_
             || tr.getTy() < localAngleYMin_ || tr.getTy() > localAngleYMax_)
           continue;
+
+        if (pixelDiscardBXShiftedTracks_)
+        {
+          if (tr.getPixelTrackRecoInfo() == CTPPSpixelLocalTrackReconstructionInfo::allShiftedPlanes ||
+                tr.getPixelTrackRecoInfo() == CTPPSpixelLocalTrackReconstructionInfo::mixedPlanes)
+            continue;
+        }
 
         const CTPPSDetId rpId(tr.getRPId());
 
