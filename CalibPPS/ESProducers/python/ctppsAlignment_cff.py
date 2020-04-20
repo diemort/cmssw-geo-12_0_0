@@ -29,8 +29,8 @@ def useLocalAlignment(process):
     "CalibPPS/ESProducers/data/alignment/2017/timing_RP_postTS2_v4.xml",
 
     # 2018
-    "CalibPPS/ESProducers/data/alignment/2018/tracking_RP_version_10.xml",
-    #"CalibPPS/ESProducers/data/alignment/2018/tracking_RP_version_11_test1.xml",
+    #"CalibPPS/ESProducers/data/alignment/2018/tracking_RP_version_10.xml",
+    "CalibPPS/ESProducers/data/alignment/2018/tracking_RP_version_11.xml", # update of vertical alignment (post-TS1 bugfix and more)
 
     "CalibPPS/ESProducers/data/alignment/2018/timing_RP_v4.xml"
   )
