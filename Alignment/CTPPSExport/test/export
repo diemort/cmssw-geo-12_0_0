@@ -7,32 +7,72 @@ exportDir="../../../CalibPPS/ESProducers/data/alignment/"
 function ExportOne()
 {
 	local input="$1"
-	
-	local output=${input#tracking_RP_}
-	local year="${output%%_*}"
-	output=${output#*_}
-	output="$year/tracking_RP_$output"
+	local version="$2"
 
-	echo "* $input --> $output"
+	echo "* ${year}${period}, $version"
 
-	if [ -f "$exportDir/$output" ]
+	local geometry="$year"
+	if [ "$year" == "2016" ]
 	then
-		echo "    target file exists - SKIPPING"
+		geometry="2017"
+	fi
+
+	local cfg="period_${year}${period}_cfg.py"
+	local log="period_${year}${period}.log"
+	local output="period_${year}${period}.xml"
+
+	cat "export_template_cfg.py" | sed "\
+			s|\$geometry|$geometry|;\
+			s|\$input|$input|;\
+			s|\$output|$output|;\
+		" > "$cfg"
+
+	cmsRun "$cfg" &> "$log"
+
+	local exp="$exportDir/$year/tracking_RP${period}_${version}.xml"
+
+	if [ -f "$exp" ]
+	then
+		echo "    target file exists - SKIPPING:"
+		echo "        $exp"
 	else
-		cp "$input" "$exportDir/$output" && echo "    successfully copied"
+		cp "$output" "$exp" && echo "    successfully copied"
 	fi
 }
 
 #----------------------------------------------------------------------------------------------------
 
-#ExportOne "tracking_RP_2016_preTS2_version_10.xml"
-ExportOne "tracking_RP_2016_preTS2_version_11.xml"
+year="2016"
+period="_preTS2"
 
-ExportOne "tracking_RP_2016_postTS2_version_10.xml"
+#ExportOne "Alignment/CTPPSExport/data/2016_preTS2/collect_alignments_2018_07_30.5.out" "version_10"
+ExportOne "Alignment/CTPPSExport/data/2016_preTS2/collect_alignments_2018_07_30.5_mod_5264.out" "version_11"
 
-ExportOne "tracking_RP_2017_preTS2_version_10.xml"
 
-ExportOne "tracking_RP_2017_postTS2_version_10.xml"
 
-ExportOne "tracking_RP_2018_version_10.xml"
-#ExportOne "tracking_RP_2018_version_11_test1.xml"
+year="2016"
+period="_postTS2"
+
+ExportOne "Alignment/CTPPSExport/data/2016_postTS2/fit_alignments_2019_09_16.out" "version_10"
+
+
+
+year="2017"
+period="_preTS2"
+
+ExportOne "Alignment/CTPPSExport/data/2017_preTS2/collect_alignments_2019_06_12.out" "version_10"
+
+
+
+year="2017"
+period="_postTS2"
+
+ExportOne "Alignment/CTPPSExport/data/2017_postTS2/collect_alignments_2019_12_04.out" "version_10"
+
+
+
+year="2018"
+period=""
+
+#ExportOne "Alignment/CTPPSExport/data/2018/fit_alignments_2019_07_11.out" "version_10"
+ExportOne "Alignment/CTPPSExport/data/2018/fit_alignments_2020_04_20.out" "version_11"

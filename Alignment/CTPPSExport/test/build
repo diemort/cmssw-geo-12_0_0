@@ -1,6 +1,0 @@
-#!/bin/bash
-
-for tag in 2016_preTS2 2016_postTS2 2017_preTS2 2017_postTS2 2018
-do
-	cmsRun "export_$tag.py" &> "export_$tag.log" &
-done
