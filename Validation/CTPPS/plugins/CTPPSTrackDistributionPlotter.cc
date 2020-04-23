@@ -52,6 +52,7 @@ private:
     std::unique_ptr<TProfile> p_y_vs_x;
     std::unique_ptr<TH1D> h_x;
     std::unique_ptr<TH1D> h_y;
+    std::unique_ptr<TH1D> h_time;
 
     RPPlots() : initialized(false) {}
 
@@ -68,14 +69,17 @@ private:
 
       h_y.reset(new TH1D("", "", 300, -15., +15.));
 
+      h_time.reset(new TH1D("", ";time", 500, -50., +50.));
+
       initialized = true;
     }
 
-    void fill(double x, double y) {
+    void fill(double x, double y, double time) {
       h2_y_vs_x->Fill(x, y);
       p_y_vs_x->Fill(x, y);
       h_x->Fill(x);
       h_y->Fill(y);
+      h_time->Fill(time);
     }
 
     void write() const {
@@ -83,6 +87,7 @@ private:
       p_y_vs_x->Write("p_y_vs_x");
       h_x->Write("h_x");
       h_y->Write("h_y");
+      h_time->Write("h_time");
     }
   };
 
@@ -203,7 +208,7 @@ void CTPPSTrackDistributionPlotter::analyze(const edm::Event& iEvent, const edm:
     if (!pl.initialized)
       pl.init(rpPixel, x_pitch_pixels_);
 
-    pl.fill(trk.getX(), trk.getY());
+    pl.fill(trk.getX(), trk.getY(), trk.getTime());
 
     m_mult[rpId.arm()]++;
   }
