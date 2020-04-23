@@ -12,27 +12,29 @@ def useLocalAlignment(process):
     "CalibPPS/ESProducers/data/alignment/common/RPixGeometryCorrections-2017-2018.xml",
 
     # 2016 pre-TS2
-    #"CalibPPS/ESProducers/data/alignment/2016/tracking_RP_preTS2_version_10.xml",
+    #"CalibPPS/ESProducers/data/alignment/2016/tracking_RP_preTS2_version_10.xml", # used for UL re-reco
     "CalibPPS/ESProducers/data/alignment/2016/tracking_RP_preTS2_version_11.xml", # fix for fill 5264
 
     # 2016 post-TS2
-    "CalibPPS/ESProducers/data/alignment/2016/tracking_RP_postTS2_version_10.xml",
+    "CalibPPS/ESProducers/data/alignment/2016/tracking_RP_postTS2_version_10.xml", # used for UL re-reco
 
     # 2017 pre-TS2
-    "CalibPPS/ESProducers/data/alignment/2017/tracking_RP_preTS2_version_10.xml",
+    "CalibPPS/ESProducers/data/alignment/2017/tracking_RP_preTS2_version_10.xml", # used for UL re-reco
 
-    "CalibPPS/ESProducers/data/alignment/2017/timing_RP_preTS2_v2.xml",
+    "CalibPPS/ESProducers/data/alignment/2017/timing_RP_preTS2_v2.xml", # used for UL re-reco
 
     # 2017 post-TS2
-    "CalibPPS/ESProducers/data/alignment/2017/tracking_RP_postTS2_version_10.xml",
+    "CalibPPS/ESProducers/data/alignment/2017/tracking_RP_postTS2_version_10.xml", # used for UL re-reco
 
-    "CalibPPS/ESProducers/data/alignment/2017/timing_RP_postTS2_v4.xml",
+    "CalibPPS/ESProducers/data/alignment/2017/timing_RP_postTS2_v4.xml", # used for UL re-reco
 
     # 2018
-    #"CalibPPS/ESProducers/data/alignment/2018/tracking_RP_version_10.xml",
-    "CalibPPS/ESProducers/data/alignment/2018/tracking_RP_version_11.xml", # update of vertical alignment (post-TS1 bugfix and more)
+    #"CalibPPS/ESProducers/data/alignment/2018/tracking_RP_version_10.xml", # used for UL re-reco
+    #"CalibPPS/ESProducers/data/alignment/2018/tracking_RP_version_11.xml", # update of vertical alignment (post-TS1 bugfix and more)
+    "CalibPPS/ESProducers/data/alignment/2018/tracking_RP_version_12.xml", # vertical alignment done without near-far correlation cut
+    #"CalibPPS/ESProducers/data/alignment/2018/tracking_RP_version_13_test.xml", # fill-dependent tilt of 56-210-fr
 
-    "CalibPPS/ESProducers/data/alignment/2018/timing_RP_v4.xml"
+    "CalibPPS/ESProducers/data/alignment/2018/timing_RP_v4.xml" # used for UL re-reco
   )
 
   process.esPreferLocalAlignment = cms.ESPrefer("CTPPSRPAlignmentCorrectionsDataESSourceXML", "ctppsRPAlignmentCorrectionsDataESSourceXML")

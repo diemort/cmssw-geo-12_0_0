@@ -75,4 +75,5 @@ year="2018"
 period=""
 
 #ExportOne "Alignment/CTPPSExport/data/2018/fit_alignments_2019_07_11.out" "version_10"
-ExportOne "Alignment/CTPPSExport/data/2018/fit_alignments_2020_04_20.out" "version_11"
+#ExportOne "Alignment/CTPPSExport/data/2018/fit_alignments_2020_04_20.out" "version_11"
+ExportOne "Alignment/CTPPSExport/data/2018/fit_alignments_2020_04_23.out" "version_12"
