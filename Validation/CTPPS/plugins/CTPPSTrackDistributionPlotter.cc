@@ -59,7 +59,7 @@ private:
     void init(bool pixel, double pitch) {
       const double bin_size_x = (pixel) ? pitch * cos(18.4 / 180. * M_PI) : 100E-3;
 
-      h2_y_vs_x.reset(new TH2D("", "", 300, -10., +70., 300, -30., +30.));
+      h2_y_vs_x.reset(new TH2D("", "", 300, -10., +70., 600, -30., +30.));
       p_y_vs_x.reset(new TProfile("", "", 300, -10., +70.));
 
       int n_mi = ceil(10. / bin_size_x);
