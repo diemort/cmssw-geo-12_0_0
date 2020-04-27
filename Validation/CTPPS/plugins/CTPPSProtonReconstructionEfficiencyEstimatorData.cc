@@ -50,6 +50,8 @@ private:
 
   bool pixelDiscardBXShiftedTracks_;
 
+  double localAngleXMin_, localAngleXMax_, localAngleYMin_, localAngleYMax_;
+
   std::string opticsLabel_;
 
   unsigned int n_prep_events_;
@@ -226,6 +228,11 @@ CTPPSProtonReconstructionEfficiencyEstimatorData::CTPPSProtonReconstructionEffic
 
       pixelDiscardBXShiftedTracks_(iConfig.getParameter<bool>("pixelDiscardBXShiftedTracks")),
 
+      localAngleXMin_             (iConfig.getParameter<double>("localAngleXMin")),
+      localAngleXMax_             (iConfig.getParameter<double>("localAngleXMax")),
+      localAngleYMin_             (iConfig.getParameter<double>("localAngleYMin")),
+      localAngleYMax_             (iConfig.getParameter<double>("localAngleYMax")),
+
       opticsLabel_(iConfig.getParameter<std::string>("opticsLabel")),
       n_prep_events_(iConfig.getParameter<unsigned int>("n_prep_events")),
       n_exp_prot_max_(iConfig.getParameter<unsigned int>("n_exp_prot_max")),
@@ -257,6 +264,11 @@ void CTPPSProtonReconstructionEfficiencyEstimatorData::fillDescriptions(edm::Con
 
   desc.add<bool>("pixelDiscardBXShiftedTracks", false)
       ->setComment("whether to discard pixel tracks built from BX-shifted planes");
+
+  desc.add<double>("localAngleXMin", -0.03)->setComment("minimal accepted value of local horizontal angle (rad)");
+  desc.add<double>("localAngleXMax", +0.03)->setComment("maximal accepted value of local horizontal angle (rad)");
+  desc.add<double>("localAngleYMin", -0.04)->setComment("minimal accepted value of local vertical angle (rad)");
+  desc.add<double>("localAngleYMax", +0.04)->setComment("maximal accepted value of local vertical angle (rad)");
 
   desc.add<std::string>("opticsLabel", "")->setComment("label of the optics records");
 
@@ -305,24 +317,38 @@ void CTPPSProtonReconstructionEfficiencyEstimatorData::analyze(const edm::Event 
   Handle<reco::ForwardProtonCollection> hRecoProtonsMultiRP;
   iEvent.getByToken(tokenRecoProtonsMultiRP_, hRecoProtonsMultiRP);
 
+  // pre-selection of tracks
+  std::vector<unsigned int> sel_track_idc;
+  for (unsigned int idx = 0; idx < hTracks->size(); ++idx)
+  {
+    const auto& tr = hTracks->at(idx);
+
+    if (tr.getTx() < localAngleXMin_ || tr.getTx() > localAngleXMax_
+        || tr.getTy() < localAngleYMin_ || tr.getTy() > localAngleYMax_)
+      continue;
+
+    if (pixelDiscardBXShiftedTracks_)
+    {
+      if (tr.getPixelTrackRecoInfo() == CTPPSpixelLocalTrackReconstructionInfo::allShiftedPlanes ||
+            tr.getPixelTrackRecoInfo() == CTPPSpixelLocalTrackReconstructionInfo::mixedPlanes)
+        continue;
+    }
+
+    sel_track_idc.push_back(idx);
+  }
+
   // debug print
   if (verbosity)
   {
-    printf("* tracks:\n");
-    for (unsigned int i = 0; i < hTracks->size(); ++i)
+    printf("* tracks (pre-selected):\n");
+    for (const auto idx : sel_track_idc)
     {
-      const auto &tr = (*hTracks)[i];
+      const auto &tr = hTracks->at(idx);
       CTPPSDetId rpId(tr.getRPId());
       unsigned int decRPId = rpId.arm()*100 + rpId.station()*10 + rpId.rp();
 
-      if (pixelDiscardBXShiftedTracks_)
-      {
-        if (tr.getPixelTrackRecoInfo() == CTPPSpixelLocalTrackReconstructionInfo::allShiftedPlanes ||
-              tr.getPixelTrackRecoInfo() == CTPPSpixelLocalTrackReconstructionInfo::mixedPlanes)
-          continue;
-      }
 
-      printf("    [%2u] RP=%u, x=%.3f, y=%.3f\n", i, decRPId, tr.getX(), tr.getY());
+      printf("    [%2u] RP=%u, x=%.3f, y=%.3f\n", idx, decRPId, tr.getX(), tr.getY());
     }
 
     printf("* protons:\n");
@@ -339,30 +365,18 @@ void CTPPSProtonReconstructionEfficiencyEstimatorData::analyze(const edm::Event 
   // make de_x and de_y plots
   map<unsigned int, bool> hasTracksInArm;
 
-  for (const auto &tr_i : *hTracks)
+  for (const auto idx_i : sel_track_idc)
   {
+    const auto &tr_i = hTracks->at(idx_i);
     CTPPSDetId rpId_i(tr_i.getRPId());
     unsigned int decRPId_i = rpId_i.arm()*100 + rpId_i.station()*10 + rpId_i.rp();
 
-    if (pixelDiscardBXShiftedTracks_)
+    for (const auto idx_j : sel_track_idc)
     {
-      if (tr_i.getPixelTrackRecoInfo() == CTPPSpixelLocalTrackReconstructionInfo::allShiftedPlanes ||
-            tr_i.getPixelTrackRecoInfo() == CTPPSpixelLocalTrackReconstructionInfo::mixedPlanes)
-        continue;
-    }
-
-    for (const auto &tr_j : *hTracks)
-    {
+      const auto &tr_j = hTracks->at(idx_j);
       CTPPSDetId rpId_j(tr_j.getRPId());
       unsigned int decRPId_j = rpId_j.arm()*100 + rpId_j.station()*10 + rpId_j.rp();
 
-      if (pixelDiscardBXShiftedTracks_)
-      {
-        if (tr_j.getPixelTrackRecoInfo() == CTPPSpixelLocalTrackReconstructionInfo::allShiftedPlanes ||
-              tr_j.getPixelTrackRecoInfo() == CTPPSpixelLocalTrackReconstructionInfo::mixedPlanes)
-          continue;
-      }
-      
       // check whether desired RP combination
       unsigned int arm = 123;
       for (const auto &ap : data_)
@@ -458,31 +472,18 @@ void CTPPSProtonReconstructionEfficiencyEstimatorData::analyze(const edm::Event 
   std::map<unsigned int, ArmEventData> armEventData;
 
   // determine the number of expected protons
-  for (unsigned int i = 0; i < hTracks->size(); ++i)
+  for (const auto idx_i : sel_track_idc)
   {
-    const auto tr_i = (*hTracks)[i];
+    const auto &tr_i = hTracks->at(idx_i);
     CTPPSDetId rpId_i(tr_i.getRPId());
     unsigned int decRPId_i = rpId_i.arm()*100 + rpId_i.station()*10 + rpId_i.rp();
 
-    if (pixelDiscardBXShiftedTracks_)
+    for (const auto idx_j : sel_track_idc)
     {
-      if (tr_i.getPixelTrackRecoInfo() == CTPPSpixelLocalTrackReconstructionInfo::allShiftedPlanes ||
-            tr_i.getPixelTrackRecoInfo() == CTPPSpixelLocalTrackReconstructionInfo::mixedPlanes)
-        continue;
-    }
-
-    for (const auto &tr_j : *hTracks)
-    {
+      const auto &tr_j = hTracks->at(idx_j);
       CTPPSDetId rpId_j(tr_j.getRPId());
       unsigned int decRPId_j = rpId_j.arm()*100 + rpId_j.station()*10 + rpId_j.rp();
 
-      if (pixelDiscardBXShiftedTracks_)
-      {
-        if (tr_j.getPixelTrackRecoInfo() == CTPPSpixelLocalTrackReconstructionInfo::allShiftedPlanes ||
-              tr_j.getPixelTrackRecoInfo() == CTPPSpixelLocalTrackReconstructionInfo::mixedPlanes)
-          continue;
-      }
-      
       // check whether desired RP combination
       unsigned int arm = 123;
       for (const auto &ap : data_)
@@ -505,7 +506,7 @@ void CTPPSProtonReconstructionEfficiencyEstimatorData::analyze(const edm::Event 
         const bool match_x = fabs(de_x - ad.de_x_mean) < n_si * ad.de_x_sigma;
         const bool match_y = fabs(de_y - ad.de_y_mean) < n_si * ad.de_y_sigma;
         if (match_x && match_y)
-          armEventData[arm].matched_track_idc[nsi].insert(i);
+          armEventData[arm].matched_track_idc[nsi].insert(idx_i);
       }
     }
   }
@@ -540,7 +541,7 @@ void CTPPSProtonReconstructionEfficiencyEstimatorData::analyze(const edm::Event 
 
       for (const auto &tri : ap.second.matched_track_idc[nsi])
       {
-        const auto &track = (*hTracks)[tri];
+        const auto &track = hTracks->at(tri);
 
         bool some_proton_matching = false;
 
@@ -658,7 +659,7 @@ void CTPPSProtonReconstructionEfficiencyEstimatorData::analyze(const edm::Event 
 
       for (unsigned int tri : ap.second.matched_track_idc[nsi])
       {
-        const double x_N = (*hTracks)[tri].getX();
+        const double x_N = hTracks->at(tri).getX();
         const double xi_N = ad.s_x_to_xi_N->Eval(x_N * 1E-1); // conversion mm to cm
 
         ad.effPlots[0][nsi].p_eff1_vs_x_N->Fill(x_N, eff);
@@ -671,7 +672,7 @@ void CTPPSProtonReconstructionEfficiencyEstimatorData::analyze(const edm::Event 
       // update method 2 plots
       for (const auto &tri : ap.second.matched_track_with_prot_idc[nsi])
       {
-        const double x_N = (*hTracks)[tri].getX();
+        const double x_N = hTracks->at(tri).getX();
         const double xi_N = ad.s_x_to_xi_N->Eval(x_N * 1E-1); // conversion mm to cm
         
         ad.effPlots[0][nsi].p_eff2_vs_x_N->Fill(x_N, 1.);
@@ -683,7 +684,7 @@ void CTPPSProtonReconstructionEfficiencyEstimatorData::analyze(const edm::Event 
 
       for (const auto &tri : ap.second.matched_track_without_prot_idc[nsi])
       {
-        const double x_N = (*hTracks)[tri].getX();
+        const double x_N = hTracks->at(tri).getX();
         const double xi_N = ad.s_x_to_xi_N->Eval(x_N * 1E-1); // conversion mm to cm
         
         ad.effPlots[0][nsi].p_eff2_vs_x_N->Fill(x_N, 0.);
