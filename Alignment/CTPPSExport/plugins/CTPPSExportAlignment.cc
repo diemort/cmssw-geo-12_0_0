@@ -223,19 +223,29 @@ void CTPPSExportAlignment::doExport(const CTPPSGeometry &geometry) const
         }
       }
 
-      // extras for 2018: fill from 6583 to 6663
-      if (rpDecId == 103 && fi.fillNumber >= 6583 && fi.fillNumber <= 6663)
+      // extras for 2018: fill from 6583 to 6660
+      if (rpDecId == 103 && fi.fillNumber >= 6583 && fi.fillNumber <= 6660)
       {
         for (unsigned int plane = 0; plane < 6; ++plane)
         {
           CTPPSPixelDetId planeId(arm, station, rp, plane);
 
           auto c = geometry.getSensorTranslation(planeId);
-          printf("  plane = %u, c_x = %.3f, c_y = %.3f, c_z = %.3f\n", plane, c.x(), c.y(), c.z());
+          printf("  plane = %u\n", plane);
+          printf("    centre: c_x = %.3f, c_y = %.3f, c_z = %.3f\n", c.x(), c.y(), c.z());
 
           ROOT::Math::RotationZYX R(-ar.rot_z, ar.rot_y, ar.rot_x);
-          ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double>> cm(c.x(), c.y(), c.z());
+          ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double>> cm(
+            c.x() + ar.sh_x,
+            c.y() - ar.sh_y,
+            c.z()
+          );
+          printf("    c - B: c_x = %.3f, c_y = %.3f, c_z = %.3f\n", cm.x(), cm.y(), cm.z());
+
           auto de = R * cm - cm;
+          printf("    de: c_x = %.3f, c_y = %.3f, c_z = %.3f\n", de.x(), de.y(), de.z());
+
+          printf("\n");
 
           CTPPSRPAlignmentCorrectionData sensorCorrection(
             de.x(), 0., de.y(), 0., de.z(), 0.,
