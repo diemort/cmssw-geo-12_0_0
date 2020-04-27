@@ -45,6 +45,9 @@ private:
 
   std::string outputFile_;
 
+  unsigned int events_total_;
+  std::map<unsigned int, unsigned int> events_per_arm_;
+
   struct RPPlots {
     bool initialized;
 
@@ -180,7 +183,8 @@ private:
 CTPPSTrackDistributionPlotter::CTPPSTrackDistributionPlotter(const edm::ParameterSet& iConfig)
     : tracksToken_(consumes<CTPPSLocalTrackLiteCollection>(iConfig.getParameter<edm::InputTag>("tagTracks"))),
       x_pitch_pixels_(iConfig.getUntrackedParameter<double>("x_pitch_pixels", 150E-3)),
-      outputFile_(iConfig.getParameter<std::string>("outputFile"))
+      outputFile_(iConfig.getParameter<std::string>("outputFile")),
+      events_total_(0)
 {
   armPlots[0].rpId_N = iConfig.getParameter<unsigned int>("rpId_45_N");
   armPlots[0].rpId_F = iConfig.getParameter<unsigned int>("rpId_45_F");
@@ -238,11 +242,22 @@ void CTPPSTrackDistributionPlotter::analyze(const edm::Event& iEvent, const edm:
         ap.fill(t1.getX(), t1.getY(), t2.getX(), t2.getY());
     }
   }
+
+  // update counters
+  events_total_++;
+
+  if (m_mult[0] > 0) events_per_arm_[0]++;
+  if (m_mult[1] > 0) events_per_arm_[1]++;
 }
 
 //----------------------------------------------------------------------------------------------------
 
 void CTPPSTrackDistributionPlotter::endJob() {
+  printf(">> CTPPSTrackDistributionPlotter::endJob\n");
+  printf("    events processed: %u (%.1E)\n", events_total_, double(events_total_));
+  printf("    events with tracks in sector 45: %u (%.1E)\n", events_per_arm_[0], double(events_per_arm_[0]));
+  printf("    events with tracks in sector 56: %u (%.1E)\n", events_per_arm_[1], double(events_per_arm_[1]));
+
   auto f_out = std::make_unique<TFile>(outputFile_.c_str(), "recreate");
 
   for (const auto& it : rpPlots) {
