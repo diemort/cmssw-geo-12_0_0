@@ -232,7 +232,7 @@ void CTPPSExportAlignment::doExport(const CTPPSGeometry &geometry) const
 
           auto c = geometry.getSensorTranslation(planeId);
           printf("  plane = %u\n", plane);
-          printf("    centre: c_x = %.3f, c_y = %.3f, c_z = %.3f\n", c.x(), c.y(), c.z());
+          printf("    centre: x = %.3f, y = %.3f, z = %.3f\n", c.x(), c.y(), c.z());
 
           ROOT::Math::RotationZYX R(-ar.rot_z, ar.rot_y, ar.rot_x);
           ROOT::Math::DisplacementVector3D<ROOT::Math::Cartesian3D<double>> cm(
@@ -240,10 +240,10 @@ void CTPPSExportAlignment::doExport(const CTPPSGeometry &geometry) const
             c.y() - ar.sh_y,
             c.z()
           );
-          printf("    c - B: c_x = %.3f, c_y = %.3f, c_z = %.3f\n", cm.x(), cm.y(), cm.z());
+          printf("    c - B: x = %.3f, y = %.3f, z = %.3f\n", cm.x(), cm.y(), cm.z());
 
           auto de = R * cm - cm;
-          printf("    de: c_x = %.3f, c_y = %.3f, c_z = %.3f\n", de.x(), de.y(), de.z());
+          printf("    de: x = %.3f, y = %.3f, z = %.3f\n", de.x(), de.y(), de.z());
 
           printf("\n");
 

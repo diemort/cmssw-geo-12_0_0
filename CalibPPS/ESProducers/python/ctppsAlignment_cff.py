@@ -31,8 +31,8 @@ def useLocalAlignment(process):
     # 2018
     #"CalibPPS/ESProducers/data/alignment/2018/tracking_RP_version_10.xml", # used for UL re-reco
     #"CalibPPS/ESProducers/data/alignment/2018/tracking_RP_version_11.xml", # update of vertical alignment (post-TS1 bugfix and more)
-    "CalibPPS/ESProducers/data/alignment/2018/tracking_RP_version_12.xml", # vertical alignment done without near-far correlation cut
-    #"CalibPPS/ESProducers/data/alignment/2018/tracking_RP_version_13_test.xml", # fill-dependent tilt of 56-210-fr
+    #"CalibPPS/ESProducers/data/alignment/2018/tracking_RP_version_12.xml", # vertical alignment done without near-far correlation cut
+    "CalibPPS/ESProducers/data/alignment/2018/tracking_RP_version_13.xml", # fill-dependent tilt of 56-210-fr
 
     "CalibPPS/ESProducers/data/alignment/2018/timing_RP_v4.xml" # used for UL re-reco
   )
