@@ -46,6 +46,20 @@ private:
   unsigned int rpId_45_N_, rpId_45_F_;
   unsigned int rpId_56_N_, rpId_56_F_;
 
+  struct AssociationCuts
+  {
+    double ti_tr_min;
+    double ti_tr_max;
+
+    void load(const edm::ParameterSet &ps)
+    {
+      ti_tr_min = ps.getParameter<double>("ti_tr_min");
+      ti_tr_max = ps.getParameter<double>("ti_tr_max");
+    }
+  };
+
+  std::map<unsigned int, AssociationCuts> association_cuts_;
+
   std::string outputFile_;
 
   signed int maxNonEmptyEvents_;
@@ -466,7 +480,14 @@ CTPPSProtonReconstructionPlotter::CTPPSProtonReconstructionPlotter(const edm::Pa
       p_y_L_diffNF_vs_y_L_N_(new TProfile("p_y_L_diffNF_vs_y_L_N", ";y_{LN};y_{LF} - y_{LN}", 100, -20., +20.)),
       p_y_R_diffNF_vs_y_R_N_(new TProfile("p_y_R_diffNF_vs_y_R_N", ";y_{RN};y_{RF} - y_{RN}", 100, -20., +20.)),
 
-      n_non_empty_events_(0) {}
+      n_non_empty_events_(0)
+{
+  for (const std::string &sector : { "45", "56" })
+  {
+    const unsigned int arm = (sector == "45") ? 0 : 1;
+    association_cuts_[arm].load(ps.getParameterSet("association_cuts_" + sector));
+  }
+}
 
 //----------------------------------------------------------------------------------------------------
 
@@ -633,17 +654,19 @@ void CTPPSProtonReconstructionPlotter::analyze(const edm::Event &event, const ed
       double de_x = 0., de_x_unc = 0.;
       CalculateTimingTrackingDistance(proton, tr, *hGeometry, de_x, de_x_unc);
 
-      double rd = (de_x_unc > 0.) ? de_x / de_x_unc : -1E10;
+      const double rd = (de_x_unc > 0.) ? de_x / de_x_unc : -1E10;
+      const auto &ac = association_cuts_[armId];
+      const bool match = (ac.ti_tr_min <= fabs(rd) && fabs(rd) <= ac.ti_tr_max);
 
       pl.h_de_x_timing_vs_tracking->Fill(de_x);
       pl.h_de_x_rel_timing_vs_tracking->Fill(rd);
-      pl.h_de_x_match_timing_vs_tracking->Fill(fabs(de_x / de_x_unc) <= 1. ? 1. : 0.); // TODO: this is wrong, the range is now tunable
+      pl.h_de_x_match_timing_vs_tracking->Fill(match ? 1. : 0.);
 
       if (clCo[armId] && armTimingTrackCounter[armId] == 1)
       {
         pl.h_de_x_timing_vs_tracking_ClCo->Fill(de_x);
         pl.h_de_x_rel_timing_vs_tracking_ClCo->Fill(rd);
-        pl.h_de_x_match_timing_vs_tracking_ClCo->Fill(fabs(de_x / de_x_unc) <= 1. ? 1. : 0.); // TODO: this is wrong, the range is now tunable
+        pl.h_de_x_match_timing_vs_tracking_ClCo->Fill(match ? 1. : 0.);
       }
     }
   }
