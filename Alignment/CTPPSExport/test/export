@@ -60,14 +60,16 @@ ExportOne "Alignment/CTPPSExport/data/2016_postTS2/fit_alignments_2019_09_16.out
 year="2017"
 period="_preTS2"
 
-ExportOne "Alignment/CTPPSExport/data/2017_preTS2/collect_alignments_2019_06_12.out" "version_10"
+#ExportOne "Alignment/CTPPSExport/data/2017_preTS2/collect_alignments_2019_06_12.out" "version_10"
+ExportOne "Alignment/CTPPSExport/data/2017_preTS2/collect_alignments_2020_04_29.out" "version_11"
 
 
 
 year="2017"
 period="_postTS2"
 
-ExportOne "Alignment/CTPPSExport/data/2017_postTS2/collect_alignments_2019_12_04.out" "version_10"
+#ExportOne "Alignment/CTPPSExport/data/2017_postTS2/collect_alignments_2019_12_04.out" "version_10"
+ExportOne "Alignment/CTPPSExport/data/2017_postTS2/collect_alignments_2020_04_29.out" "version_11"
 
 
 
@@ -77,4 +79,5 @@ period=""
 #ExportOne "Alignment/CTPPSExport/data/2018/fit_alignments_2019_07_11.out" "version_10"
 #ExportOne "Alignment/CTPPSExport/data/2018/fit_alignments_2020_04_20.out" "version_11"
 #ExportOne "Alignment/CTPPSExport/data/2018/fit_alignments_2020_04_23.out" "version_12"
-ExportOne "Alignment/CTPPSExport/data/2018/fit_alignments_2020_04_27.out" "version_13"
+#ExportOne "Alignment/CTPPSExport/data/2018/fit_alignments_2020_04_27.out" "version_13"
+ExportOne "Alignment/CTPPSExport/data/2018/fit_alignments_2020_04_29.out" "version_14"
