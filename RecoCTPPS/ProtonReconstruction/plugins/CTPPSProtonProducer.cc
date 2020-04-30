@@ -63,13 +63,13 @@ class CTPPSProtonProducer : public edm::stream::EDProducer<>
     struct AssociationCuts
     {
       bool x_cut_apply;
-      double x_cut_value;
+      double x_cut_mean, x_cut_value;
       bool y_cut_apply;
-      double y_cut_value;
+      double y_cut_mean, y_cut_value;
       bool xi_cut_apply;
-      double xi_cut_value;
+      double xi_cut_mean, xi_cut_value;
       bool th_y_cut_apply;
-      double th_y_cut_value;
+      double th_y_cut_mean, th_y_cut_value;
 
       double ti_tr_min;
       double ti_tr_max;
@@ -77,12 +77,19 @@ class CTPPSProtonProducer : public edm::stream::EDProducer<>
       void load(const edm::ParameterSet &ps)
       {
         x_cut_apply    = ps.getParameter<bool>  ("x_cut_apply");
+        x_cut_mean    = ps.getParameter<double>("x_cut_mean");
         x_cut_value    = ps.getParameter<double>("x_cut_value");
+
         y_cut_apply    = ps.getParameter<bool>  ("y_cut_apply");
+        y_cut_mean    = ps.getParameter<double>("y_cut_mean");
         y_cut_value    = ps.getParameter<double>("y_cut_value");
+
         xi_cut_apply   = ps.getParameter<bool>  ("xi_cut_apply");
+        xi_cut_mean   = ps.getParameter<double>("xi_cut_mean");
         xi_cut_value   = ps.getParameter<double>("xi_cut_value");
+
         th_y_cut_apply = ps.getParameter<bool>  ("th_y_cut_apply");
+        th_y_cut_mean = ps.getParameter<double>("th_y_cut_mean");
         th_y_cut_value = ps.getParameter<double>("th_y_cut_value");
 
         ti_tr_min = ps.getParameter<double>("ti_tr_min");
@@ -94,12 +101,19 @@ class CTPPSProtonProducer : public edm::stream::EDProducer<>
         edm::ParameterSetDescription desc;
 
         desc.add<bool>("x_cut_apply", false)->setComment("whether to apply track-association cut in x");
+        desc.add<double>("x_cut_mean", 0E-6)->setComment("mean of track-association cut in x, mm");
         desc.add<double>("x_cut_value", 800E-6)->setComment("threshold of track-association cut in x, mm");
+
         desc.add<bool>("y_cut_apply", false)->setComment("whether to apply track-association cut in y");
+        desc.add<double>("y_cut_mean", 0E-6)->setComment("mean of track-association cut in y, mm");
         desc.add<double>("y_cut_value", 600E-6)->setComment("threshold of track-association cut in y, mm");
+
         desc.add<bool>("xi_cut_apply", true)->setComment("whether to apply track-association cut in xi");
+        desc.add<double>("xi_cut_mean", 0.)->setComment("mean of track-association cut in xi");
         desc.add<double>("xi_cut_value", 0.013)->setComment("threshold of track-association cut in xi");
+
         desc.add<bool>("th_y_cut_apply", true)->setComment("whether to apply track-association cut in th_y");
+        desc.add<double>("th_y_cut_mean", 0E-6)->setComment("mean of track-association cut in th_y, rad");
         desc.add<double>("th_y_cut_value", 20E-6)->setComment("threshold of track-association cut in th_y, rad");
 
         desc.add<double>("ti_tr_min", -1.)->setComment("minimum value for timing-tracking association cut");
@@ -348,13 +362,13 @@ void CTPPSProtonProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 
               bool matching = true;
 
-              if (ac.x_cut_apply && std::abs(tr_i.getX() - tr_j.getX()) > ac.x_cut_value)
+              if (ac.x_cut_apply && std::abs(tr_i.getX() - tr_j.getX() - ac.x_cut_mean) > ac.x_cut_value)
                 matching = false;
-              if (ac.y_cut_apply && std::abs(tr_i.getY() - tr_j.getY()) > ac.y_cut_value)
+              if (ac.y_cut_apply && std::abs(tr_i.getY() - tr_j.getY() - ac.y_cut_mean) > ac.y_cut_value)
                 matching = false;
-              if (ac.xi_cut_apply && std::abs(pr_i.xi() - pr_j.xi()) > ac.xi_cut_value)
+              if (ac.xi_cut_apply && std::abs(pr_i.xi() - pr_j.xi() - ac.xi_cut_mean) > ac.xi_cut_value)
                 matching = false;
-              if (ac.th_y_cut_apply && std::abs(pr_i.thetaY() - pr_j.thetaY()) > ac.th_y_cut_value)
+              if (ac.th_y_cut_apply && std::abs(pr_i.thetaY() - pr_j.thetaY() - ac.th_y_cut_mean) > ac.th_y_cut_value)
                 matching = false;
 
               if (!matching)
