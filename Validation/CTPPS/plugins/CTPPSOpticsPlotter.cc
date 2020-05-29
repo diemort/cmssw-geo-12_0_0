@@ -84,9 +84,16 @@ private:
 
     std::unique_ptr<TGraph> g_de_x_vs_x_disp, g_de_y_vs_x_disp;
 
+    std::unique_ptr<TGraph> g_de_x_d_vs_xi, g_de_y_d_vs_xi;
+    std::unique_ptr<TGraph> g_de_L_x_vs_xi, g_de_L_y_vs_xi;
+    std::unique_ptr<TGraph> g_de_v_x_vs_xi, g_de_v_y_vs_xi;
+
     ArmPlots() :
-      g_de_x_vs_x_disp(new TGraph),
-      g_de_y_vs_x_disp(new TGraph)
+      g_de_x_vs_x_disp(new TGraph), g_de_y_vs_x_disp(new TGraph),
+
+      g_de_x_d_vs_xi(new TGraph), g_de_y_d_vs_xi(new TGraph),
+      g_de_L_x_vs_xi(new TGraph), g_de_L_y_vs_xi(new TGraph),
+      g_de_v_x_vs_xi(new TGraph), g_de_v_y_vs_xi(new TGraph)
     {}
 
     void write() const {
@@ -95,6 +102,21 @@ private:
 
       g_de_y_vs_x_disp->SetTitle(";x_N   (cm);y_F - y_N   (cm)");
       g_de_y_vs_x_disp->Write("g_de_y_vs_x_disp");
+
+      g_de_x_d_vs_xi->SetTitle(";xi;x_F - x_N   (cm)");
+      g_de_x_d_vs_xi->Write("g_de_x_d_vs_xi");
+      g_de_y_d_vs_xi->SetTitle(";xi;y_F - y_N   (cm)");
+      g_de_y_d_vs_xi->Write("g_de_y_d_vs_xi");
+
+      g_de_L_x_vs_xi->SetTitle(";xi;L_x_F - L_x_N   (cm)");
+      g_de_L_x_vs_xi->Write("g_de_L_x_vs_xi");
+      g_de_L_y_vs_xi->SetTitle(";xi;L_y_F - L_y_N   (cm)");
+      g_de_L_y_vs_xi->Write("g_de_L_y_vs_xi");
+
+      g_de_v_x_vs_xi->SetTitle(";xi;v_x_F - v_x_N   (cm)");
+      g_de_v_x_vs_xi->Write("g_de_v_x_vs_xi");
+      g_de_v_y_vs_xi->SetTitle(";xi;v_y_F - v_y_N   (cm)");
+      g_de_v_y_vs_xi->Write("g_de_v_y_vs_xi");
     }
   };
 
@@ -215,17 +237,63 @@ void CTPPSOpticsPlotter::analyze(const edm::Event& iEvent, const edm::EventSetup
     opt_N->transport(k_in_beam, k_out_beam_N);
     opt_F->transport(k_in_beam, k_out_beam_F);
 
+    const double vtx_ep = 1E-4;  // cm
+    const double th_ep = 1E-6;   // rad
+
     for (double xi = 0.; xi < 0.30001; xi += 0.001) {
       LHCInterpolatedOpticalFunctionsSet::Kinematics k_in_xi = {0., 0., 0., 0., xi};
-
       LHCInterpolatedOpticalFunctionsSet::Kinematics k_out_xi_N, k_out_xi_F;
       opt_N->transport(k_in_xi, k_out_xi_N);
       opt_F->transport(k_in_xi, k_out_xi_F);
 
+      LHCInterpolatedOpticalFunctionsSet::Kinematics k_in_xi_vtx_x = {vtx_ep, 0., 0., 0., xi};
+      LHCInterpolatedOpticalFunctionsSet::Kinematics k_out_xi_vtx_x_N, k_out_xi_vtx_x_F;
+      opt_N->transport(k_in_xi_vtx_x, k_out_xi_vtx_x_N);
+      opt_F->transport(k_in_xi_vtx_x, k_out_xi_vtx_x_F);
+
+      LHCInterpolatedOpticalFunctionsSet::Kinematics k_in_xi_th_x = {0., th_ep, 0., 0., xi};
+      LHCInterpolatedOpticalFunctionsSet::Kinematics k_out_xi_th_x_N, k_out_xi_th_x_F;
+      opt_N->transport(k_in_xi_th_x, k_out_xi_th_x_N);
+      opt_F->transport(k_in_xi_th_x, k_out_xi_th_x_F);
+
+      LHCInterpolatedOpticalFunctionsSet::Kinematics k_in_xi_vtx_y = {0., 0., vtx_ep, 0., xi};
+      LHCInterpolatedOpticalFunctionsSet::Kinematics k_out_xi_vtx_y_N, k_out_xi_vtx_y_F;
+      opt_N->transport(k_in_xi_vtx_y, k_out_xi_vtx_y_N);
+      opt_F->transport(k_in_xi_vtx_y, k_out_xi_vtx_y_F);
+
+      LHCInterpolatedOpticalFunctionsSet::Kinematics k_in_xi_th_y = {0., 0., 0., th_ep, xi};
+      LHCInterpolatedOpticalFunctionsSet::Kinematics k_out_xi_th_y_N, k_out_xi_th_y_F;
+      opt_N->transport(k_in_xi_th_y, k_out_xi_th_y_N);
+      opt_F->transport(k_in_xi_th_y, k_out_xi_th_y_F);
+
+      const double x_d_N = k_out_xi_N.x - k_out_beam_N.x;
+      const double x_d_F = k_out_xi_F.x - k_out_beam_F.x;
+      const double y_d_N = k_out_xi_N.y - k_out_beam_N.y;
+      const double y_d_F = k_out_xi_F.y - k_out_beam_F.y;
+
+      const double v_x_N = (k_out_xi_vtx_x_N.x - k_out_xi_N.x) / vtx_ep;
+      const double v_x_F = (k_out_xi_vtx_x_F.x - k_out_xi_F.x) / vtx_ep;
+      const double v_y_N = (k_out_xi_vtx_y_N.y - k_out_xi_N.y) / vtx_ep;
+      const double v_y_F = (k_out_xi_vtx_y_F.y - k_out_xi_F.y) / vtx_ep;
+
+      const double L_x_N = (k_out_xi_th_x_N.x - k_out_xi_N.x) / th_ep;
+      const double L_x_F = (k_out_xi_th_x_F.x - k_out_xi_F.x) / th_ep;
+      const double L_y_N = (k_out_xi_th_y_N.y - k_out_xi_N.y) / th_ep;
+      const double L_y_F = (k_out_xi_th_y_F.y - k_out_xi_F.y) / th_ep;
+
       int idx = ap.second.g_de_x_vs_x_disp->GetN();
 
-      ap.second.g_de_x_vs_x_disp->SetPoint(idx, k_out_xi_N.x - k_out_beam_N.x, (k_out_xi_F.x - k_out_beam_F.x) - (k_out_xi_N.x - k_out_beam_N.x));
-      ap.second.g_de_y_vs_x_disp->SetPoint(idx, k_out_xi_N.x - k_out_beam_N.x, (k_out_xi_F.y - k_out_beam_F.y) - (k_out_xi_N.y - k_out_beam_N.y));
+      ap.second.g_de_x_vs_x_disp->SetPoint(idx, x_d_N, x_d_F - x_d_N);
+      ap.second.g_de_y_vs_x_disp->SetPoint(idx, x_d_N, y_d_F - y_d_N);
+
+      ap.second.g_de_x_d_vs_xi->SetPoint(idx, xi, x_d_F - x_d_N);
+      ap.second.g_de_y_d_vs_xi->SetPoint(idx, xi, y_d_F - y_d_N);
+
+      ap.second.g_de_L_x_vs_xi->SetPoint(idx, xi, L_x_F - L_x_N);
+      ap.second.g_de_L_y_vs_xi->SetPoint(idx, xi, L_y_F - L_y_N);
+
+      ap.second.g_de_v_x_vs_xi->SetPoint(idx, xi, v_x_F - v_x_N);
+      ap.second.g_de_v_y_vs_xi->SetPoint(idx, xi, v_y_F - v_y_N);
     }
   }
 }
