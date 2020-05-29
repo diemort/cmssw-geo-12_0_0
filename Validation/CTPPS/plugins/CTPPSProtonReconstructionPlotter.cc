@@ -151,6 +151,7 @@ private:
 
   struct MultiRPPlots {
     std::unique_ptr<TH1D> h_multiplicity;
+    std::unique_ptr<TH1D> h_valid;
     std::unique_ptr<TH1D> h_xi, h_th_x, h_th_y, h_vtx_y, h_t_unif, h_t, h_chi_sq, h_log_chi_sq, h_chi_sq_norm;
     std::unique_ptr<TH1D> h_t_xi_range1, h_t_xi_range2, h_t_xi_range3;
     std::unique_ptr<TH1D> h_time;
@@ -170,6 +171,7 @@ private:
 
     MultiRPPlots()
         : h_multiplicity(new TH1D("", ";reconstructed protons per event", 11, -0.5, 10.5)),
+          h_valid(new TH1D("", ";valid", 2, -0.5, 1.5)),
           h_xi(new TH1D("", ";#xi", 100, 0., 0.3)),
           h_th_x(new TH1D("", ";#theta_{x}   (rad)", 250, -500E-6, +500E-6)),
           h_th_y(new TH1D("", ";#theta_{y}   (rad)", 500, -1000E-6, +1000E-6)),
@@ -220,6 +222,8 @@ private:
     }
 
     void fill(const reco::ForwardProton &p, unsigned int nTracks, bool n1f1) {
+      h_valid->Fill(p.validFit() ? 1. : 0.);
+
       if (!p.validFit())
         return;
 
@@ -281,6 +285,8 @@ private:
 
     void write() const {
       h_multiplicity->Write("h_multiplicity");
+
+      h_valid->Write("h_valid");
 
       h_chi_sq->Write("h_chi_sq");
       h_log_chi_sq->Write("h_log_chi_sq");
