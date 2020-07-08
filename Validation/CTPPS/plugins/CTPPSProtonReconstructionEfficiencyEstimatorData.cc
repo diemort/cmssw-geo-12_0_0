@@ -26,6 +26,7 @@
 #include "TH1D.h"
 #include "TH2D.h"
 #include "TProfile.h"
+#include "TProfile2D.h"
 #include "TF1.h"
 #include "TGraph.h"
 
@@ -87,23 +88,30 @@ private:
     struct EffPlots {
       std::unique_ptr<TProfile> p_eff1_vs_x_N;
       std::unique_ptr<TProfile> p_eff1_vs_xi_N;
+      std::unique_ptr<TProfile2D> p_eff1_vs_x_N_y_N;
 
       std::unique_ptr<TProfile> p_eff2_vs_x_N;
       std::unique_ptr<TProfile> p_eff2_vs_xi_N;
+      std::unique_ptr<TProfile2D> p_eff2_vs_x_N_y_N;
 
       EffPlots()
           : p_eff1_vs_x_N(new TProfile("", ";x_{N}   (mm);efficiency", 50, 0., 25.)),
             p_eff1_vs_xi_N(new TProfile("", ";#xi_{si,N};efficiency", 50, 0., 0.25)),
+            p_eff1_vs_x_N_y_N(new TProfile2D("", ";x_{N}   (mm);y_{N}   (mm);efficiency", 50, 0., 25., 30, -15., +15.)),
 
             p_eff2_vs_x_N(new TProfile("", ";x_{N}   (mm);efficiency", 50, 0., 25.)),
-            p_eff2_vs_xi_N(new TProfile("", ";#xi_{si,N};efficiency", 50, 0., 0.25)) {}
+            p_eff2_vs_xi_N(new TProfile("", ";#xi_{si,N};efficiency", 50, 0., 0.25)),
+            p_eff2_vs_x_N_y_N(new TProfile2D("", ";x_{N}   (mm);y_{N}   (mm);efficiency", 50, 0., 25., 30, -15., +15.))
+      {}
 
       void write() const {
         p_eff1_vs_x_N->Write("p_eff1_vs_x_N");
         p_eff1_vs_xi_N->Write("p_eff1_vs_xi_N");
+        p_eff1_vs_x_N_y_N->Write("p_eff1_vs_x_N_y_N");
 
         p_eff2_vs_x_N->Write("p_eff2_vs_x_N");
         p_eff2_vs_xi_N->Write("p_eff2_vs_xi_N");
+        p_eff2_vs_x_N_y_N->Write("p_eff2_vs_x_N_y_N");
       }
     };
 
@@ -623,36 +631,45 @@ void CTPPSProtonReconstructionEfficiencyEstimatorData::analyze(const edm::Event 
 
       for (unsigned int tri : ap.second.matched_track_idc[nsi]) {
         const double x_N = hTracks->at(tri).getX();
+        const double y_N = hTracks->at(tri).getY();
         const double xi_N = ad.s_x_to_xi_N->Eval(x_N * 1E-1);  // conversion mm to cm
 
         ad.effPlots[0][nsi].p_eff1_vs_x_N->Fill(x_N, eff);
         ad.effPlots[0][nsi].p_eff1_vs_xi_N->Fill(xi_N, eff);
+        ad.effPlots[0][nsi].p_eff1_vs_x_N_y_N->Fill(x_N, y_N, eff);
 
         ad.effPlots[n_exp_prot][nsi].p_eff1_vs_x_N->Fill(x_N, eff);
         ad.effPlots[n_exp_prot][nsi].p_eff1_vs_xi_N->Fill(xi_N, eff);
+        ad.effPlots[n_exp_prot][nsi].p_eff1_vs_x_N_y_N->Fill(x_N, y_N, eff);
       }
 
       // update method 2 plots
       for (const auto &tri : ap.second.matched_track_with_prot_idc[nsi]) {
         const double x_N = hTracks->at(tri).getX();
+        const double y_N = hTracks->at(tri).getY();
         const double xi_N = ad.s_x_to_xi_N->Eval(x_N * 1E-1);  // conversion mm to cm
 
         ad.effPlots[0][nsi].p_eff2_vs_x_N->Fill(x_N, 1.);
         ad.effPlots[0][nsi].p_eff2_vs_xi_N->Fill(xi_N, 1.);
+        ad.effPlots[0][nsi].p_eff2_vs_x_N_y_N->Fill(x_N, y_N, 1.);
 
         ad.effPlots[n_exp_prot][nsi].p_eff2_vs_x_N->Fill(x_N, 1.);
         ad.effPlots[n_exp_prot][nsi].p_eff2_vs_xi_N->Fill(xi_N, 1.);
+        ad.effPlots[n_exp_prot][nsi].p_eff2_vs_x_N_y_N->Fill(x_N, y_N, 1.);
       }
 
       for (const auto &tri : ap.second.matched_track_without_prot_idc[nsi]) {
         const double x_N = hTracks->at(tri).getX();
+        const double y_N = hTracks->at(tri).getY();
         const double xi_N = ad.s_x_to_xi_N->Eval(x_N * 1E-1);  // conversion mm to cm
 
         ad.effPlots[0][nsi].p_eff2_vs_x_N->Fill(x_N, 0.);
         ad.effPlots[0][nsi].p_eff2_vs_xi_N->Fill(xi_N, 0.);
+        ad.effPlots[0][nsi].p_eff2_vs_x_N_y_N->Fill(x_N, y_N, 0.);
 
         ad.effPlots[n_exp_prot][nsi].p_eff2_vs_x_N->Fill(x_N, 0.);
         ad.effPlots[n_exp_prot][nsi].p_eff2_vs_xi_N->Fill(xi_N, 0.);
+        ad.effPlots[n_exp_prot][nsi].p_eff2_vs_x_N_y_N->Fill(x_N, y_N, 0.);
       }
     }
   }
