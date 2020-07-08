@@ -244,6 +244,15 @@ void CTPPSEventCategoryPlotter::analyze( const edm::Event& iEvent, const edm::Ev
 
   if (trackMultiplicity[rpId_56_N_] == 0) counter_["56_N:0tr"]++;
   if (trackMultiplicity[rpId_56_N_] == 0 && !stripInfo[rpId_56_N_].suff) counter_["56_N:0tr_insuff"]++;
+
+  const bool ba0t = (trackMultiplicity[rpId_45_N_] == 0 && trackMultiplicity[rpId_56_N_] == 0);
+  const bool insuf_45 = (trackMultiplicity[rpId_45_N_] == 0 && !stripInfo[rpId_45_N_].suff);
+  const bool insuf_56 = (trackMultiplicity[rpId_56_N_] == 0 && !stripInfo[rpId_56_N_].suff);
+
+  if (ba0t) counter_["ba0t"]++;
+  if (ba0t && insuf_45) counter_["ba0t AND insuf_45"]++;
+  if (ba0t && insuf_56) counter_["ba0t AND insuf_56"]++;
+  if (ba0t && insuf_45 && insuf_56) counter_["ba0t AND insuf_45 AND insuf_56"]++;
 }
 
 //----------------------------------------------------------------------------------------------------
