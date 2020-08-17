@@ -69,8 +69,7 @@ std::shared_ptr<LHCInterpolatedOpticalFunctionsSetCollection> CTPPSInterpolatedO
 
   // is crossing angle reasonable (LHCInfo is correctly filled in DB)?
   if (lhcInfo.crossingAngle() == 0.) {
-    edm::LogInfo("CTPPSInterpolatedOpticalFunctionsESSource")
-        << "Invalid crossing angle, no optical functions produced.";
+    edm::LogInfo("PPS") << "Invalid crossing angle, no optical functions produced.";
 
     currentDataValid_ = false;
     currentCrossingAngle_ = -1;
@@ -81,13 +80,11 @@ std::shared_ptr<LHCInterpolatedOpticalFunctionsSetCollection> CTPPSInterpolatedO
 
   // set new crossing angle
   currentCrossingAngle_ = lhcInfo.crossingAngle();
-  edm::LogInfo("CTPPSInterpolatedOpticalFunctionsESSource")
-      << "Crossing angle has changed to " << currentCrossingAngle_ << ".";
+  edm::LogInfo("PPS") << "Crossing angle has changed to " << currentCrossingAngle_ << ".";
 
   // is input optics available ?
   if (ofColl.empty()) {
-    edm::LogInfo("CTPPSInterpolatedOpticalFunctionsESSource")
-        << "No input optics available, no optical functions produced.";
+    edm::LogInfo("PPS") << "No input optics available, no optical functions produced.";
 
     currentDataValid_ = false;
     currentData_ = std::make_shared<LHCInterpolatedOpticalFunctionsSetCollection>();
@@ -101,9 +98,8 @@ std::shared_ptr<LHCInterpolatedOpticalFunctionsSetCollection> CTPPSInterpolatedO
 
     // does the input xangle correspond to the actual one?
     if (fabs(currentCrossingAngle_ - it->first) > 1e-6)
-      throw cms::Exception("CTPPSInterpolatedOpticalFunctionsESSource")
-          << "Cannot interpolate: input given only for xangle " << it->first << " while interpolation requested for "
-          << currentCrossingAngle_ << ".";
+      throw cms::Exception("PPS") << "Cannot interpolate: input given only for xangle " << it->first
+                                  << " while interpolation requested for " << currentCrossingAngle_ << ".";
 
     currentData_ = std::make_shared<LHCInterpolatedOpticalFunctionsSetCollection>();
     for (const auto &rp_p : it->second) {
@@ -149,7 +145,7 @@ std::shared_ptr<LHCInterpolatedOpticalFunctionsSetCollection> CTPPSInterpolatedO
       const auto rpId = rp_p.first;
       const auto &rp_it2 = ofs2.find(rpId);
       if (rp_it2 == ofs2.end())
-        throw cms::Exception("CTPPSInterpolatedOpticalFunctionsESSource") << "RP mismatch between ofs1 and ofs2.";
+        throw cms::Exception("PPS") << "RP mismatch between ofs1 and ofs2.";
 
       const auto &of1 = rp_p.second;
       const auto &of2 = rp_it2->second;
@@ -158,7 +154,7 @@ std::shared_ptr<LHCInterpolatedOpticalFunctionsSetCollection> CTPPSInterpolatedO
       const size_t num_xi_vals2 = of2.getXiValues().size();
 
       if (num_xi_vals1 != num_xi_vals2)
-        throw cms::Exception("CTPPSInterpolatedOpticalFunctionsESSource") << "Size mismatch between ofs1 and ofs2.";
+        throw cms::Exception("PPS") << "Size mismatch between ofs1 and ofs2.";
 
       const size_t num_xi_vals = num_xi_vals1;
 
@@ -175,13 +171,29 @@ std::shared_ptr<LHCInterpolatedOpticalFunctionsSetCollection> CTPPSInterpolatedO
           double xi_control = of2.getXiValues()[pi];
 
           if (fabs(xi - xi_control) > 1e-6)
-            throw cms::Exception("CTPPSInterpolatedOpticalFunctionsESSource") << "Xi mismatch between ofs1 and ofs2.";
+            throw cms::Exception("PPS") << "Xi mismatch between ofs1 and ofs2.";
 
           iof.m_xi_values[pi] = xi;
 
-          double v1 = of1.getFcnValues()[fi][pi];
-          double v2 = of2.getFcnValues()[fi][pi];
-          iof.m_fcn_values[fi][pi] = v1 + (v2 - v1) / (xangle2 - xangle1) * (currentCrossingAngle_ - xangle1);
+          const double v1 = of1.getFcnValues()[fi][pi];
+          const double v2 = of2.getFcnValues()[fi][pi];
+          double v_out;
+
+          if (fi == LHCOpticalFunctionsSet::exd || fi == LHCOpticalFunctionsSet::expd) {
+            // linear interpolation for x_d related functions
+            v_out = v1 + (v2 - v1) / (xangle2 - xangle1) * (currentCrossingAngle_ - xangle1);
+          } else {
+            // check constness for other functions
+            const bool input_correct = (v1 == 0.) ? (v2 == 0.) : (std::abs(v1 - v2) / v1 < 1e-2);
+            if (!input_correct)
+              throw cms::Exception("PPS") << "Optical function with index " << fi
+                                          << " should be independent of xangle, however the input is not (xi="
+                                          << xi << ", value1=" << v1 << ", value2=" << v2 << ").";
+
+            v_out = v1;
+          }
+
+          iof.m_fcn_values[fi][pi] = v_out;
         }
       }
 
