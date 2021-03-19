@@ -846,9 +846,9 @@ void PPSAlignmentHarvester::dqmEndRun(DQMStore::IBooker &iBooker,
 
   // setting default sh_x values from config
   for (const auto &sd : {cfg.sectorConfig45(), cfg.sectorConfig56()}) {
-      for (const auto &rpd : {sd.rp_N_, sd.rp_F_}) {
-        sh_x_map[rpd.id_] = rpd.sh_x_;
-      }
+    for (const auto &rpd : {sd.rp_N_, sd.rp_F_}) {
+      sh_x_map[rpd.id_] = rpd.sh_x_;
+    }
   }
   edm::LogInfo("PPS").log([&](auto &li) {
     li << "[harvester] Setting sh_x from config of:\n";
@@ -860,7 +860,6 @@ void PPSAlignmentHarvester::dqmEndRun(DQMStore::IBooker &iBooker,
       }
     }
   });
-  
 
   for (unsigned int i = 0; i < cfg.sequence().size(); i++) {
     if (cfg.sequence()[i] == "x_alignment")

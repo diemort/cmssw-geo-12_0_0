@@ -34,7 +34,8 @@ NB: Parameters here are written in snake_case. Many of them are in camelCase in 
 | `chiSqThreshold`       | `cms.double`  | `50.`                                  | Chi-square threshold of y mode                                                                               |
 | `y_mode_unc_max_valid` | `cms.double`  | `5.`                                   | Maximum valid y mode uncertainty                                                                             |
 | `y_mode_max_valid`     | `cms.double`  | `20.`                                  | Maximum valid y mode                                                                                         |
-| `max_RP_tracks_size`   | `cms.uint32`  | `2`                                    | Maximum tracksUp or tracksDw size to avoid crowded events                                                    |
+| `min_RP_tracks_size`   | `cms.uint32`  | `1`                                    | Minimum number of tracks in each RP                                                                          |
+| `max_RP_tracks_size`   | `cms.uint32`  | `1`                                    | Maximum number of tracks in each RP                                                                          |
 | `n_si`                 | `cms.double`  | `4.`                                   | Element of checking whether the cuts passed                                                                  |
 | `matching`             | `cms.PSet`    | [details below](#matching)             | Reference dataset parameters. [Details below](#matching)                                                     |
 | `x_alignment_meth_o`   | `cms.PSet`    | [details below](#x_alignment_meth_o)   | X alignment parameters. [Details below](#x_alignment_meth_o)                                                 |

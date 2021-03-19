@@ -100,11 +100,11 @@ PPSAlignmentWorker::SectorData::SlicePlots::SlicePlots() {}
 
 PPSAlignmentWorker::SectorData::SlicePlots::SlicePlots(DQMStore::IBooker &iBooker, bool debug) {
   h_y = iBooker.book1DD("h_y", ";y", 100, -10., 10.);
-  auto *tmp = new TProfile("", ";y;x_{F} - y_{N}", 100, -10., 10.);
+  auto *tmp = new TProfile("", ";y;y_{F} - y_{N}", 100, -10., 10.);
   p_y_diffFN_vs_y = iBooker.bookProfile("p_y_diffFN_vs_y", tmp);
 
   if (debug)
-    h2_y_diffFN_vs_y = iBooker.book2DD("h2_y_diffFN_vs_y", ";y;x_{F} - y_{N}", 100, -10., 10., 100, -2., 2.);
+    h2_y_diffFN_vs_y = iBooker.book2DD("h2_y_diffFN_vs_y", ";y;y_{F} - y_{N}", 100, -10., 10., 100, -2., 2.);
 }
 
 void PPSAlignmentWorker::SectorData::init(DQMStore::IBooker &iBooker,
@@ -217,11 +217,11 @@ unsigned int PPSAlignmentWorker::SectorData::process(const CTPPSLocalTrackLiteCo
   for (const auto &tr : tracksDw)
     m_h2_y_vs_x_bef_sel[scfg.rp_F_.id_]->Fill(tr.x(), tr.y());
 
-  // skip crowded events
-  if (tracksUp.size() > cfg.maxRPTracksSize())
+  // skip crowded events (multiplicity selection)
+  if (tracksUp.size() < cfg.minRPTracksSize() || tracksUp.size() > cfg.maxRPTracksSize())
     return 0;
 
-  if (tracksDw.size() > cfg.maxRPTracksSize())
+  if (tracksDw.size() < cfg.minRPTracksSize() || tracksDw.size() > cfg.maxRPTracksSize())
     return 0;
 
   // update plots with multiplicity selection

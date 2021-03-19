@@ -62,6 +62,7 @@ private:
   double y_mode_unc_max_valid;
   double y_mode_max_valid;
 
+  unsigned int minRPTracksSize;
   unsigned int maxRPTracksSize;
   double n_si;
 
@@ -178,6 +179,7 @@ PPSAlignmentConfigESSource::PPSAlignmentConfigESSource(const edm::ParameterSet &
   y_mode_unc_max_valid = iConfig.getParameter<double>("y_mode_unc_max_valid");
   y_mode_max_valid = iConfig.getParameter<double>("y_mode_max_valid");
 
+  minRPTracksSize = iConfig.getParameter<unsigned int>("min_RP_tracks_size");
   maxRPTracksSize = iConfig.getParameter<unsigned int>("max_RP_tracks_size");
   n_si = iConfig.getParameter<double>("n_si");
 
@@ -276,6 +278,7 @@ std::unique_ptr<PPSAlignmentConfig> PPSAlignmentConfigESSource::produce(const PP
   p->setY_mode_unc_max_valid(y_mode_unc_max_valid);
   p->setY_mode_max_valid(y_mode_max_valid);
 
+  p->setMinRPTracksSize(minRPTracksSize);
   p->setMaxRPTracksSize(maxRPTracksSize);
   p->setN_si(n_si);
 
@@ -430,7 +433,8 @@ void PPSAlignmentConfigESSource::fillDescriptions(edm::ConfigurationDescriptions
   desc.add<double>("y_mode_unc_max_valid", 5.);
   desc.add<double>("y_mode_max_valid", 20.);
 
-  desc.add<unsigned int>("max_RP_tracks_size", 2);
+  desc.add<unsigned int>("min_RP_tracks_size", 1);
+  desc.add<unsigned int>("max_RP_tracks_size", 1);
   desc.add<double>("n_si", 4.);
 
   // matching

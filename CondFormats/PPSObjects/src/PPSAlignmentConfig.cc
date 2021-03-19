@@ -28,6 +28,7 @@ double PPSAlignmentConfig::chiSqThreshold() const { return chiSqThreshold_; }
 double PPSAlignmentConfig::y_mode_unc_max_valid() const { return y_mode_unc_max_valid_; }
 double PPSAlignmentConfig::y_mode_max_valid() const { return y_mode_max_valid_; }
 
+double PPSAlignmentConfig::minRPTracksSize() const { return minRPTracksSize_; }
 double PPSAlignmentConfig::maxRPTracksSize() const { return maxRPTracksSize_; }
 double PPSAlignmentConfig::n_si() const { return n_si_; }
 
@@ -76,6 +77,7 @@ void PPSAlignmentConfig::setY_mode_unc_max_valid(double y_mode_unc_max_valid) {
 }
 void PPSAlignmentConfig::setY_mode_max_valid(double y_mode_max_valid) { y_mode_max_valid_ = y_mode_max_valid; }
 
+void PPSAlignmentConfig::setMinRPTracksSize(unsigned int minRPTracksSize) { minRPTracksSize_ = minRPTracksSize; }
 void PPSAlignmentConfig::setMaxRPTracksSize(unsigned int maxRPTracksSize) { maxRPTracksSize_ = maxRPTracksSize; }
 void PPSAlignmentConfig::setN_si(double n_si) { n_si_ = n_si; }
 
@@ -187,6 +189,7 @@ std::ostream &operator<<(std::ostream &os, PPSAlignmentConfig c) {
   os << "    y_mode_max_valid = " << c.y_mode_max_valid_ << "\n\n";
 
   os << "* selection\n";
+  os << "    min_RP_tracks_size = " << c.minRPTracksSize_ << "\n";
   os << "    max_RP_tracks_size = " << c.maxRPTracksSize_ << "\n\n";
 
   os << "* cuts\n";
