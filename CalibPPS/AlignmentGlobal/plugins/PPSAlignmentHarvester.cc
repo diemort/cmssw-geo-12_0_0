@@ -44,6 +44,7 @@
 class PPSAlignmentHarvester : public DQMEDHarvester {
 public:
   PPSAlignmentHarvester(const edm::ParameterSet &iConfig);
+  ~PPSAlignmentHarvester() override;
 
 private:
   void dqmEndJob(DQMStore::IBooker &iBooker, DQMStore::IGetter &iGetter) override;
@@ -112,7 +113,9 @@ private:
   edm::ESGetToken<PPSAlignmentConfig, PPSAlignmentConfigRcd> esTokenReference_;
 
   const std::string folder_;
+  std::vector<std::string> sequence_;
   const bool debug_;
+
   TFile *debugFile_;
   std::ofstream resultsFile_;
 };
@@ -826,7 +829,32 @@ PPSAlignmentHarvester::PPSAlignmentHarvester(const edm::ParameterSet &iConfig)
       esTokenReference_(esConsumes<PPSAlignmentConfig, PPSAlignmentConfigRcd, edm::Transition::EndRun>(
           edm::ESInputTag("", "reference"))),
       folder_(iConfig.getParameter<std::string>("folder")),
-      debug_(iConfig.getParameter<bool>("debug")) {}
+      sequence_(iConfig.getParameter<std::vector<std::string>>("sequence")),
+      debug_(iConfig.getParameter<bool>("debug")) {
+  edm::LogInfo("PPS").log([&](auto &li) {
+    li << "[harvester] sequence:\n";
+    for (unsigned int i = 0; i < sequence_.size(); i++) {
+      li << "    " << i + 1 << ": " << sequence_[i] << "\n";
+    }
+  });
+
+  auto resultsDir = iConfig.getParameter<std::string>("results_dir");
+  if (!resultsDir.empty()) {
+    resultsFile_.open(resultsDir, std::ios::out | std::ios::trunc);
+  }
+  if (debug_) {
+    debugFile_ = new TFile("debug_harvester.root", "recreate");
+  }
+}
+
+PPSAlignmentHarvester::~PPSAlignmentHarvester() {
+  if (resultsFile_.is_open()) {
+    resultsFile_.close();
+  }
+  if (debug_) {
+    delete debugFile_;
+  }
+}
 
 void PPSAlignmentHarvester::dqmEndJob(DQMStore::IBooker &iBooker, DQMStore::IGetter &iGetter) {}
 
@@ -837,12 +865,6 @@ void PPSAlignmentHarvester::dqmEndRun(DQMStore::IBooker &iBooker,
   const auto &cfg = iSetup.getData(esTokenTest_);
 
   const auto &cfg_ref = iSetup.getData(esTokenReference_);
-
-  if (debug_)
-    debugFile_ = new TFile("debug_harvester.root", "recreate");
-
-  if (!cfg.resultsDir().empty())
-    resultsFile_.open(cfg.resultsDir(), std::ios::out | std::ios::trunc);
 
   // setting default sh_x values from config
   for (const auto &sd : {cfg.sectorConfig45(), cfg.sectorConfig56()}) {
@@ -861,22 +883,16 @@ void PPSAlignmentHarvester::dqmEndRun(DQMStore::IBooker &iBooker,
     }
   });
 
-  for (unsigned int i = 0; i < cfg.sequence().size(); i++) {
-    if (cfg.sequence()[i] == "x_alignment")
+  for (unsigned int i = 0; i < sequence_.size(); i++) {
+    if (sequence_[i] == "x_alignment")
       xAlignment(iBooker, iGetter, cfg, cfg_ref, i);
-    else if (cfg.sequence()[i] == "x_alignment_relative")
+    else if (sequence_[i] == "x_alignment_relative")
       xAlignmentRelative(iBooker, iGetter, cfg, i);
-    else if (cfg.sequence()[i] == "y_alignment")
+    else if (sequence_[i] == "y_alignment")
       yAlignment(iBooker, iGetter, cfg, i);
     else
-      edm::LogError("PPS") << "[harvester] " << cfg.sequence()[i] << " is a wrong method name.";
+      edm::LogError("PPS") << "[harvester] " << sequence_[i] << " is a wrong method name.";
   }
-
-  if (debug_)
-    delete debugFile_;
-
-  if (resultsFile_.is_open())
-    resultsFile_.close();
 }
 
 DEFINE_FWK_MODULE(PPSAlignmentHarvester);

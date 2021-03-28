@@ -51,9 +51,6 @@ private:
 
   bool debug;
 
-  std::vector<std::string> sequence;
-  std::string resultsDir;
-
   PPSAlignmentConfig::SectorConfig sectorConfig45, sectorConfig56;
 
   double x_ali_sh_step;
@@ -98,9 +95,6 @@ PPSAlignmentConfigESSource::PPSAlignmentConfigESSource(const edm::ParameterSet &
   if (debug) {
     debugFile = new TFile(("debug_producer_" + (label.empty() ? "test" : label) + ".root").c_str(), "recreate");
   }
-
-  sequence = iConfig.getParameter<std::vector<std::string>>("sequence");
-  resultsDir = iConfig.getParameter<std::string>("results_dir");
 
   sectorConfig45.name_ = "sector 45";
 
@@ -267,9 +261,6 @@ PPSAlignmentConfigESSource::PPSAlignmentConfigESSource(const edm::ParameterSet &
 std::unique_ptr<PPSAlignmentConfig> PPSAlignmentConfigESSource::produce(const PPSAlignmentConfigRcd &) {
   auto p = std::make_unique<PPSAlignmentConfig>();
 
-  p->setSequence(sequence);
-  p->setResultsDir(resultsDir);
-
   p->setSectorConfig45(sectorConfig45);
   p->setSectorConfig56(sectorConfig56);
 
@@ -318,9 +309,6 @@ void PPSAlignmentConfigESSource::fillDescriptions(edm::ConfigurationDescriptions
   desc.add<bool>("debug", false);
 
   desc.add<std::string>("label", "");
-
-  desc.add<std::vector<std::string>>("sequence", {});
-  desc.add<std::string>("results_dir", "./alignment_results.txt");
 
   // sector_45
   {

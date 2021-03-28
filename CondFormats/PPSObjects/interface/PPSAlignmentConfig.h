@@ -77,9 +77,6 @@ public:
   };
 
   // Getters
-  const std::vector<std::string> &sequence() const;
-  const std::string &resultsDir() const;
-
   const SectorConfig &sectorConfig45() const;
   const SectorConfig &sectorConfig56() const;
 
@@ -113,9 +110,6 @@ public:
   const Binning &binning() const;
 
   // Setters
-  void setSequence(std::vector<std::string> &sequence);
-  void setResultsDir(std::string &resultsDir);
-
   void setSectorConfig45(SectorConfig &sectorConfig45);
   void setSectorConfig56(SectorConfig &sectorConfig56);
 
@@ -152,9 +146,6 @@ public:
   friend std::ostream &operator<<(std::ostream &os, PPSAlignmentConfig c);
 
 private:
-  std::vector<std::string> sequence_;
-  std::string resultsDir_;
-
   SectorConfig sectorConfig45_, sectorConfig56_;
 
   double x_ali_sh_step_;  // mm

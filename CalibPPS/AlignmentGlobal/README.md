@@ -16,6 +16,8 @@
 | Name     | Type         | Description                                                                           |
 |----------|--------------|---------------------------------------------------------------------------------------|
 | `folder` | `cms.string` | Should be the same as the `folder` parameter in DQM configuration.                    |
+| `sequence`             | `cms.vstring` | Determines order of the alignment methods: `"x_alignemnt"`,   `"x_alignment_relative"`, `"y_alignment"`.     |
+| `results_dir`          | `cms.string`  | Directory of a file with the results. If empty (`""`), the file   will not be created.                       |
 | `debug`  | `cms.bool`   | When set to `True`, the harvester will produce an extra ROOT   file with debug plots. |
 
 # Event Setup
@@ -25,8 +27,6 @@ NB: Parameters here are written in snake_case. Many of them are in camelCase in 
 |------------------------|---------------|----------------------------------------|--------------------------------------------------------------------------------------------------------------|
 | `debug`                | `cms.bool`    | `False`                                | When set to `True`, the ESProducer will produce an extra ROOT file with   debug plots (from reference run).  |
 | `label`                | `cms.string`  | `""`                                   | label to distinguish reference and test fill configs. Should be set   either to `""` (test) or `"reference"` |
-| `sequence`             | `cms.vstring` | empty vector                           | Determines order of the alignment methods: `"x_alignemnt"`,   `"x_alignment_relative"`, `"y_alignment"`.     |
-| `results_dir`          | `cms.string`  | `"./alignment_results.txt"`            | Directory of a file with the results. If empty (`""`), the file   will not be created.                       |
 | `sector_45`            | `cms.PSet`    | [details below](#Sector-config)        | Configuration of sector 45. [Details below](#Sector-config)                                                  |
 | `sector_56`            | `cms.PSet`    | [details below](#Sector-config)        | Configuration of sector 56. [Details below](#Sector-config)                                                  |
 | `x_ali_sh_step`        | `cms.double`  | `0.01`                                 | Step for x alignment algorithm [mm]                                                                          |
