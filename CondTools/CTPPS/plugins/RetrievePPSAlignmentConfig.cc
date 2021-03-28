@@ -29,10 +29,9 @@ private:
   edm::ESGetToken<PPSAlignmentConfig, PPSAlignmentConfigRcd> esToken_;
 };
 
-RetrievePPSAlignmentConfig::RetrievePPSAlignmentConfig(const edm::ParameterSet &iConfig) 
-    : esToken_(esConsumes()) {}
+RetrievePPSAlignmentConfig::RetrievePPSAlignmentConfig(const edm::ParameterSet &iConfig) : esToken_(esConsumes()) {}
 
-void RetrievePPSAlignmentConfig::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
+void RetrievePPSAlignmentConfig::analyze(const edm::Event &iEvent, const edm::EventSetup &iSetup) {
   // get the data
   const auto &ppsAlignmentConfig = iSetup.getData(esToken_);
 

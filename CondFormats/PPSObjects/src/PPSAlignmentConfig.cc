@@ -32,7 +32,8 @@ double PPSAlignmentConfig::minRPTracksSize() const { return minRPTracksSize_; }
 double PPSAlignmentConfig::maxRPTracksSize() const { return maxRPTracksSize_; }
 double PPSAlignmentConfig::n_si() const { return n_si_; }
 
-const std::map<unsigned int, std::vector<PPSAlignmentConfig::PointErrors>> &PPSAlignmentConfig::matchingReferencePoints() const {
+const std::map<unsigned int, std::vector<PPSAlignmentConfig::PointErrors>>
+    &PPSAlignmentConfig::matchingReferencePoints() const {
   return matchingReferencePoints_;
 }
 const std::map<unsigned int, PPSAlignmentConfig::SelectionRange> &PPSAlignmentConfig::matchingShiftRanges() const {
@@ -47,7 +48,8 @@ unsigned int PPSAlignmentConfig::fitProfileMinNReasonable() const { return fitPr
 unsigned int PPSAlignmentConfig::methOGraphMinN() const { return methOGraphMinN_; }
 double PPSAlignmentConfig::methOUncFitRange() const { return methOUncFitRange_; }
 
-const std::map<unsigned int, PPSAlignmentConfig::SelectionRange> &PPSAlignmentConfig::alignment_x_relative_ranges() const {
+const std::map<unsigned int, PPSAlignmentConfig::SelectionRange> &PPSAlignmentConfig::alignment_x_relative_ranges()
+    const {
   return alignment_x_relative_ranges_;
 }
 unsigned int PPSAlignmentConfig::nearFarMinEntries() const { return nearFarMinEntries_; }
@@ -65,8 +67,12 @@ const PPSAlignmentConfig::Binning &PPSAlignmentConfig::binning() const { return 
 void PPSAlignmentConfig::setSequence(std::vector<std::string> &sequence) { sequence_ = sequence; }
 void PPSAlignmentConfig::setResultsDir(std::string &resultsDir) { resultsDir_ = resultsDir; }
 
-void PPSAlignmentConfig::setSectorConfig45(PPSAlignmentConfig::SectorConfig &sectorConfig45) { sectorConfig45_ = sectorConfig45; }
-void PPSAlignmentConfig::setSectorConfig56(PPSAlignmentConfig::SectorConfig &sectorConfig56) { sectorConfig56_ = sectorConfig56; }
+void PPSAlignmentConfig::setSectorConfig45(PPSAlignmentConfig::SectorConfig &sectorConfig45) {
+  sectorConfig45_ = sectorConfig45;
+}
+void PPSAlignmentConfig::setSectorConfig56(PPSAlignmentConfig::SectorConfig &sectorConfig56) {
+  sectorConfig56_ = sectorConfig56;
+}
 
 void PPSAlignmentConfig::setX_ali_sh_step(double x_ali_sh_step) { x_ali_sh_step_ = x_ali_sh_step; }
 
@@ -85,7 +91,8 @@ void PPSAlignmentConfig::setMatchingReferencePoints(
     std::map<unsigned int, std::vector<PPSAlignmentConfig::PointErrors>> &matchingReferencePoints) {
   matchingReferencePoints_ = matchingReferencePoints;
 }
-void PPSAlignmentConfig::setMatchingShiftRanges(std::map<unsigned int, PPSAlignmentConfig::SelectionRange> &matchingShiftRanges) {
+void PPSAlignmentConfig::setMatchingShiftRanges(
+    std::map<unsigned int, PPSAlignmentConfig::SelectionRange> &matchingShiftRanges) {
   matchingShiftRanges_ = matchingShiftRanges;
 }
 
@@ -110,7 +117,8 @@ void PPSAlignmentConfig::setNearFarMinEntries(unsigned int nearFarMinEntries) {
   nearFarMinEntries_ = nearFarMinEntries;
 }
 
-void PPSAlignmentConfig::setAlignment_y_ranges(std::map<unsigned int, PPSAlignmentConfig::SelectionRange> &alignment_y_ranges) {
+void PPSAlignmentConfig::setAlignment_y_ranges(
+    std::map<unsigned int, PPSAlignmentConfig::SelectionRange> &alignment_y_ranges) {
   alignment_y_ranges_ = alignment_y_ranges;
 }
 void PPSAlignmentConfig::setModeGraphMinN(unsigned int modeGraphMinN) { modeGraphMinN_ = modeGraphMinN; }

@@ -42,7 +42,8 @@ public:
 private:
   int fitProfile(TProfile *p, double x_mean, double x_rms, double &sl, double &sl_unc);
   TDirectory *findDirectoryWithName(TDirectory *dir, std::string searchName);
-  std::vector<PPSAlignmentConfig::PointErrors> buildVectorFromDirectory(TDirectory *dir, const PPSAlignmentConfig::RPConfig &rpd);
+  std::vector<PPSAlignmentConfig::PointErrors> buildVectorFromDirectory(TDirectory *dir,
+                                                                        const PPSAlignmentConfig::RPConfig &rpd);
 
   void setIntervalFor(const edm::eventsetup::EventSetupRecordKey &key,
                       const edm::IOVSyncValue &iosv,
@@ -167,10 +168,11 @@ PPSAlignmentConfigESSource::PPSAlignmentConfigESSource(const edm::ParameterSet &
                                                      {sectorConfig56.rp_N_.id_, sectorConfig56.name_},
                                                      {sectorConfig56.rp_F_.id_, sectorConfig56.name_}};
 
-  std::map<unsigned int, const PPSAlignmentConfig::RPConfig *> rpConfigs = {{sectorConfig45.rp_F_.id_, &sectorConfig45.rp_F_},
-                                                        {sectorConfig45.rp_N_.id_, &sectorConfig45.rp_N_},
-                                                        {sectorConfig56.rp_N_.id_, &sectorConfig56.rp_N_},
-                                                        {sectorConfig56.rp_F_.id_, &sectorConfig56.rp_F_}};
+  std::map<unsigned int, const PPSAlignmentConfig::RPConfig *> rpConfigs = {
+      {sectorConfig45.rp_F_.id_, &sectorConfig45.rp_F_},
+      {sectorConfig45.rp_N_.id_, &sectorConfig45.rp_N_},
+      {sectorConfig56.rp_N_.id_, &sectorConfig56.rp_N_},
+      {sectorConfig56.rp_F_.id_, &sectorConfig56.rp_F_}};
 
   x_ali_sh_step = iConfig.getParameter<double>("x_ali_sh_step");
 
@@ -635,7 +637,8 @@ TDirectory *PPSAlignmentConfigESSource::findDirectoryWithName(TDirectory *dir, s
 //---------------------------------------------------------------------------------------------
 
 // Builds vector of PointErrors instances from slice plots in dir.
-std::vector<PPSAlignmentConfig::PointErrors> PPSAlignmentConfigESSource::buildVectorFromDirectory(TDirectory *dir, const PPSAlignmentConfig::RPConfig &rpd) {
+std::vector<PPSAlignmentConfig::PointErrors> PPSAlignmentConfigESSource::buildVectorFromDirectory(
+    TDirectory *dir, const PPSAlignmentConfig::RPConfig &rpd) {
   std::vector<PPSAlignmentConfig::PointErrors> pv;
 
   TIter next(dir->GetListOfKeys());

@@ -32,9 +32,9 @@ private:
 
 WritePPSAlignmentConfig::WritePPSAlignmentConfig(const edm::ParameterSet &iConfig)
     : esToken_(esConsumes<PPSAlignmentConfig, PPSAlignmentConfigRcd>(
-          edm::ESInputTag("", iConfig.getParameter<std::string>("label"))))  {}
+          edm::ESInputTag("", iConfig.getParameter<std::string>("label")))) {}
 
-void WritePPSAlignmentConfig::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
+void WritePPSAlignmentConfig::analyze(const edm::Event &iEvent, const edm::EventSetup &iSetup) {
   // get the data
   const auto &ppsAlignmentConfig = iSetup.getData(esToken_);
 
