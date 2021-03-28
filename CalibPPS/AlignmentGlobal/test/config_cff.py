@@ -1,12 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
 ppsAlignmentConfigESSource = cms.ESSource("PPSAlignmentConfigESSource",
-    sequence = cms.vstring(
-		"x_alignment",
-		"x_alignment_relative",
-		"y_alignment"
-	),
-
 	sector_45 = cms.PSet(
         rp_N = cms.PSet(
             x_max_fit_mode = cms.double(7.0),
