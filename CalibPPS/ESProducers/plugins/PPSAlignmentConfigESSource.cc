@@ -42,7 +42,7 @@ public:
 private:
   int fitProfile(TProfile *p, double x_mean, double x_rms, double &sl, double &sl_unc);
   TDirectory *findDirectoryWithName(TDirectory *dir, std::string searchName);
-  std::vector<PointErrors> buildVectorFromDirectory(TDirectory *dir, const RPConfig &rpd);
+  std::vector<PPSAlignmentConfig::PointErrors> buildVectorFromDirectory(TDirectory *dir, const PPSAlignmentConfig::RPConfig &rpd);
 
   void setIntervalFor(const edm::eventsetup::EventSetupRecordKey &key,
                       const edm::IOVSyncValue &iosv,
@@ -53,7 +53,7 @@ private:
   std::vector<std::string> sequence;
   std::string resultsDir;
 
-  SectorConfig sectorConfig45, sectorConfig56;
+  PPSAlignmentConfig::SectorConfig sectorConfig45, sectorConfig56;
 
   double x_ali_sh_step;
 
@@ -66,23 +66,23 @@ private:
   unsigned int maxRPTracksSize;
   double n_si;
 
-  std::map<unsigned int, std::vector<PointErrors>> matchingReferencePoints;
-  std::map<unsigned int, SelectionRange> matchingShiftRanges;
+  std::map<unsigned int, std::vector<PPSAlignmentConfig::PointErrors>> matchingReferencePoints;
+  std::map<unsigned int, PPSAlignmentConfig::SelectionRange> matchingShiftRanges;
 
-  std::map<unsigned int, SelectionRange> alignment_x_meth_o_ranges;
+  std::map<unsigned int, PPSAlignmentConfig::SelectionRange> alignment_x_meth_o_ranges;
   unsigned int fitProfileMinBinEntries;
   unsigned int fitProfileMinNReasonable;
   unsigned int methOGraphMinN;
   double methOUncFitRange;
 
-  std::map<unsigned int, SelectionRange> alignment_x_relative_ranges;
+  std::map<unsigned int, PPSAlignmentConfig::SelectionRange> alignment_x_relative_ranges;
   unsigned int nearFarMinEntries;
 
-  std::map<unsigned int, SelectionRange> alignment_y_ranges;
+  std::map<unsigned int, PPSAlignmentConfig::SelectionRange> alignment_y_ranges;
   unsigned int modeGraphMinN;
   unsigned int multSelProjYMinEntries;
 
-  Binning binning;
+  PPSAlignmentConfig::Binning binning;
 
   std::string label;
 };
@@ -113,7 +113,7 @@ PPSAlignmentConfigESSource::PPSAlignmentConfigESSource(const edm::ParameterSet &
 
   for (std::string sectorName : {"sector_45", "sector_56"}) {
     const auto &sps = iConfig.getParameter<edm::ParameterSet>(sectorName);
-    SectorConfig *sc;
+    PPSAlignmentConfig::SectorConfig *sc;
     if (sectorName == "sector_45")
       sc = &sectorConfig45;
     else
@@ -121,7 +121,7 @@ PPSAlignmentConfigESSource::PPSAlignmentConfigESSource(const edm::ParameterSet &
 
     for (std::string rpName : {"rp_N", "rp_F"}) {
       const auto &rpps = sps.getParameter<edm::ParameterSet>(rpName);
-      RPConfig *rc;
+      PPSAlignmentConfig::RPConfig *rc;
       if (rpName == "rp_N")
         rc = &sc->rp_N_;
       else
@@ -167,7 +167,7 @@ PPSAlignmentConfigESSource::PPSAlignmentConfigESSource(const edm::ParameterSet &
                                                      {sectorConfig56.rp_N_.id_, sectorConfig56.name_},
                                                      {sectorConfig56.rp_F_.id_, sectorConfig56.name_}};
 
-  std::map<unsigned int, const RPConfig *> rpConfigs = {{sectorConfig45.rp_F_.id_, &sectorConfig45.rp_F_},
+  std::map<unsigned int, const PPSAlignmentConfig::RPConfig *> rpConfigs = {{sectorConfig45.rp_F_.id_, &sectorConfig45.rp_F_},
                                                         {sectorConfig45.rp_N_.id_, &sectorConfig45.rp_N_},
                                                         {sectorConfig56.rp_N_.id_, &sectorConfig56.rp_N_},
                                                         {sectorConfig56.rp_F_.id_, &sectorConfig56.rp_F_}};
@@ -635,8 +635,8 @@ TDirectory *PPSAlignmentConfigESSource::findDirectoryWithName(TDirectory *dir, s
 //---------------------------------------------------------------------------------------------
 
 // Builds vector of PointErrors instances from slice plots in dir.
-std::vector<PointErrors> PPSAlignmentConfigESSource::buildVectorFromDirectory(TDirectory *dir, const RPConfig &rpd) {
-  std::vector<PointErrors> pv;
+std::vector<PPSAlignmentConfig::PointErrors> PPSAlignmentConfigESSource::buildVectorFromDirectory(TDirectory *dir, const PPSAlignmentConfig::RPConfig &rpd) {
+  std::vector<PPSAlignmentConfig::PointErrors> pv;
 
   TIter next(dir->GetListOfKeys());
   TObject *o;

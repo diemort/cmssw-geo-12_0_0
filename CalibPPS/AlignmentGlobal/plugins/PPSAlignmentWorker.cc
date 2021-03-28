@@ -41,7 +41,7 @@ private:
 
   // ------------ structures ------------
   struct SectorData {
-    SectorConfig scfg;
+    PPSAlignmentConfig::SectorConfig scfg;
 
     // hit distributions
     std::map<unsigned int, MonitorElement *> m_h2_y_vs_x_bef_sel;
@@ -74,7 +74,7 @@ private:
 
     void init(DQMStore::IBooker &iBooker,
               const PPSAlignmentConfig &cfg,
-              const SectorConfig &_scfg,
+              const PPSAlignmentConfig::SectorConfig &_scfg,
               const std::string &folder,
               bool debug);
 
@@ -109,7 +109,7 @@ PPSAlignmentWorker::SectorData::SlicePlots::SlicePlots(DQMStore::IBooker &iBooke
 
 void PPSAlignmentWorker::SectorData::init(DQMStore::IBooker &iBooker,
                                           const PPSAlignmentConfig &cfg,
-                                          const SectorConfig &_scfg,
+                                          const PPSAlignmentConfig::SectorConfig &_scfg,
                                           const std::string &folder,
                                           bool debug) {
   scfg = _scfg;

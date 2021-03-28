@@ -4,15 +4,15 @@
 
 int main()
 {
-    testSerialization<PointErrors>();
-    testSerialization<SelectionRange>();
-    testSerialization<RPConfig>();
-    testSerialization<SectorConfig>();
-    testSerialization<Binning>();
+    testSerialization<PPSAlignmentConfig::PointErrors>();
+    testSerialization<PPSAlignmentConfig::SelectionRange>();
+    testSerialization<PPSAlignmentConfig::RPConfig>();
+    testSerialization<PPSAlignmentConfig::SectorConfig>();
+    testSerialization<PPSAlignmentConfig::Binning>();
 
-    testSerialization<std::vector<PointErrors>>();
-    testSerialization<std::map<unsigned int, std::vector<PointErrors>>>();
-    testSerialization<std::map<unsigned int, SelectionRange>>();
+    testSerialization<std::vector<PPSAlignmentConfig::PointErrors>>();
+    testSerialization<std::map<unsigned int, std::vector<PPSAlignmentConfig::PointErrors>>>();
+    testSerialization<std::map<unsigned int, PPSAlignmentConfig::SelectionRange>>();
 
     testSerialization<PPSAlignmentConfig>();
 }

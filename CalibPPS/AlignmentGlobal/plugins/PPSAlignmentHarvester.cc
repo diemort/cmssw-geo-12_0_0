@@ -60,18 +60,18 @@ private:
                         unsigned int fitProfileMinNReasonable,
                         double &sl,
                         double &sl_unc);
-  TGraphErrors *buildGraphFromVector(const std::vector<PointErrors> &pv);
+  TGraphErrors *buildGraphFromVector(const std::vector<PPSAlignmentConfig::PointErrors> &pv);
   TGraphErrors *buildGraphFromMonitorElements(DQMStore::IGetter &iGetter,
-                                              const RPConfig &rpd,
+                                              const PPSAlignmentConfig::RPConfig &rpd,
                                               const std::vector<MonitorElement *> &mes,
                                               unsigned int fitProfileMinBinEntries,
                                               unsigned int fitProfileMinNReasonable);
   void doMatch(DQMStore::IBooker &iBooker,
                const PPSAlignmentConfig &cfg,
-               const RPConfig &rpd,
+               const PPSAlignmentConfig::RPConfig &rpd,
                TGraphErrors *g_ref,
                TGraphErrors *g_test,
-               const SelectionRange &range_ref,
+               const PPSAlignmentConfig::SelectionRange &range_ref,
                double sh_min,
                double sh_max,
                double &sh_best,
@@ -96,7 +96,7 @@ private:
   TGraphErrors *buildModeGraph(DQMStore::IBooker &iBooker,
                                MonitorElement *h2_y_vs_x,
                                const PPSAlignmentConfig &cfg,
-                               const RPConfig &rpd);
+                               const PPSAlignmentConfig::RPConfig &rpd);
 
   void yAlignment(DQMStore::IBooker &iBooker, DQMStore::IGetter &iGetter, const PPSAlignmentConfig &cfg, int seqPos);
 
@@ -154,7 +154,7 @@ int PPSAlignmentHarvester::fitProfile(TProfile *p,
 }
 
 // Builds graph from a vector of points (with errors).
-TGraphErrors *PPSAlignmentHarvester::buildGraphFromVector(const std::vector<PointErrors> &pv) {
+TGraphErrors *PPSAlignmentHarvester::buildGraphFromVector(const std::vector<PPSAlignmentConfig::PointErrors> &pv) {
   TGraphErrors *g = new TGraphErrors();
 
   for (unsigned int i = 0; i < pv.size(); i++) {
@@ -169,7 +169,7 @@ TGraphErrors *PPSAlignmentHarvester::buildGraphFromVector(const std::vector<Poin
 
 // Builds a TGraphErrors from slice plots represented as MonitorElements.
 TGraphErrors *PPSAlignmentHarvester::buildGraphFromMonitorElements(DQMStore::IGetter &iGetter,
-                                                                   const RPConfig &rpd,
+                                                                   const PPSAlignmentConfig::RPConfig &rpd,
                                                                    const std::vector<MonitorElement *> &mes,
                                                                    unsigned int fitProfileMinBinEntries,
                                                                    unsigned int fitProfileMinNReasonable) {
@@ -224,10 +224,10 @@ TGraphErrors *PPSAlignmentHarvester::buildGraphFromMonitorElements(DQMStore::IGe
 // Matches reference data with test data.
 void PPSAlignmentHarvester::doMatch(DQMStore::IBooker &iBooker,
                                     const PPSAlignmentConfig &cfg,
-                                    const RPConfig &rpd,
+                                    const PPSAlignmentConfig::RPConfig &rpd,
                                     TGraphErrors *g_ref,
                                     TGraphErrors *g_test,
-                                    const SelectionRange &range_ref,
+                                    const PPSAlignmentConfig::SelectionRange &range_ref,
                                     double sh_min,
                                     double sh_max,
                                     double &sh_best,
@@ -594,7 +594,7 @@ double PPSAlignmentHarvester::findMax(TF1 *ff_fit) {
 TGraphErrors *PPSAlignmentHarvester::buildModeGraph(DQMStore::IBooker &iBooker,
                                                     MonitorElement *h2_y_vs_x,
                                                     const PPSAlignmentConfig &cfg,
-                                                    const RPConfig &rpd) {
+                                                    const PPSAlignmentConfig::RPConfig &rpd) {
   TDirectory *d_top = nullptr;
   if (debug_)
     d_top = gDirectory;

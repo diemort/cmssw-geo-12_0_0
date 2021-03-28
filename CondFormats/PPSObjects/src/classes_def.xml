@@ -69,14 +69,15 @@
 
     <class name="PPSDirectSimulationData"  class_version="0"/>
 
-    <class name="PointErrors"/>
-    <class name="SelectionRange"/>
-    <class name="RPConfig"/>
-    <class name="SectorConfig"/>
-    <class name="std::vector<PointErrors>"/>
-    <class name="std::map<unsigned int, std::vector<PointErrors>>"/>
-    <class name="std::map<unsigned int, SelectionRange>"/>
-    <class name="PPSAlignmentConfig" class_version="0">
-    </class>
+    <class name="PPSAlignmentConfig::PointErrors"/>
+    <class name="PPSAlignmentConfig::SelectionRange"/>
+    <class name="PPSAlignmentConfig::RPConfig"/>
+    <class name="PPSAlignmentConfig::SectorConfig"/>
+    <class name="std::vector<PPSAlignmentConfig::PointErrors>"/>
+    <class name="std::map<unsigned int, std::vector<PPSAlignmentConfig::PointErrors>>"/>
+    <class name="std::pair<unsigned int, std::vector<PPSAlignmentConfig::PointErrors>>"/>
+    <class name="std::map<unsigned int, PPSAlignmentConfig::SelectionRange>"/>
+    <class name="std::pair<unsigned int, PPSAlignmentConfig::SelectionRange>"/>
+    <class name="PPSAlignmentConfig" class_version="0"/>
     
   </lcgdict>

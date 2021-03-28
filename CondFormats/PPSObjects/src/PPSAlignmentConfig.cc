@@ -18,8 +18,8 @@ TYPELOOKUP_DATA_REG(PPSAlignmentConfig);
 const std::vector<std::string> &PPSAlignmentConfig::sequence() const { return sequence_; }
 const std::string &PPSAlignmentConfig::resultsDir() const { return resultsDir_; }
 
-const SectorConfig &PPSAlignmentConfig::sectorConfig45() const { return sectorConfig45_; }
-const SectorConfig &PPSAlignmentConfig::sectorConfig56() const { return sectorConfig56_; }
+const PPSAlignmentConfig::SectorConfig &PPSAlignmentConfig::sectorConfig45() const { return sectorConfig45_; }
+const PPSAlignmentConfig::SectorConfig &PPSAlignmentConfig::sectorConfig56() const { return sectorConfig56_; }
 
 double PPSAlignmentConfig::x_ali_sh_step() const { return x_ali_sh_step_; }
 
@@ -32,14 +32,14 @@ double PPSAlignmentConfig::minRPTracksSize() const { return minRPTracksSize_; }
 double PPSAlignmentConfig::maxRPTracksSize() const { return maxRPTracksSize_; }
 double PPSAlignmentConfig::n_si() const { return n_si_; }
 
-const std::map<unsigned int, std::vector<PointErrors>> &PPSAlignmentConfig::matchingReferencePoints() const {
+const std::map<unsigned int, std::vector<PPSAlignmentConfig::PointErrors>> &PPSAlignmentConfig::matchingReferencePoints() const {
   return matchingReferencePoints_;
 }
-const std::map<unsigned int, SelectionRange> &PPSAlignmentConfig::matchingShiftRanges() const {
+const std::map<unsigned int, PPSAlignmentConfig::SelectionRange> &PPSAlignmentConfig::matchingShiftRanges() const {
   return matchingShiftRanges_;
 }
 
-const std::map<unsigned int, SelectionRange> &PPSAlignmentConfig::alignment_x_meth_o_ranges() const {
+const std::map<unsigned int, PPSAlignmentConfig::SelectionRange> &PPSAlignmentConfig::alignment_x_meth_o_ranges() const {
   return alignment_x_meth_o_ranges_;
 }
 unsigned int PPSAlignmentConfig::fitProfileMinBinEntries() const { return fitProfileMinBinEntries_; }
@@ -47,26 +47,26 @@ unsigned int PPSAlignmentConfig::fitProfileMinNReasonable() const { return fitPr
 unsigned int PPSAlignmentConfig::methOGraphMinN() const { return methOGraphMinN_; }
 double PPSAlignmentConfig::methOUncFitRange() const { return methOUncFitRange_; }
 
-const std::map<unsigned int, SelectionRange> &PPSAlignmentConfig::alignment_x_relative_ranges() const {
+const std::map<unsigned int, PPSAlignmentConfig::SelectionRange> &PPSAlignmentConfig::alignment_x_relative_ranges() const {
   return alignment_x_relative_ranges_;
 }
 unsigned int PPSAlignmentConfig::nearFarMinEntries() const { return nearFarMinEntries_; }
 
-const std::map<unsigned int, SelectionRange> &PPSAlignmentConfig::alignment_y_ranges() const {
+const std::map<unsigned int, PPSAlignmentConfig::SelectionRange> &PPSAlignmentConfig::alignment_y_ranges() const {
   return alignment_y_ranges_;
 }
 unsigned int PPSAlignmentConfig::modeGraphMinN() const { return modeGraphMinN_; }
 unsigned int PPSAlignmentConfig::multSelProjYMinEntries() const { return multSelProjYMinEntries_; }
 
-const Binning &PPSAlignmentConfig::binning() const { return binning_; }
+const PPSAlignmentConfig::Binning &PPSAlignmentConfig::binning() const { return binning_; }
 
 // -------------------------------- PPSAlignmentConfig setters --------------------------------
 
 void PPSAlignmentConfig::setSequence(std::vector<std::string> &sequence) { sequence_ = sequence; }
 void PPSAlignmentConfig::setResultsDir(std::string &resultsDir) { resultsDir_ = resultsDir; }
 
-void PPSAlignmentConfig::setSectorConfig45(SectorConfig &sectorConfig45) { sectorConfig45_ = sectorConfig45; }
-void PPSAlignmentConfig::setSectorConfig56(SectorConfig &sectorConfig56) { sectorConfig56_ = sectorConfig56; }
+void PPSAlignmentConfig::setSectorConfig45(PPSAlignmentConfig::SectorConfig &sectorConfig45) { sectorConfig45_ = sectorConfig45; }
+void PPSAlignmentConfig::setSectorConfig56(PPSAlignmentConfig::SectorConfig &sectorConfig56) { sectorConfig56_ = sectorConfig56; }
 
 void PPSAlignmentConfig::setX_ali_sh_step(double x_ali_sh_step) { x_ali_sh_step_ = x_ali_sh_step; }
 
@@ -82,15 +82,15 @@ void PPSAlignmentConfig::setMaxRPTracksSize(unsigned int maxRPTracksSize) { maxR
 void PPSAlignmentConfig::setN_si(double n_si) { n_si_ = n_si; }
 
 void PPSAlignmentConfig::setMatchingReferencePoints(
-    std::map<unsigned int, std::vector<PointErrors>> &matchingReferencePoints) {
+    std::map<unsigned int, std::vector<PPSAlignmentConfig::PointErrors>> &matchingReferencePoints) {
   matchingReferencePoints_ = matchingReferencePoints;
 }
-void PPSAlignmentConfig::setMatchingShiftRanges(std::map<unsigned int, SelectionRange> &matchingShiftRanges) {
+void PPSAlignmentConfig::setMatchingShiftRanges(std::map<unsigned int, PPSAlignmentConfig::SelectionRange> &matchingShiftRanges) {
   matchingShiftRanges_ = matchingShiftRanges;
 }
 
 void PPSAlignmentConfig::setAlignment_x_meth_o_ranges(
-    std::map<unsigned int, SelectionRange> &alignment_x_meth_o_ranges) {
+    std::map<unsigned int, PPSAlignmentConfig::SelectionRange> &alignment_x_meth_o_ranges) {
   alignment_x_meth_o_ranges_ = alignment_x_meth_o_ranges;
 }
 void PPSAlignmentConfig::setFitProfileMinBinEntries(unsigned int fitProfileMinBinEntries) {
@@ -103,14 +103,14 @@ void PPSAlignmentConfig::setMethOGraphMinN(unsigned int methOGraphMinN) { methOG
 void PPSAlignmentConfig::setMethOUncFitRange(double methOUncFitRange) { methOUncFitRange_ = methOUncFitRange; }
 
 void PPSAlignmentConfig::setAlignment_x_relative_ranges(
-    std::map<unsigned int, SelectionRange> &alignment_x_relative_ranges) {
+    std::map<unsigned int, PPSAlignmentConfig::SelectionRange> &alignment_x_relative_ranges) {
   alignment_x_relative_ranges_ = alignment_x_relative_ranges;
 }
 void PPSAlignmentConfig::setNearFarMinEntries(unsigned int nearFarMinEntries) {
   nearFarMinEntries_ = nearFarMinEntries;
 }
 
-void PPSAlignmentConfig::setAlignment_y_ranges(std::map<unsigned int, SelectionRange> &alignment_y_ranges) {
+void PPSAlignmentConfig::setAlignment_y_ranges(std::map<unsigned int, PPSAlignmentConfig::SelectionRange> &alignment_y_ranges) {
   alignment_y_ranges_ = alignment_y_ranges;
 }
 void PPSAlignmentConfig::setModeGraphMinN(unsigned int modeGraphMinN) { modeGraphMinN_ = modeGraphMinN; }
@@ -118,11 +118,11 @@ void PPSAlignmentConfig::setMultSelProjYMinEntries(unsigned int multSelProjYMinE
   multSelProjYMinEntries_ = multSelProjYMinEntries;
 }
 
-void PPSAlignmentConfig::setBinning(Binning &binning) { binning_ = binning; }
+void PPSAlignmentConfig::setBinning(PPSAlignmentConfig::Binning &binning) { binning_ = binning; }
 
 // -------------------------------- << operators --------------------------------
 
-std::ostream &operator<<(std::ostream &os, RPConfig &rc) {
+std::ostream &operator<<(std::ostream &os, PPSAlignmentConfig::RPConfig &rc) {
   os << std::fixed << std::setprecision(3);
   os << "    " << rc.name_ << ", id = " << rc.id_ << ", position = " << rc.position_ << ":\n";
   os << "        slope = " << rc.slope_ << ", sh_x = " << rc.sh_x_ << "\n";
@@ -135,7 +135,7 @@ std::ostream &operator<<(std::ostream &os, RPConfig &rc) {
   return os;
 }
 
-std::ostream &operator<<(std::ostream &os, SectorConfig &sc) {
+std::ostream &operator<<(std::ostream &os, PPSAlignmentConfig::SectorConfig &sc) {
   os << std::fixed << std::setprecision(3);
   os << sc.name_ << ":\n";
   os << sc.rp_N_ << "\n" << sc.rp_F_ << "\n";
@@ -149,7 +149,7 @@ std::ostream &operator<<(std::ostream &os, SectorConfig &sc) {
   return os;
 }
 
-std::ostream &operator<<(std::ostream &os, Binning &b) {
+std::ostream &operator<<(std::ostream &os, PPSAlignmentConfig::Binning &b) {
   os << "    bin_size_x = " << b.bin_size_x_ << ", n_bins_x = " << b.n_bins_x_ << "\n";
   os << "    pixel_x_offset = " << b.pixel_x_offset_ << "\n";
   os << "    n_bins_y = " << b.n_bins_y_ << ", y_min = " << b.y_min_ << ", y_max = " << b.y_max_;

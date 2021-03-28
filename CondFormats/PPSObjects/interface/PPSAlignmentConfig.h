@@ -13,83 +13,69 @@
 #include <string>
 #include <map>
 
-//---------------------------------------------------------------------------------------------
-
-struct PointErrors {
-  double x_;
-  double y_;
-  double ex_;  // error x
-  double ey_;  // error y
-
-  COND_SERIALIZABLE;
-};
-
-//---------------------------------------------------------------------------------------------
-
-struct SelectionRange {
-  double x_min_;
-  double x_max_;
-
-  COND_SERIALIZABLE;
-};
-
-//---------------------------------------------------------------------------------------------
-
-struct RPConfig {
-  std::string name_;
-  unsigned int id_;
-  std::string position_;
-  double slope_;
-  double sh_x_;
-
-  double x_min_fit_mode_, x_max_fit_mode_;
-  double y_max_fit_mode_;
-  double y_cen_add_;
-  double y_width_mult_;
-
-  int x_slice_n_;
-  double x_slice_min_, x_slice_w_;
-
-  COND_SERIALIZABLE;
-};
-std::ostream &operator<<(std::ostream &os, RPConfig &rc);
-
-//---------------------------------------------------------------------------------------------
-
-struct SectorConfig {
-  std::string name_;
-  RPConfig rp_N_, rp_F_;
-  double slope_;
-
-  bool cut_h_apply_;
-  double cut_h_a_, cut_h_c_, cut_h_si_;
-
-  bool cut_v_apply_;
-  double cut_v_a_, cut_v_c_, cut_v_si_;
-
-  COND_SERIALIZABLE;
-};
-std::ostream &operator<<(std::ostream &os, SectorConfig &sc);
-
-//---------------------------------------------------------------------------------------------
-
-struct Binning {
-  double bin_size_x_;  // mm
-  unsigned int n_bins_x_;
-
-  double pixel_x_offset_;
-
-  unsigned int n_bins_y_;
-  double y_min_, y_max_;
-
-  COND_SERIALIZABLE;
-};
-std::ostream &operator<<(std::ostream &os, Binning &b);
-
-//---------------------------------------------------------------------------------------------
-
 class PPSAlignmentConfig {
 public:
+  // Auxiliary structures
+  struct PointErrors {
+    double x_;
+    double y_;
+    double ex_;  // error x
+    double ey_;  // error y
+
+    COND_SERIALIZABLE;
+  };
+
+  struct SelectionRange {
+    double x_min_;
+    double x_max_;
+
+    COND_SERIALIZABLE;
+  };
+
+  struct RPConfig {
+    std::string name_;
+    unsigned int id_;
+    std::string position_;
+    double slope_;
+    double sh_x_;
+
+    double x_min_fit_mode_, x_max_fit_mode_;
+    double y_max_fit_mode_;
+    double y_cen_add_;
+    double y_width_mult_;
+
+    int x_slice_n_;
+    double x_slice_min_, x_slice_w_;
+
+    COND_SERIALIZABLE;
+  };
+
+  struct SectorConfig {
+    std::string name_;
+    RPConfig rp_N_, rp_F_;
+    double slope_;
+
+    bool cut_h_apply_;
+    double cut_h_a_, cut_h_c_, cut_h_si_;
+
+    bool cut_v_apply_;
+    double cut_v_a_, cut_v_c_, cut_v_si_;
+
+    COND_SERIALIZABLE;
+  };
+
+  struct Binning {
+    double bin_size_x_;  // mm
+    unsigned int n_bins_x_;
+
+    double pixel_x_offset_;
+
+    unsigned int n_bins_y_;
+    double y_min_, y_max_;
+
+    COND_SERIALIZABLE;
+  };
+
   // Getters
   const std::vector<std::string> &sequence() const;
   const std::string &resultsDir() const;
@@ -202,6 +188,10 @@ private:
 
   COND_SERIALIZABLE;
 };
+
+std::ostream &operator<<(std::ostream &os, PPSAlignmentConfig::RPConfig &rc);
+std::ostream &operator<<(std::ostream &os, PPSAlignmentConfig::SectorConfig &sc);
+std::ostream &operator<<(std::ostream &os, PPSAlignmentConfig::Binning &b);
 
 std::ostream &operator<<(std::ostream &os, PPSAlignmentConfig c);
 
