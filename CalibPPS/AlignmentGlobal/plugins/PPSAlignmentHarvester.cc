@@ -117,7 +117,7 @@ private:
   const bool debug_;
 
   TFile *debugFile_;
-  std::ofstream resultsFile_;
+  std::ofstream textResultsFile_;
 };
 
 // -------------------------------- x alignment methods --------------------------------
@@ -465,8 +465,8 @@ void PPSAlignmentHarvester::xAlignment(DQMStore::IBooker &iBooker,
 
   edm::LogInfo("PPS") << seqPos + 1 << ": x_alignment:\n" << results;
 
-  if (resultsFile_.is_open())
-    resultsFile_ << seqPos + 1 << ": x_alignment:\n" << results << "\n\n";
+  if (textResultsFile_.is_open())
+    textResultsFile_ << seqPos + 1 << ": x_alignment:\n" << results << "\n\n";
 }
 
 // -------------------------------- x alignment relative methods --------------------------------
@@ -565,9 +565,9 @@ void PPSAlignmentHarvester::xAlignmentRelative(DQMStore::IBooker &iBooker,
                       << results << seqPos + 1 << ": x_alignment_relative_sl_fix:\n"
                       << results_sl_fix;
 
-  if (resultsFile_.is_open()) {
-    resultsFile_ << seqPos + 1 << ": x_alignment_relative:\n" << results << "\n";
-    resultsFile_ << seqPos + 1 << ": x_alignment_relative_sl_fix:\n" << results_sl_fix << "\n\n";
+  if (textResultsFile_.is_open()) {
+    textResultsFile_ << seqPos + 1 << ": x_alignment_relative:\n" << results << "\n";
+    textResultsFile_ << seqPos + 1 << ": x_alignment_relative_sl_fix:\n" << results_sl_fix << "\n\n";
   }
 }
 
@@ -788,9 +788,9 @@ void PPSAlignmentHarvester::yAlignment(DQMStore::IBooker &iBooker,
                       << results << seqPos + 1 << ": y_alignment_sl_fix:\n"
                       << results_sl_fix;
 
-  if (resultsFile_.is_open()) {
-    resultsFile_ << seqPos + 1 << ": y_alignment:\n" << results << "\n";
-    resultsFile_ << seqPos + 1 << ": y_alignment_sl_fix:\n" << results_sl_fix << "\n\n";
+  if (textResultsFile_.is_open()) {
+    textResultsFile_ << seqPos + 1 << ": y_alignment:\n" << results << "\n";
+    textResultsFile_ << seqPos + 1 << ": y_alignment_sl_fix:\n" << results_sl_fix << "\n\n";
   }
 }
 
@@ -831,9 +831,9 @@ PPSAlignmentHarvester::PPSAlignmentHarvester(const edm::ParameterSet &iConfig)
       folder_(iConfig.getParameter<std::string>("folder")),
       sequence_(iConfig.getParameter<std::vector<std::string>>("sequence")),
       debug_(iConfig.getParameter<bool>("debug")) {
-  auto resultsDir = iConfig.getParameter<std::string>("results_dir");
-  if (!resultsDir.empty()) {
-    resultsFile_.open(resultsDir, std::ios::out | std::ios::trunc);
+  auto textResultsPath = iConfig.getParameter<std::string>("text_results_path");
+  if (!textResultsPath.empty()) {
+    textResultsFile_.open(textResultsPath, std::ios::out | std::ios::trunc);
   }
   if (debug_) {
     debugFile_ = new TFile("debug_harvester.root", "recreate");
@@ -846,14 +846,14 @@ PPSAlignmentHarvester::PPSAlignmentHarvester(const edm::ParameterSet &iConfig)
     for (unsigned int i = 0; i < sequence_.size(); i++) {
       li << "    " << i + 1 << ": " << sequence_[i] << "\n";
     }
-    li << "* results_dir: " << resultsDir << "\n";
+    li << "* text_results_path: " << textResultsPath << "\n";
     li << "* debug: " << std::boolalpha << debug_;
   });
 }
 
 PPSAlignmentHarvester::~PPSAlignmentHarvester() {
-  if (resultsFile_.is_open()) {
-    resultsFile_.close();
+  if (textResultsFile_.is_open()) {
+    textResultsFile_.close();
   }
   if (debug_) {
     delete debugFile_;

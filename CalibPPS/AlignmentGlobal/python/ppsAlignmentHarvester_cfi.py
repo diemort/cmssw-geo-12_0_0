@@ -8,6 +8,6 @@ ppsAlignmentHarvester = DQMEDHarvester("PPSAlignmentHarvester",
 		"x_alignment_relative",
 		"y_alignment"
 	),
-	results_dir = cms.string("./alignment_results.txt"),
+	text_results_path = cms.string("./alignment_results.txt"),
 	debug = cms.bool(True)
 )
