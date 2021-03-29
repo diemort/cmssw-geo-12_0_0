@@ -831,13 +831,6 @@ PPSAlignmentHarvester::PPSAlignmentHarvester(const edm::ParameterSet &iConfig)
       folder_(iConfig.getParameter<std::string>("folder")),
       sequence_(iConfig.getParameter<std::vector<std::string>>("sequence")),
       debug_(iConfig.getParameter<bool>("debug")) {
-  edm::LogInfo("PPS").log([&](auto &li) {
-    li << "[harvester] sequence:\n";
-    for (unsigned int i = 0; i < sequence_.size(); i++) {
-      li << "    " << i + 1 << ": " << sequence_[i] << "\n";
-    }
-  });
-
   auto resultsDir = iConfig.getParameter<std::string>("results_dir");
   if (!resultsDir.empty()) {
     resultsFile_.open(resultsDir, std::ios::out | std::ios::trunc);
@@ -845,6 +838,17 @@ PPSAlignmentHarvester::PPSAlignmentHarvester(const edm::ParameterSet &iConfig)
   if (debug_) {
     debugFile_ = new TFile("debug_harvester.root", "recreate");
   }
+
+  edm::LogInfo("PPS").log([&](auto &li) {
+    li << "[harvester] parameters:\n";
+    li << "* folder: " << folder_ << "\n";
+    li << "* sequence:\n";
+    for (unsigned int i = 0; i < sequence_.size(); i++) {
+      li << "    " << i + 1 << ": " << sequence_[i] << "\n";
+    }
+    li << "* results_dir: " << resultsDir << "\n";
+    li << "* debug: " << std::boolalpha << debug_;
+  });
 }
 
 PPSAlignmentHarvester::~PPSAlignmentHarvester() {

@@ -298,7 +298,15 @@ PPSAlignmentWorker::PPSAlignmentWorker(const edm::ParameterSet &iConfig)
           edm::ESInputTag("", iConfig.getParameter<std::string>("label")))),
       tracksToken_(consumes<CTPPSLocalTrackLiteCollection>(iConfig.getParameter<edm::InputTag>("tagTracks"))),
       folder_(iConfig.getParameter<std::string>("folder")),
-      debug_(iConfig.getParameter<bool>("debug")) {}
+      debug_(iConfig.getParameter<bool>("debug")) {
+  edm::LogInfo("PPS").log([&](auto &li) {
+    li << "[worker] parameters:\n";
+    li << "* label: " << iConfig.getParameter<std::string>("label") << "\n";
+    li << "* tagTracks: " << iConfig.getParameter<edm::InputTag>("tagTracks") << "\n";
+    li << "* folder: " << folder_ << "\n";
+    li << "* debug: " << std::boolalpha << debug_;
+  });
+}
 
 void PPSAlignmentWorker::bookHistograms(DQMStore::IBooker &iBooker, edm::Run const &, edm::EventSetup const &iSetup) {
   const auto &cfg = iSetup.getData(esTokenBookHistograms_);
