@@ -3,7 +3,6 @@
 *  Jan Kašpar (jan.kaspar@gmail.com) 
 *  Mateusz Kocot (mateuszkocot99@gmail.com)
 ****************************************************************************/
-
 #include "DQMServices/Core/interface/DQMEDHarvester.h"
 #include "DQMServices/Core/interface/DQMStore.h"
 #include "DQMServices/Core/interface/MonitorElement.h"
@@ -12,13 +11,18 @@
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
+#include "FWCore/ServiceRegistry/interface/Service.h"
+
+#include "CondCore/DBOutputService/interface/PoolDBOutputService.h"
 
 #include "CondFormats/PPSObjects/interface/CTPPSRPAlignmentCorrectionData.h"
 #include "CondFormats/PPSObjects/interface/CTPPSRPAlignmentCorrectionsData.h"
+#include "CondFormats/DataRecord/interface/CTPPSRPAlignmentCorrectionsDataRcd.h"
 
 #include "CondFormats/PPSObjects/interface/PPSAlignmentConfig.h"
 #include "CondFormats/DataRecord/interface/PPSAlignmentConfigRcd.h"
 
+#include <memory>
 #include <map>
 #include <vector>
 #include <string>
@@ -109,15 +113,28 @@ private:
                                        double binWidth = -1.,
                                        double min = -1.);
 
+  // variables from parameters
   edm::ESGetToken<PPSAlignmentConfig, PPSAlignmentConfigRcd> esTokenTest_;
   edm::ESGetToken<PPSAlignmentConfig, PPSAlignmentConfigRcd> esTokenReference_;
 
   const std::string folder_;
-  std::vector<std::string> sequence_;
+  const std::vector<std::string> sequence_;
+  const bool writeSQLiteResults_;
+  const bool xAliRelFinalSlopeFixed_;
+  const bool yAliFinalSlopeFixed_;
   const bool debug_;
 
+  // other class variables
   TFile *debugFile_;
   std::ofstream textResultsFile_;
+
+  CTPPSRPAlignmentCorrectionsData xAliResults_;
+
+  CTPPSRPAlignmentCorrectionsData xAliRelResults_;
+  CTPPSRPAlignmentCorrectionsData xAliRelResultsSlopeFixed_;
+
+  CTPPSRPAlignmentCorrectionsData yAliResults_;
+  CTPPSRPAlignmentCorrectionsData yAliResultsSlopeFixed_;
 };
 
 // -------------------------------- x alignment methods --------------------------------
@@ -385,9 +402,6 @@ void PPSAlignmentHarvester::xAlignment(DQMStore::IBooker &iBooker,
   if (debug_)
     xAliDir = debugFile_->mkdir((std::to_string(seqPos + 1) + ": x alignment").c_str());
 
-  // prepare results
-  CTPPSRPAlignmentCorrectionsData results;
-
   for (const auto &sdp : {std::make_pair(cfg.sectorConfig45(), cfg_ref.sectorConfig45()),
                           std::make_pair(cfg.sectorConfig56(), cfg_ref.sectorConfig56())}) {
     const auto &sd = sdp.first;
@@ -456,17 +470,17 @@ void PPSAlignmentHarvester::xAlignment(DQMStore::IBooker &iBooker,
               sh_unc);
 
       CTPPSRPAlignmentCorrectionData rpResult(sh, sh_unc, 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.);
-      results.setRPCorrection(rpd.id_, rpResult);
+      xAliResults_.setRPCorrection(rpd.id_, rpResult);
       edm::LogInfo("PPS") << std::fixed << std::setprecision(3) << "[x_alignment] "
                           << "Setting sh_x of " << rpd.name_ << " to " << sh;
       sh_x_map[rpd.id_] = sh;
     }
   }
 
-  edm::LogInfo("PPS") << seqPos + 1 << ": x_alignment:\n" << results;
+  edm::LogInfo("PPS") << seqPos + 1 << ": x_alignment:\n" << xAliResults_;
 
   if (textResultsFile_.is_open())
-    textResultsFile_ << seqPos + 1 << ": x_alignment:\n" << results << "\n\n";
+    textResultsFile_ << seqPos + 1 << ": x_alignment:\n" << xAliResults_ << "\n\n";
 }
 
 // -------------------------------- x alignment relative methods --------------------------------
@@ -478,10 +492,6 @@ void PPSAlignmentHarvester::xAlignmentRelative(DQMStore::IBooker &iBooker,
   TDirectory *xAliRelDir = nullptr;
   if (debug_)
     xAliRelDir = debugFile_->mkdir((std::to_string(seqPos + 1) + ": x_alignment_relative").c_str());
-
-  // prepare results
-  CTPPSRPAlignmentCorrectionsData results;
-  CTPPSRPAlignmentCorrectionsData results_sl_fix;
 
   TF1 *ff = new TF1("ff", "[0] + [1]*(x - [2])");
   TF1 *ff_sl_fix = new TF1("ff_sl_fix", "[0] + [1]*(x - [2])");
@@ -526,9 +536,9 @@ void PPSAlignmentHarvester::xAlignmentRelative(DQMStore::IBooker &iBooker,
                         << "    sh_x_N = " << sh_x_N << ", slope (fix) = " << slope << ", slope (fitted) = " << a;
 
     CTPPSRPAlignmentCorrectionData rpResult_N(+b / 2., b_unc / 2., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.);
-    results.setRPCorrection(sd.rp_N_.id_, rpResult_N);
+    xAliRelResults_.setRPCorrection(sd.rp_N_.id_, rpResult_N);
     CTPPSRPAlignmentCorrectionData rpResult_F(-b / 2., b_unc / 2., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.);
-    results.setRPCorrection(sd.rp_F_.id_, rpResult_F);
+    xAliRelResults_.setRPCorrection(sd.rp_F_.id_, rpResult_F);
 
     ff_sl_fix->SetParameters(0., slope, 0.);
     ff_sl_fix->FixParameter(1, slope);
@@ -539,9 +549,9 @@ void PPSAlignmentHarvester::xAlignmentRelative(DQMStore::IBooker &iBooker,
     const double b_fs = ff_sl_fix->GetParameter(0), b_fs_unc = ff_sl_fix->GetParError(0);
 
     CTPPSRPAlignmentCorrectionData rpResult_sl_fix_N(+b_fs / 2., b_fs_unc / 2., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.);
-    results_sl_fix.setRPCorrection(sd.rp_N_.id_, rpResult_sl_fix_N);
+    xAliRelResultsSlopeFixed_.setRPCorrection(sd.rp_N_.id_, rpResult_sl_fix_N);
     CTPPSRPAlignmentCorrectionData rpResult_sl_fix_F(-b_fs / 2., b_fs_unc / 2., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.);
-    results_sl_fix.setRPCorrection(sd.rp_F_.id_, rpResult_sl_fix_F);
+    xAliRelResultsSlopeFixed_.setRPCorrection(sd.rp_F_.id_, rpResult_sl_fix_F);
 
     edm::LogInfo("PPS") << "[x_alignment_relative] " << std::fixed << std::setprecision(3)
                         << "ff: " << ff->GetParameter(0) << " + " << ff->GetParameter(1) << " * (x - "
@@ -562,12 +572,12 @@ void PPSAlignmentHarvester::xAlignmentRelative(DQMStore::IBooker &iBooker,
 
   // write results
   edm::LogInfo("PPS") << seqPos + 1 << ": x_alignment_relative:\n"
-                      << results << seqPos + 1 << ": x_alignment_relative_sl_fix:\n"
-                      << results_sl_fix;
+                      << xAliRelResults_ << seqPos + 1 << ": x_alignment_relative_sl_fix:\n"
+                      << xAliRelResultsSlopeFixed_;
 
   if (textResultsFile_.is_open()) {
-    textResultsFile_ << seqPos + 1 << ": x_alignment_relative:\n" << results << "\n";
-    textResultsFile_ << seqPos + 1 << ": x_alignment_relative_sl_fix:\n" << results_sl_fix << "\n\n";
+    textResultsFile_ << seqPos + 1 << ": x_alignment_relative:\n" << xAliRelResults_ << "\n";
+    textResultsFile_ << seqPos + 1 << ": x_alignment_relative_sl_fix:\n" << xAliRelResultsSlopeFixed_ << "\n\n";
   }
 }
 
@@ -696,10 +706,6 @@ void PPSAlignmentHarvester::yAlignment(DQMStore::IBooker &iBooker,
   if (debug_)
     yAliDir = debugFile_->mkdir((std::to_string(seqPos + 1) + ": y_alignment").c_str());
 
-  // prepare results
-  CTPPSRPAlignmentCorrectionsData results;
-  CTPPSRPAlignmentCorrectionsData results_sl_fix;
-
   TF1 *ff = new TF1("ff", "[0] + [1]*(x - [2])");
   TF1 *ff_sl_fix = new TF1("ff_sl_fix", "[0] + [1]*(x - [2])");
 
@@ -749,7 +755,7 @@ void PPSAlignmentHarvester::yAlignment(DQMStore::IBooker &iBooker,
                           << "    sh_x = " << sh_x << ", slope (fix) = " << slope << ", slope (fitted) = " << a;
 
       CTPPSRPAlignmentCorrectionData rpResult(0., 0., b, b_unc, 0., 0., 0., 0., 0., 0., 0., 0.);
-      results.setRPCorrection(rpd.id_, rpResult);
+      yAliResults_.setRPCorrection(rpd.id_, rpResult);
 
       ff_sl_fix->SetParameters(0., 0., 0.);
       ff_sl_fix->FixParameter(1, slope);
@@ -760,7 +766,7 @@ void PPSAlignmentHarvester::yAlignment(DQMStore::IBooker &iBooker,
       const double b_fs = ff_sl_fix->GetParameter(0), b_fs_unc = ff_sl_fix->GetParError(0);
 
       CTPPSRPAlignmentCorrectionData rpResult_sl_fix(0., 0., b_fs, b_fs_unc, 0., 0., 0., 0., 0., 0., 0., 0.);
-      results_sl_fix.setRPCorrection(rpd.id_, rpResult_sl_fix);
+      yAliResultsSlopeFixed_.setRPCorrection(rpd.id_, rpResult_sl_fix);
 
       edm::LogInfo("PPS") << "[y_alignment] " << std::fixed << std::setprecision(3) << "ff: " << ff->GetParameter(0)
                           << " + " << ff->GetParameter(1) << " * (x - " << ff->GetParameter(2)
@@ -785,12 +791,12 @@ void PPSAlignmentHarvester::yAlignment(DQMStore::IBooker &iBooker,
 
   // write results
   edm::LogInfo("PPS") << seqPos + 1 << ": y_alignment:\n"
-                      << results << seqPos + 1 << ": y_alignment_sl_fix:\n"
-                      << results_sl_fix;
+                      << yAliResults_ << seqPos + 1 << ": y_alignment_sl_fix:\n"
+                      << yAliResultsSlopeFixed_;
 
   if (textResultsFile_.is_open()) {
-    textResultsFile_ << seqPos + 1 << ": y_alignment:\n" << results << "\n";
-    textResultsFile_ << seqPos + 1 << ": y_alignment_sl_fix:\n" << results_sl_fix << "\n\n";
+    textResultsFile_ << seqPos + 1 << ": y_alignment:\n" << yAliResults_ << "\n";
+    textResultsFile_ << seqPos + 1 << ": y_alignment_sl_fix:\n" << yAliResultsSlopeFixed_ << "\n\n";
   }
 }
 
@@ -830,6 +836,9 @@ PPSAlignmentHarvester::PPSAlignmentHarvester(const edm::ParameterSet &iConfig)
           edm::ESInputTag("", "reference"))),
       folder_(iConfig.getParameter<std::string>("folder")),
       sequence_(iConfig.getParameter<std::vector<std::string>>("sequence")),
+      writeSQLiteResults_(iConfig.getParameter<bool>("write_sqlite_results")),
+      xAliRelFinalSlopeFixed_(iConfig.getParameter<bool>("x_ali_rel_final_slope_fixed")),
+      yAliFinalSlopeFixed_(iConfig.getParameter<bool>("y_ali_final_slope_fixed")),
       debug_(iConfig.getParameter<bool>("debug")) {
   auto textResultsPath = iConfig.getParameter<std::string>("text_results_path");
   if (!textResultsPath.empty()) {
@@ -847,6 +856,9 @@ PPSAlignmentHarvester::PPSAlignmentHarvester(const edm::ParameterSet &iConfig)
       li << "    " << i + 1 << ": " << sequence_[i] << "\n";
     }
     li << "* text_results_path: " << textResultsPath << "\n";
+    li << "* write_sqlite_results: " << std::boolalpha << writeSQLiteResults_ << "\n";
+    li << "* x_ali_rel_final_slope_fixed: " << std::boolalpha << xAliRelFinalSlopeFixed_ << "\n";
+    li << "* y_ali_final_slope_fixed: " << std::boolalpha << yAliFinalSlopeFixed_ << "\n";
     li << "* debug: " << std::boolalpha << debug_;
   });
 }
@@ -887,15 +899,85 @@ void PPSAlignmentHarvester::dqmEndRun(DQMStore::IBooker &iBooker,
     }
   });
 
+  bool doXAli = false, doXAliRel = false, doYAli = false;
   for (unsigned int i = 0; i < sequence_.size(); i++) {
-    if (sequence_[i] == "x_alignment")
+    if (sequence_[i] == "x_alignment") {
       xAlignment(iBooker, iGetter, cfg, cfg_ref, i);
-    else if (sequence_[i] == "x_alignment_relative")
+      doXAli = true;
+    } else if (sequence_[i] == "x_alignment_relative") {
       xAlignmentRelative(iBooker, iGetter, cfg, i);
-    else if (sequence_[i] == "y_alignment")
+      doXAliRel = true;
+    } else if (sequence_[i] == "y_alignment") {
       yAlignment(iBooker, iGetter, cfg, i);
-    else
+      doYAli = true;
+    } else
       edm::LogError("PPS") << "[harvester] " << sequence_[i] << " is a wrong method name.";
+  }
+
+  // merge results from all the specified methods
+  CTPPSRPAlignmentCorrectionsData finalResults;
+  if (doXAli) {  // x alignment
+    finalResults.addCorrections(xAliResults_);
+    if (doXAliRel) {  // merge with x alignment relative
+      for (const auto &sd : {cfg.sectorConfig45(), cfg.sectorConfig56()}) {
+        // extract shifts and uncertainties
+        double d_x_N = xAliResults_.getRPCorrection(sd.rp_N_.id_).getShX();
+        // double d_x_N_unc = xAliResults_.getRPCorrection(sd.rp_N_.id_).getShXUnc();
+        double d_x_F = xAliResults_.getRPCorrection(sd.rp_F_.id_).getShX();
+        // double d_x_F_unc = xAliResults_.getRPCorrection(sd.rp_F_.id_).getShXUnc();
+
+        double d_x_rel_N, d_x_rel_F;
+        // d_x_rel_N_unc, d_x_rel_F_unc;
+        if (xAliRelFinalSlopeFixed_) {
+          d_x_rel_N = xAliRelResultsSlopeFixed_.getRPCorrection(sd.rp_N_.id_).getShX();
+          // d_x_rel_N_unc = xAliRelResultsSlopeFixed_.getRPCorrection(sd.rp_N_.id_).getShXUnc();
+          d_x_rel_F = xAliRelResultsSlopeFixed_.getRPCorrection(sd.rp_F_.id_).getShX();
+          // d_x_rel_F_unc = xAliRelResultsSlopeFixed_.getRPCorrection(sd.rp_F_.id_).getShXUnc();
+        } else {
+          d_x_rel_N = xAliRelResults_.getRPCorrection(sd.rp_N_.id_).getShX();
+          // d_x_rel_N_unc = xAliRelResults_.getRPCorrection(sd.rp_N_.id_).getShXUnc();
+          d_x_rel_F = xAliRelResults_.getRPCorrection(sd.rp_F_.id_).getShX();
+          // d_x_rel_F_unc = xAliRelResults_.getRPCorrection(sd.rp_F_.id_).getShXUnc();
+        }
+
+        // merge the results
+        // final_d_x_N = d_x_N + xCorrRel / 2. = (d_x_N + d_x_F + d_x_rel_N - d_x_rel_F) / 2.
+        // final_d_x_F = d_x_F - xCorrRel / 2. = (d_x_F + d_x_N + d_x_rel_F - d_x_rel_N) / 2.
+        double b = d_x_rel_N - d_x_rel_F;
+        // double bUnc = d_x_rel_N_unc + d_x_rel_F_unc;
+        double xCorrRel = b + d_x_F - d_x_N;
+        // double xCorrRelUnc = sqrt(bUnc * bUnc + d_x_N_unc * d_x_N_unc + d_x_F_unc * d_x_F_unc);
+
+        CTPPSRPAlignmentCorrectionData corrRelN(xCorrRel / 2., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.);
+        finalResults.addRPCorrection(sd.rp_N_.id_, corrRelN);
+        CTPPSRPAlignmentCorrectionData corrRelF(-xCorrRel / 2., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.);
+        finalResults.addRPCorrection(sd.rp_F_.id_, corrRelF);
+      }
+    }
+  }
+  if (doYAli) {  // y alignment
+    if (yAliFinalSlopeFixed_) {
+      finalResults.addCorrections(yAliResultsSlopeFixed_);
+    } else {
+      finalResults.addCorrections(yAliResults_);
+    }
+  }
+
+  // print the text results
+  edm::LogInfo("PPS") << "final merged results:\n" << finalResults;
+
+  if (textResultsFile_.is_open()) {
+    textResultsFile_ << "final merged results:\n" << finalResults;
+  }
+
+  // if requested, store the results in a DB object
+  if (writeSQLiteResults_) {
+    edm::Service<cond::service::PoolDBOutputService> poolDbService;
+    if (poolDbService.isAvailable()) {
+      poolDbService->writeOne(&finalResults, poolDbService->currentTime(), "CTPPSRPAlignmentCorrectionsDataRcd");
+    } else {
+      edm::LogWarning("PPS") << "Could not store the results in a DB object. PoolDBService not available.";
+    }
   }
 }
 

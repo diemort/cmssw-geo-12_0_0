@@ -13,12 +13,15 @@
 ## Config example:
 [`ppsAlignmentHarvester_cfi.py`](python/ppsAlignmentHarvester_cfi.py)
 ## Parameters:
-| Name     | Type         | Description                                                                           |
-|----------|--------------|---------------------------------------------------------------------------------------|
-| `folder` | `cms.string` | Should be the same as the `folder` parameter in DQM configuration.                    |
-| `sequence`             | `cms.vstring` | Determines order of the alignment methods: `"x_alignemnt"`,   `"x_alignment_relative"`, `"y_alignment"`.     |
-| `results_dir`          | `cms.string`  | Directory of a file with the results. If empty (`""`), the file   will not be created.                       |
-| `debug`  | `cms.bool`   | When set to `True`, the harvester will produce an extra ROOT   file with debug plots. |
+| Name                          | Type          | Description                                                                                                                                             |
+|-------------------------------|---------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `folder`                      | `cms.string`  | Should be the same as the `folder` parameter in DQM configuration.                                                                                      |
+| `sequence`                    | `cms.vstring` | Determines order of the alignment methods: `"x_alignemnt"`, `"x_alignment_relative"`, `"y_alignment"`.                                                  |
+| `test_results_path`           | `cms.string`  | Path of a file with the results. If empty (`""`), the file will not be created.                                                                         |
+| `write_sqlite_results`        | `cms.bool`    | When set to `True`, the harvester will try to use PoolDBOutputService to save the final results.                                                        |
+| `x_ali_rel_final_slope_fixed` | `cms.bool`    | `True`: the harvester will use the x relative alignment results with fixed slope to prepare final merged results. `False`: results without fixed slope. |
+| `y_ali_final_slope_fixed`     | `cms.bool`    | `True`: the harvester will use the y alignment results with fixed slope to prepare final merged results. `False`: results without fixed slope.          |
+| `debug`                       | `cms.bool`    | When set to `True`, the harvester will produce an extra ROOT file with debug plots.                                                                     |
 
 # Event Setup
 Default values come from the `fillDescriptions` method in `CalibPPS/ESProducers/plugins/PPSAlignmentConfigESSource.cc`.<br>

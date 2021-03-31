@@ -9,5 +9,8 @@ ppsAlignmentHarvester = DQMEDHarvester("PPSAlignmentHarvester",
 		"y_alignment"
 	),
 	text_results_path = cms.string("./alignment_results.txt"),
+	write_sqlite_results = cms.bool(False),
+	x_ali_rel_final_slope_fixed = cms.bool(True),
+	y_ali_final_slope_fixed = cms.bool(True),
 	debug = cms.bool(True)
 )
