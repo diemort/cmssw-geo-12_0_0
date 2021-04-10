@@ -920,33 +920,25 @@ void PPSAlignmentHarvester::dqmEndRun(DQMStore::IBooker &iBooker,
     finalResults.addCorrections(xAliResults_);
     if (doXAliRel) {  // merge with x alignment relative
       for (const auto &sd : {cfg.sectorConfig45(), cfg.sectorConfig56()}) {
-        // extract shifts and uncertainties
+        // extract shifts
         double d_x_N = xAliResults_.getRPCorrection(sd.rp_N_.id_).getShX();
-        // double d_x_N_unc = xAliResults_.getRPCorrection(sd.rp_N_.id_).getShXUnc();
         double d_x_F = xAliResults_.getRPCorrection(sd.rp_F_.id_).getShX();
-        // double d_x_F_unc = xAliResults_.getRPCorrection(sd.rp_F_.id_).getShXUnc();
 
         double d_x_rel_N, d_x_rel_F;
-        // d_x_rel_N_unc, d_x_rel_F_unc;
         if (xAliRelFinalSlopeFixed_) {
           d_x_rel_N = xAliRelResultsSlopeFixed_.getRPCorrection(sd.rp_N_.id_).getShX();
-          // d_x_rel_N_unc = xAliRelResultsSlopeFixed_.getRPCorrection(sd.rp_N_.id_).getShXUnc();
           d_x_rel_F = xAliRelResultsSlopeFixed_.getRPCorrection(sd.rp_F_.id_).getShX();
-          // d_x_rel_F_unc = xAliRelResultsSlopeFixed_.getRPCorrection(sd.rp_F_.id_).getShXUnc();
         } else {
           d_x_rel_N = xAliRelResults_.getRPCorrection(sd.rp_N_.id_).getShX();
-          // d_x_rel_N_unc = xAliRelResults_.getRPCorrection(sd.rp_N_.id_).getShXUnc();
           d_x_rel_F = xAliRelResults_.getRPCorrection(sd.rp_F_.id_).getShX();
-          // d_x_rel_F_unc = xAliRelResults_.getRPCorrection(sd.rp_F_.id_).getShXUnc();
         }
 
-        // merge the results
-        // final_d_x_N = d_x_N + xCorrRel / 2. = (d_x_N + d_x_F + d_x_rel_N - d_x_rel_F) / 2.
-        // final_d_x_F = d_x_F - xCorrRel / 2. = (d_x_F + d_x_N + d_x_rel_F - d_x_rel_N) / 2.
+        // merge the results:
+        // * final_d_x_N = d_x_N + xCorrRel / 2. = (d_x_N + d_x_F + d_x_rel_N - d_x_rel_F) / 2.
+        // * final_d_x_F = d_x_F - xCorrRel / 2. = (d_x_F + d_x_N + d_x_rel_F - d_x_rel_N) / 2.
+        // * uncertainties taken from x_alignment
         double b = d_x_rel_N - d_x_rel_F;
-        // double bUnc = d_x_rel_N_unc + d_x_rel_F_unc;
         double xCorrRel = b + d_x_F - d_x_N;
-        // double xCorrRelUnc = sqrt(bUnc * bUnc + d_x_N_unc * d_x_N_unc + d_x_F_unc * d_x_F_unc);
 
         CTPPSRPAlignmentCorrectionData corrRelN(xCorrRel / 2., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.);
         finalResults.addRPCorrection(sd.rp_N_.id_, corrRelN);
