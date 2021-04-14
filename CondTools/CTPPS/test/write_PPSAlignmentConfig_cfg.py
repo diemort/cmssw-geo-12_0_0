@@ -1,3 +1,10 @@
+##### configuration #####
+output = 'sqlite_file:alignment_config.db'  # output database
+product_instance_label = 'db_test'  # ES product label
+db_tag = 'PPSAlignmentConfig_test'  # database tag
+# ESSource parameters can be configured below
+#########################
+
 import FWCore.ParameterSet.Config as cms
 
 process = cms.Process("writePPSAlignmentConfig")
@@ -14,8 +21,8 @@ process.MessageLogger = cms.Service("MessageLogger",
 # Load CondDB service
 process.load("CondCore.CondDB.CondDB_cfi")
 
-# output database (in this case local sqlite file)
-process.CondDB.connect = 'sqlite_file:PPSAlignmentConfig.db'
+# output database
+process.CondDB.connect = output
 
 # A data source must always be defined. We don't need it, so here's a dummy one.
 process.source = cms.Source("EmptyIOVSource",
@@ -25,25 +32,20 @@ process.source = cms.Source("EmptyIOVSource",
     interval = cms.uint64(1)
 )
 
-# We define the output service.
+# output service
 process.PoolDBOutputService = cms.Service("PoolDBOutputService",
     process.CondDB,
     timetype = cms.untracked.string('runnumber'),
     toPut = cms.VPSet(cms.PSet(
         record = cms.string('PPSAlignmentConfigRcd'),
-        tag = cms.string('PPSAlignmentConfig_v1')
+        tag = cms.string(db_tag)
     ))
 )
 
 # ESSource
-data_label = 'db_test'  # example
 process.ppsAlignmentConfigESSource = cms.ESSource("PPSAlignmentConfigESSource",
     # PPSAlignmentConfigESSource parameters, defaults will be taken from fillDescriptions
-    label = cms.string(data_label),
-    sequence = cms.vstring(
-        'db_test',
-        'db_test'
-    ),
+    label = cms.string(product_instance_label),
     sector_45 = cms.PSet(
         rp_N = cms.PSet(
             name = cms.string('db_test_RP'),
@@ -67,7 +69,7 @@ process.config_writer = cms.EDAnalyzer("WritePPSAlignmentConfig",
     Source = cms.PSet(
         IOVRun = cms.untracked.uint32(1)
     ),
-    label = cms.string(data_label)  # product label (ESSource parameter)
+    label = cms.string(product_instance_label)
 )
 
 process.path = cms.Path(process.config_writer)
