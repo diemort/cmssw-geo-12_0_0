@@ -1,5 +1,6 @@
 ##### configuration #####
-input = 'sqlite_file:alignment_config.db'  # input database
+input_conditions = 'sqlite_file:alignment_config.db'  # input database
+run_number = 1  # used to select the IOV
 db_tag = 'PPSAlignmentConfig_test'  # database tag
 #########################
 
@@ -7,10 +8,9 @@ import FWCore.ParameterSet.Config as cms
 
 process = cms.Process("retrievePPSAlignmentConfig")
 
-# message logger
+# Message Logger
 process.MessageLogger = cms.Service("MessageLogger",
-    destinations = cms.untracked.vstring('retrieve_PPSAlignmentConfig'
-                                        ),
+    destinations = cms.untracked.vstring('retrieve_PPSAlignmentConfig'),
     retrieve_PPSAlignmentConfig = cms.untracked.PSet(
         threshold = cms.untracked.string('INFO')
     )
@@ -20,13 +20,13 @@ process.MessageLogger = cms.Service("MessageLogger",
 process.load("CondCore.CondDB.CondDB_cfi")
 
 # input database (in this case the local sqlite file)
-process.CondDB.connect = input
+process.CondDB.connect = input_conditions
 
 # A data source must always be defined. We don't need it, so here's a dummy one.
 process.source = cms.Source("EmptyIOVSource",
     timetype = cms.string('runnumber'),
-    firstValue = cms.uint64(1),
-    lastValue = cms.uint64(1),
+    firstValue = cms.uint64(run_number),
+    lastValue = cms.uint64(run_number),
     interval = cms.uint64(1)
 )
 

@@ -1,7 +1,9 @@
 ##### configuration #####
-output = 'sqlite_file:alignment_config.db'  # output database
-product_instance_label = 'db_test'  # ES product label
+output_conditions = 'sqlite_file:alignment_config.db'  # output database
+run_number = 1  # beginning of the IOV
 db_tag = 'PPSAlignmentConfig_test'  # database tag
+produce_logs = True  # if set to True, a file with logs will be produced.
+product_instance_label = 'db_test'  # ES product label
 # ESSource parameters can be configured below
 #########################
 
@@ -9,26 +11,38 @@ import FWCore.ParameterSet.Config as cms
 
 process = cms.Process("writePPSAlignmentConfig")
 
-# message logger
-process.MessageLogger = cms.Service("MessageLogger",
-    destinations = cms.untracked.vstring('write_PPSAlignmentConfig'
-                                        ),
-    write_PPSAlignmentConfig = cms.untracked.PSet(
-        threshold = cms.untracked.string('INFO')
+# Message Logger
+if produce_logs:
+    process.MessageLogger = cms.Service("MessageLogger",
+        destinations = cms.untracked.vstring('write_PPSAlignmentConfig',
+                                             'cout'
+                                            ),
+        write_PPSAlignmentConfig = cms.untracked.PSet(
+            threshold = cms.untracked.string('INFO')
+        ),
+        cout = cms.untracked.PSet(
+            threshold = cms.untracked.string('WARNING')
+        )
     )
-)
+else:
+    process.MessageLogger = cms.Service("MessageLogger",
+        destinations = cms.untracked.vstring('cout'),
+        cout = cms.untracked.PSet(
+            threshold = cms.untracked.string('WARNING')
+        )
+    )
 
 # Load CondDB service
 process.load("CondCore.CondDB.CondDB_cfi")
 
 # output database
-process.CondDB.connect = output
+process.CondDB.connect = output_conditions
 
 # A data source must always be defined. We don't need it, so here's a dummy one.
 process.source = cms.Source("EmptyIOVSource",
     timetype = cms.string('runnumber'),
-    firstValue = cms.uint64(1),
-    lastValue = cms.uint64(1),
+    firstValue = cms.uint64(run_number),
+    lastValue = cms.uint64(run_number),
     interval = cms.uint64(1)
 )
 
