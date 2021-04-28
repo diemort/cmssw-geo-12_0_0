@@ -35,6 +35,8 @@ class PPSAlignmentWorker : public DQMEDAnalyzer {
 public:
   PPSAlignmentWorker(const edm::ParameterSet &iConfig);
 
+  static void fillDescriptions(edm::ConfigurationDescriptions &descriptions);
+
 private:
   void bookHistograms(DQMStore::IBooker &iBooker, edm::Run const &, edm::EventSetup const &iSetup) override;
   void analyze(const edm::Event &iEvent, const edm::EventSetup &iSetup) override;
@@ -127,6 +129,17 @@ void PPSAlignmentWorker::analyze(const edm::Event &iEvent, const edm::EventSetup
 
   sectorData45_.process(tracks, cfg, debug_);
   sectorData56_.process(tracks, cfg, debug_);
+}
+
+void PPSAlignmentWorker::fillDescriptions(edm::ConfigurationDescriptions &descriptions) {
+  edm::ParameterSetDescription desc;
+
+  desc.add<std::string>("label", "");
+  desc.add<edm::InputTag>("tagTracks", edm::InputTag("ctppsLocalTrackLiteProducer"));
+  desc.add<std::string>("folder", "CalibPPS/Common");
+  desc.add<bool>("debug", false);
+
+  descriptions.addWithDefaultLabel(desc);
 }
 
 // -------------------------------- SectorData and SlicePlots methods --------------------------------

@@ -50,6 +50,8 @@ public:
   PPSAlignmentHarvester(const edm::ParameterSet &iConfig);
   ~PPSAlignmentHarvester() override;
 
+  static void fillDescriptions(edm::ConfigurationDescriptions &descriptions);
+
 private:
   void dqmEndJob(DQMStore::IBooker &iBooker, DQMStore::IGetter &iGetter) override;
   void dqmEndRun(DQMStore::IBooker &iBooker,
@@ -180,6 +182,20 @@ PPSAlignmentHarvester::~PPSAlignmentHarvester() {
   if (debug_) {
     delete debugFile_;
   }
+}
+
+void PPSAlignmentHarvester::fillDescriptions(edm::ConfigurationDescriptions &descriptions) {
+  edm::ParameterSetDescription desc;
+
+  desc.add<std::string>("folder", "CalibPPS/Common");
+  desc.add<std::vector<std::string>>("sequence", {"x_alignment", "x_alignment_relative", "y_alignment"});
+  desc.add<std::string>("text_results_path", "./alignment_results.txt");
+  desc.add<bool>("write_sqlite_results", false);
+  desc.add<bool>("x_ali_rel_final_slope_fixed", true);
+  desc.add<bool>("y_ali_final_slope_fixed", true);
+  desc.add<bool>("debug", true);
+
+  descriptions.addWithDefaultLabel(desc);
 }
 
 void PPSAlignmentHarvester::dqmEndJob(DQMStore::IBooker &iBooker, DQMStore::IGetter &iGetter) {}
