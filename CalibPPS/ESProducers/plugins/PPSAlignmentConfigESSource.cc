@@ -580,12 +580,12 @@ int PPSAlignmentConfigESSource::fitProfile(TProfile *p, double x_mean, double x_
   if (n_reasonable < fitProfileMinNReasonable)
     return 1;
 
-  double xMin = x_mean - x_rms, xMax = x_mean + x_rms;
+  double x_min = x_mean - x_rms, x_max = x_mean + x_rms;
 
   TF1 *ff_pol1 = new TF1("ff_pol1", "[0] + [1]*x");
 
   ff_pol1->SetParameter(0., 0.);
-  p->Fit(ff_pol1, "Q", "", xMin, xMax);
+  p->Fit(ff_pol1, "Q", "", x_min, x_max);
 
   sl = ff_pol1->GetParameter(1);
   sl_unc = ff_pol1->GetParError(1);
