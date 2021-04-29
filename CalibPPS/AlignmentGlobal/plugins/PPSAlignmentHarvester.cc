@@ -621,7 +621,7 @@ void PPSAlignmentHarvester::xAlignment(DQMStore::IBooker &iBooker,
         g_test->Write("g_test");
       }
 
-      const auto &shiftRange = cfg_ref.matchingShiftRanges().at(rpc.id_);
+      const auto &shiftRange = cfg.matchingShiftRanges().at(rpc.id_);
       double sh = 0., sh_unc = 0.;
 
       // matching
