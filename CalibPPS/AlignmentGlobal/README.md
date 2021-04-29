@@ -17,6 +17,7 @@
 |-------------------------------|---------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `folder`                      | `cms.string`  | Should be the same as the `folder` parameter in DQM configuration.                                                                                      |
 | `sequence`                    | `cms.vstring` | Determines order of the alignment methods: `"x_alignemnt"`, `"x_alignment_relative"`, `"y_alignment"`.                                                  |
+| `overwrite_sh_x`              | `cms.bool`    | If set to `True`, `x alignment` will overwrite the horizontal shift passed in the configuration.                                                        |
 | `test_results_path`           | `cms.string`  | Path of a file with the results. If empty (`""`), the file will not be created.                                                                         |
 | `write_sqlite_results`        | `cms.bool`    | When set to `True`, the harvester will try to use PoolDBOutputService to save the final results.                                                        |
 | `x_ali_rel_final_slope_fixed` | `cms.bool`    | `True`: the harvester will use the x relative alignment results with fixed slope to prepare final merged results. `False`: results without fixed slope. |

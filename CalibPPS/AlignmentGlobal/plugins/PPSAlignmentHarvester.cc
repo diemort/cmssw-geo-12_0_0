@@ -121,6 +121,7 @@ private:
   // variables from parameters
   const std::string folder_;
   const std::vector<std::string> sequence_;
+  bool overwriteShX_;
   const bool writeSQLiteResults_;
   const bool xAliRelFinalSlopeFixed_;
   const bool yAliFinalSlopeFixed_;
@@ -148,6 +149,7 @@ PPSAlignmentHarvester::PPSAlignmentHarvester(const edm::ParameterSet &iConfig)
           edm::ESInputTag("", "reference"))),
       folder_(iConfig.getParameter<std::string>("folder")),
       sequence_(iConfig.getParameter<std::vector<std::string>>("sequence")),
+      overwriteShX_(iConfig.getParameter<bool>("overwrite_sh_x")),
       writeSQLiteResults_(iConfig.getParameter<bool>("write_sqlite_results")),
       xAliRelFinalSlopeFixed_(iConfig.getParameter<bool>("x_ali_rel_final_slope_fixed")),
       yAliFinalSlopeFixed_(iConfig.getParameter<bool>("y_ali_final_slope_fixed")),
@@ -167,6 +169,7 @@ PPSAlignmentHarvester::PPSAlignmentHarvester(const edm::ParameterSet &iConfig)
     for (unsigned int i = 0; i < sequence_.size(); i++) {
       li << "    " << i + 1 << ": " << sequence_[i] << "\n";
     }
+    li << "* overwrite_sh_x: " << std::boolalpha << overwriteShX_ << "\n";
     li << "* text_results_path: " << textResultsPath << "\n";
     li << "* write_sqlite_results: " << std::boolalpha << writeSQLiteResults_ << "\n";
     li << "* x_ali_rel_final_slope_fixed: " << std::boolalpha << xAliRelFinalSlopeFixed_ << "\n";
@@ -189,6 +192,7 @@ void PPSAlignmentHarvester::fillDescriptions(edm::ConfigurationDescriptions &des
 
   desc.add<std::string>("folder", "CalibPPS/Common");
   desc.add<std::vector<std::string>>("sequence", {"x_alignment", "x_alignment_relative", "y_alignment"});
+  desc.add<bool>("overwrite_sh_x", true);
   desc.add<std::string>("text_results_path", "./alignment_results.txt");
   desc.add<bool>("write_sqlite_results", false);
   desc.add<bool>("x_ali_rel_final_slope_fixed", true);
@@ -619,6 +623,8 @@ void PPSAlignmentHarvester::xAlignment(DQMStore::IBooker &iBooker,
 
       const auto &shiftRange = cfg_ref.matchingShiftRanges().at(rpc.id_);
       double sh = 0., sh_unc = 0.;
+
+      // matching
       doMatch(iBooker,
               cfg,
               rpc,
@@ -630,11 +636,16 @@ void PPSAlignmentHarvester::xAlignment(DQMStore::IBooker &iBooker,
               sh,
               sh_unc);
 
+      // save the results
       CTPPSRPAlignmentCorrectionData rpResult(sh, sh_unc, 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.);
       xAliResults_.setRPCorrection(rpc.id_, rpResult);
       edm::LogInfo("PPS") << std::fixed << std::setprecision(3) << "[x_alignment] "
                           << "Setting sh_x of " << rpc.name_ << " to " << sh;
-      sh_x_map_[rpc.id_] = sh;
+
+      // update the shift
+      if (overwriteShX_) {
+        sh_x_map_[rpc.id_] = sh;
+      }
     }
   }
 
