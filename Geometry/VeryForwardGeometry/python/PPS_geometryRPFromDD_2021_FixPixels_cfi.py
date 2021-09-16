@@ -1,0 +1,97 @@
+import FWCore.ParameterSet.Config as cms
+
+# common and strip files
+totemGeomXMLFiles = cms.vstring(
+    'Geometry/CMSCommonData/data/materials.xml',
+    'Geometry/CMSCommonData/data/rotations.xml',
+#    'Geometry/CMSCommonData/data/extend/cmsextent.xml',
+    'Geometry/VeryForwardData/data/cmsextent.xml',
+    'Geometry/CMSCommonData/data/cms/2017/v1/cms.xml',
+#    'Geometry/CMSCommonData/data/beampipe/2017/v1/beampipe.xml',
+#    'Geometry/CMSCommonData/data/cmsBeam.xml',
+#    'Geometry/CMSCommonData/data/cmsMother.xml',
+#    'Geometry/CMSCommonData/data/mgnt.xml',
+    'Geometry/TrackerCommonData/data/trackermaterial/2021/v1/trackermaterial.xml',
+    'Geometry/TrackerCommonData/data/pixfwdMaterials/2021/v2/pixfwdMaterials.xml',
+#    'Geometry/ForwardCommonData/data/forward.xml',
+#    'Geometry/ForwardCommonData/data/totemRotations.xml',
+#    'Geometry/ForwardCommonData/data/totemMaterials.xml',
+    'Geometry/VeryForwardData/data/RP_Box.xml',
+#    'Geometry/VeryForwardData/data/RP_Box/v3/RP_Box_000.xml',
+#    'Geometry/VeryForwardData/data/RP_Box/v3/RP_Box_001.xml',
+#    'Geometry/VeryForwardData/data/RP_Box/v3/RP_Box_002.xml',
+#    'Geometry/VeryForwardData/data/RP_Box/v3/RP_Box_003.xml',
+#    'Geometry/VeryForwardData/data/RP_Box/v3/RP_Box_004.xml',
+#    'Geometry/VeryForwardData/data/RP_Box/v3/RP_Box_005.xml',
+#    'Geometry/VeryForwardData/data/RP_Box/v3/RP_Box_020.xml',
+#    'Geometry/VeryForwardData/data/RP_Box/v3/RP_Box_021.xml',
+#    'Geometry/VeryForwardData/data/RP_Boxv3//RP_Box_022.xml',
+#    'Geometry/VeryForwardData/data/RP_Box/v3/RP_Box_023.xml',
+#    'Geometry/VeryForwardData/data/RP_Box/v3/RP_Box_024.xml',
+#    'Geometry/VeryForwardData/data/RP_Box/v3/RP_Box_025.xml',
+#    'Geometry/VeryForwardData/data/RP_Box/v3/RP_Box_100.xml',
+#    'Geometry/VeryForwardData/data/RP_Box/v3/RP_Box_101.xml',
+#    'Geometry/VeryForwardData/data/RP_Box/v3/RP_Box_102.xml',
+#    'Geometry/VeryForwardData/data/RP_Box/v3/RP_Box_103.xml',
+#    'Geometry/VeryForwardData/data/RP_Box/v3/RP_Box_104.xml',
+#    'Geometry/VeryForwardData/data/RP_Box/v3/RP_Box_105.xml',
+#    'Geometry/VeryForwardData/data/RP_Box/v3/RP_Box_120.xml',
+#    'Geometry/VeryForwardData/data/RP_Box/v3/RP_Box_121.xml',
+#    'Geometry/VeryForwardData/data/RP_Boxv3//RP_Box_122.xml',
+    'Geometry/VeryForwardData/data/RP_Box/v3/RP_Box_123_OCMS.xml',
+#    'Geometry/VeryForwardData/data/RP_Box/v3/RP_Box_124.xml',
+#    'Geometry/VeryForwardData/data/RP_Box/v3/RP_Box_125.xml',
+#    'Geometry/VeryForwardData/data/RP_Hybrid/v2/RP_Hybrid.xml',
+    'Geometry/VeryForwardData/data/RP_Materials/v4/RP_Materials.xml',
+    'Geometry/VeryForwardData/data/RP_Transformations.xml',
+#    'Geometry/VeryForwardData/data/RP_Detectors_Assembly.xml',
+#    'Geometry/VeryForwardData/data/RP_Detectors_Assembly/RP_Detectors_Assembly_000.xml',
+#    'Geometry/VeryForwardData/data/RP_Detectors_Assembly/RP_Detectors_Assembly_001.xml',
+#    'Geometry/VeryForwardData/data/RP_Detectors_Assembly/RP_Detectors_Assembly_002.xml',
+#    'Geometry/VeryForwardData/data/RP_Detectors_Assembly/RP_Detectors_Assembly_004.xml',
+#    'Geometry/VeryForwardData/data/RP_Detectors_Assembly/RP_Detectors_Assembly_005.xml',
+#    'Geometry/VeryForwardData/data/RP_Detectors_Assembly/RP_Detectors_Assembly_022.xml',
+#    'Geometry/VeryForwardData/data/RP_Detectors_Assembly/RP_Detectors_Assembly_024.xml',
+#    'Geometry/VeryForwardData/data/RP_Detectors_Assembly/RP_Detectors_Assembly_025.xml',
+#    'Geometry/VeryForwardData/data/RP_Detectors_Assembly/RP_Detectors_Assembly_100.xml',
+#    'Geometry/VeryForwardData/data/RP_Detectors_Assembly/RP_Detectors_Assembly_101.xml',
+#    'Geometry/VeryForwardData/data/RP_Detectors_Assembly/RP_Detectors_Assembly_102.xml',
+#    'Geometry/VeryForwardData/data/RP_Detectors_Assembly/RP_Detectors_Assembly_104.xml',
+#    'Geometry/VeryForwardData/data/RP_Detectors_Assembly/RP_Detectors_Assembly_105.xml',
+#    'Geometry/VeryForwardData/data/RP_Detectors_Assembly/RP_Detectors_Assembly_122.xml',
+#    'Geometry/VeryForwardData/data/RP_Detectors_Assembly/RP_Detectors_Assembly_124.xml',
+#    'Geometry/VeryForwardData/data/RP_Detectors_Assembly/RP_Detectors_Assembly_125.xml',
+#    'Geometry/VeryForwardData/data/RP_Device.xml',
+#    'Geometry/VeryForwardData/data/RP_Vertical_Device/2021/Reco/v1/RP_Vertical_Device.xml',
+#    'Geometry/VeryForwardData/data/RP_Horizontal_Device/2021/Reco/v1/RP_Horizontal_Device.xml',
+#    'Geometry/VeryForwardData/data/CTPPS_2021/Stations/Reco/v1/RP_220_Right_Station.xml',
+#    'Geometry/VeryForwardData/data/CTPPS_2021/Stations/Reco/v1/RP_210_Right_Station.xml',
+#    'Geometry/VeryForwardData/data/CTPPS_2021/Stations/Reco/v1/RP_220_Left_Station.xml',
+#    'Geometry/VeryForwardData/data/CTPPS_2021/Stations/Reco/v1/RP_210_Left_Station.xml',
+#    'Geometry/VeryForwardData/data/CTPPS_2021/Stations/Reco/v1/RP_Stations_Assembly.xml',
+#    'Geometry/VeryForwardData/data/RP_Sensitive_Dets.xml',
+#    'Geometry/VeryForwardData/data/CTPPS_2021/Cuts_Per_Region/Reco/v1/RP_Cuts_Per_Region.xml',
+
+#    'Geometry/VeryForwardData/data/CTPPS_2021/RP_Param_Beam_Region/v1/RP_Param_Beam_Region.xml'
+    )
+
+# pixel files
+ctppsPixelGeomXMLFiles = cms.vstring(
+    'Geometry/VeryForwardData/data/CTPPS_Pixel_2021/Modules/v2/ppstrackerMaterials.xml',
+    'Geometry/VeryForwardData/data/CTPPS_Pixel_2021/Modules/v3/PPS_Pixel_Module_2x2_Run3.xml',
+    'Geometry/VeryForwardData/data/CTPPS_Pixel_2021/Modules/v2/PPS_Pixel_Sens.xml',
+#    'Geometry/VeryForwardData/data/CTPPS_Pixel_2021/Assembly/v2/CTPPS_Pixel_Assembly_Box_Real_003.xml',
+#    'Geometry/VeryForwardData/data/CTPPS_Pixel_2021/Assembly/v2/CTPPS_Pixel_Assembly_Box_Real_023.xml',
+#    'Geometry/VeryForwardData/data/CTPPS_Pixel_2021/Assembly/v2/CTPPS_Pixel_Assembly_Box_Real_103.xml',
+    'Geometry/VeryForwardData/data/CTPPS_Pixel_2021/Assembly/v2/CTPPS_Pixel_Assembly_Box_Real_123_OCMS.xml'
+    )
+
+XMLIdealGeometryESSource = cms.ESSource("XMLIdealGeometryESSource",
+    geomXMLFiles =
+    totemGeomXMLFiles
+    + ctppsPixelGeomXMLFiles,
+    rootNodeName = cms.string('cms:OCMS')
+    )
+
+# position of RPs
+XMLIdealGeometryESSource.geomXMLFiles.append("Geometry/VeryForwardData/data/CTPPS_2021/RP_Dist_Beam_Cent/Reco/v1/RP_Dist_Beam_Cent.xml")

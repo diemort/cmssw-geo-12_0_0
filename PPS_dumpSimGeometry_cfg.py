@@ -1,0 +1,149 @@
+from __future__ import print_function
+import FWCore.ParameterSet.Config as cms
+import sys, os
+import FWCore.ParameterSet.VarParsing as VarParsing
+from FWCore.Utilities.Enumerate import Enumerate
+from Configuration.Geometry.dict2026Geometry import detectorVersionDict
+
+varType = Enumerate ("Run1 2015 2015dev 2017 2017Muon 2021 2026 PPS-Timing PPS-Diamond PPS-Sunanda")
+defaultVersion=str();
+
+def help():
+   print("Usage: cmsRun dumpSimGeometry_cfg.py  tag=TAG version=VERSION ")
+   print("   tag=tagname")
+   print("       identify geometry scenario ")
+   print("      ", varType.keys())
+   print("")
+   print("   version=versionNumber")
+   print("       scenario version from 2026 dictionary")
+   print("")
+   print("   out=outputFileName")
+   print("       default is cmsSimGeom<tag><version>.root")
+   print() 
+   os._exit(1);
+
+def versionCheck(ver):
+   if ver == "":
+      print("Please, specify 2026 scenario version\n")
+      print(sorted([x[1] for x in detectorVersionDict.items()]))
+      print("")
+      help()
+
+def simGeoLoad(score):
+    print("Loading configuration for scenario", options.tag , options.version ,"...\n")
+    if score == "Run1":
+       process.load("Geometry.CMSCommonData.cmsIdealGeometryXML_cfi")
+
+    elif score == "2015":
+       process.load("Geometry.CMSCommonData.cmsExtendedGeometry2015XML_cfi")
+
+    elif score == "2015dev":
+       process.load("Geometry.CMSCommonData.cmsExtendedGeometry2015devXML_cfi")
+
+    elif score == "2017":
+       process.load("Geometry.CMSCommonData.cmsExtendedGeometry2017XML_cfi")
+       
+    elif score == "2017Muon":
+       process.load("Geometry.CMSCommonData.cmsExtendedGeometry2017MuonXML_cfi")
+
+    elif score == "2021":
+       process.load("Geometry.CMSCommonData.cmsExtendedGeometry2021XML_cfi")
+
+    elif score == "2026":
+       versionCheck(options.version)
+       process.load("Geometry.CMSCommonData.cmsExtendedGeometry2026" + options.version + "XML_cfi")
+
+### GGS-UFRGS
+    elif score == "PPSrun2": # only PPS geometry of both arms for Run2
+       process.load("Geometry.VeryForwardGeometry.PPS_geometryRPFromDD_2018_cfi")
+
+    elif score == "PPSrun3": # only PPS geometry of both arms for Run3
+       process.load("Geometry.VeryForwardGeometry.PPS_geometryRPFromDD_2021_cfi")
+
+    elif score == "PPSrun3_LeftArm": # only PPS geometry of both arms for Run3
+       process.load("Geometry.VeryForwardGeometry.PPS_geometryRPFromDD_2021_LeftArm_cfi")
+
+    elif score == "PPSrun3_FixPixels": # only PPS geometry of both arms for Run3 + FixPixels (distance from RP bottom and thicker Envelop for AlSupport)
+       process.load("Geometry.VeryForwardGeometry.PPS_geometryRPFromDD_2021_FixPixels_cfi")
+
+### UPDATE FROM HERE
+
+    elif score == "PPS-Timing": # only PPS timing detector pot
+       process.load("Geometry.VeryForwardGeometry.PPS_geometryRPFromDD_Timing_2021_cfi")
+
+    elif score == "PPS-Timing-Negative": #FIXME NOT WORKING # only PPS one arm
+       process.load("Geometry.VeryForwardGeometry.PPS_geometryRPFromDD_TimingNeg_2021_cfi")
+
+    elif score == "PPS-Timing-Diamonds": # only Diamond sensors
+       process.load("Geometry.VeryForwardGeometry.PPS_geometryRPFromDD_DiamondPlanes_2021_cfi")
+
+    elif score == "PPS-Timing-Sunanda": # only PPS timing detector pot with Sunandas fix
+       process.load("Geometry.VeryForwardGeometry.PPS_geometryRPFromDD_Timing-Sunanda_2021_cfi")
+
+    elif score == "PPS": #FIXME NOT WORKING Only PPS geometry of both arms
+       process.load("Geometry.VeryForwardGeometry.PPS_geometryRPFromDD_Stations_2021_cfi")
+
+    elif score == "2021-Sunanda": # 2021 CMS geometry with Sunandas fix
+       process.load("Geometry.CMSCommonData.cmsExtendedGeometry2021XML_Sunanda_cfi")
+
+    elif score == "2021-newDiamondplusPlanes": # 2021 CMS geo plus Run2 PPS plus fix DIamond box and adding new planes
+       process.load("Geometry.VeryForwardGeometry.PPS_geometryRPFromDD_newDiamondplusPlanes_2021_cfi")
+
+    elif score == "2021-PPS2021minimal": # 2021 CMS geometry with PPS2021 geo with new Timing station, fix for Diamond box and adding new planes
+       process.load("Geometry.CMSCommonData.cmsExtendedGeometry2021XML_PPS2021minimal_cfi")
+
+    elif score == "2021-newDiamondBoxPot": # 2021 CMS geometry with Run2 PPS geo, fix for Diamond box and adding new planes, but replicating Diamond box to box pot *22
+       process.load("Geometry.CMSCommonData.cmsExtendedGeometry2021XML_newDiamondBoxPot_cfi")
+
+    elif score == "PPS-Timing-Reco-2021": # only PPS timing detector pot
+       process.load("Geometry.VeryForwardGeometry.geometryRPFromDD_2021_forVIS_cfi")
+
+    else:
+       help()
+
+options = VarParsing.VarParsing ()
+
+defaultTag=str(2017);
+defaultLevel=100;
+defaultOutputFileName="cmsSimGeom-"+ defaultTag +".root"
+
+options.register ('tag',
+                  defaultTag, # default value
+                  VarParsing.VarParsing.multiplicity.singleton,
+                  VarParsing.VarParsing.varType.string,
+                  "info about geometry scenario")
+options.register ('version',
+                  defaultVersion, # default value
+                  VarParsing.VarParsing.multiplicity.singleton,
+                  VarParsing.VarParsing.varType.string,
+                  "info about 2026 geometry scenario version")
+options.register ('out',
+                  defaultOutputFileName, # default value
+                  VarParsing.VarParsing.multiplicity.singleton,
+                  VarParsing.VarParsing.varType.string,
+                  "Output file name")
+
+options.parseArguments()
+
+if (options.out == defaultOutputFileName ):
+   options.out = "cmsSimGeom-" + str(options.tag) + str(options.version) + ".root"
+
+process = cms.Process("SIMDUMP")
+simGeoLoad(options.tag)
+
+process.source = cms.Source("EmptySource")
+
+process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(1))
+
+process.add_(cms.ESProducer("TGeoMgrFromDdd",
+                            verbose = cms.untracked.bool(True),
+                            level = cms.untracked.int32(defaultLevel)
+                           )              
+            )
+
+process.dump = cms.EDAnalyzer("DumpSimGeometry", 
+                              tag = cms.untracked.string(options.tag),
+                              outputFileName = cms.untracked.string(options.out)
+                             )
+
+process.p = cms.Path(process.dump)
