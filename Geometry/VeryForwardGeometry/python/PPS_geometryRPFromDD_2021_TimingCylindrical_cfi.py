@@ -38,7 +38,7 @@ totemGeomXMLFiles = cms.vstring(
 #    'Geometry/VeryForwardData/data/RP_Box/v3/RP_Box_120.xml',
 #    'Geometry/VeryForwardData/data/RP_Box/v3/RP_Box_121.xml',
 #    'Geometry/VeryForwardData/data/RP_Box/v3/RP_Box_122.xml',
-    'Geometry/VeryForwardData/data/RP_Box/v3/RP_Box_123_OCMS.xml',
+#    'Geometry/VeryForwardData/data/RP_Box/v3/RP_Box_123.xml',
 #    'Geometry/VeryForwardData/data/RP_Box/v3/RP_Box_124.xml',
 #    'Geometry/VeryForwardData/data/RP_Box/v3/RP_Box_125.xml',
 #    'Geometry/VeryForwardData/data/RP_Hybrid/v2/RP_Hybrid.xml',
@@ -61,12 +61,12 @@ totemGeomXMLFiles = cms.vstring(
 #    'Geometry/VeryForwardData/data/RP_Detectors_Assembly/RP_Detectors_Assembly_122.xml',
 #    'Geometry/VeryForwardData/data/RP_Detectors_Assembly/RP_Detectors_Assembly_124.xml',
 #    'Geometry/VeryForwardData/data/RP_Detectors_Assembly/RP_Detectors_Assembly_125.xml',
-#    'Geometry/VeryForwardData/data/RP_Device.xml',
+    'Geometry/VeryForwardData/data/RP_Device.xml',
 #    'Geometry/VeryForwardData/data/RP_Vertical_Device/2021/Reco/v1/RP_Vertical_Device.xml',
-#    'Geometry/VeryForwardData/data/RP_Horizontal_Device/2021/Reco/v1/RP_Horizontal_Device.xml',
+    'Geometry/VeryForwardData/data/RP_Horizontal_Device/2021/Reco/v1/RP_Horizontal_Device.xml',
 #    'Geometry/VeryForwardData/data/CTPPS_2021/Stations/Reco/v1/RP_220_Right_Station.xml',
 #    'Geometry/VeryForwardData/data/CTPPS_2021/Stations/Reco/v1/RP_210_Right_Station.xml',
-#    'Geometry/VeryForwardData/data/CTPPS_2021/Stations/Reco/v1/RP_220_Left_Station.xml',
+    'Geometry/VeryForwardData/data/CTPPS_2021/Stations/Reco/v1/RP_220_Left_Station.xml',
 #    'Geometry/VeryForwardData/data/CTPPS_2021/Stations/Reco/v1/RP_210_Left_Station.xml',
 #    'Geometry/VeryForwardData/data/CTPPS_2021/Stations/Reco/v1/RP_Stations_Assembly.xml',
 #    'Geometry/VeryForwardData/data/RP_Sensitive_Dets.xml',
@@ -75,21 +75,40 @@ totemGeomXMLFiles = cms.vstring(
 #    'Geometry/VeryForwardData/data/CTPPS_2021/RP_Param_Beam_Region/v1/RP_Param_Beam_Region.xml'
     )
 
-# pixel files
-ctppsPixelGeomXMLFiles = cms.vstring(
-    'Geometry/VeryForwardData/data/CTPPS_Pixel_2021/Modules/v2/ppstrackerMaterials.xml',
-    'Geometry/VeryForwardData/data/CTPPS_Pixel_2021/Modules/v3/PPS_Pixel_Module_2x2_Run3.xml',
-    'Geometry/VeryForwardData/data/CTPPS_Pixel_2021/Modules/v2/PPS_Pixel_Sens.xml',
-#    'Geometry/VeryForwardData/data/CTPPS_Pixel_2021/Assembly/v2/CTPPS_Pixel_Assembly_Box_Real_003.xml',
-#    'Geometry/VeryForwardData/data/CTPPS_Pixel_2021/Assembly/v2/CTPPS_Pixel_Assembly_Box_Real_023.xml',
-#    'Geometry/VeryForwardData/data/CTPPS_Pixel_2021/Assembly/v2/CTPPS_Pixel_Assembly_Box_Real_103.xml',
-    'Geometry/VeryForwardData/data/CTPPS_Pixel_2021/Assembly/v2/CTPPS_Pixel_Assembly_Box_Real_123_OCMS.xml'
+# diamond files
+ctppsDiamondGeomXMLFiles = cms.vstring(
+    'Geometry/VeryForwardData/data/CTPPS_Diamond_Materials.xml',
+    'Geometry/VeryForwardData/data/CTPPS_Diamond_Transformations.xml',
+    'Geometry/VeryForwardData/data/CTPPS_Diamond_X_Distance.xml',
+    'Geometry/VeryForwardData/data/CTPPS_Diamond_Parameters.xml',
+    'Geometry/VeryForwardData/data/CTPPS_Timing_Station_Parameters.xml',
+    'Geometry/VeryForwardData/data/CTPPS_Timing_Horizontal_Pot/v2/CTPPS_Timing_Horizontal_Pot.xml',
+#    'Geometry/VeryForwardData/data/CTPPS_Timing_Positive_Station/v1/CTPPS_Timing_Positive_Station.xml',
+    'Geometry/VeryForwardData/data/CTPPS_Timing_Negative_Station/v1/CTPPS_Timing_Negative_Station_OCMS.xml',
+#    'Geometry/VeryForwardData/data/CTPPS_Diamond_2021/Reco/v1/CTPPS_Timing_Stations_Assembly.xml',
+    'Geometry/VeryForwardData/data/CTPPS_Diamond_Segments/CTPPS_Diamond_Pattern1_Segment1.xml',
+    'Geometry/VeryForwardData/data/CTPPS_Diamond_Segments/CTPPS_Diamond_Pattern2_Segment1.xml',
+    'Geometry/VeryForwardData/data/CTPPS_Diamond_Segments/CTPPS_Diamond_Pattern2_Segment2.xml',
+    'Geometry/VeryForwardData/data/CTPPS_Diamond_Segments/CTPPS_Diamond_Pattern3_Segment1.xml',
+    'Geometry/VeryForwardData/data/CTPPS_Diamond_Segments/CTPPS_Diamond_Pattern3_Segment2.xml',
+    'Geometry/VeryForwardData/data/CTPPS_Diamond_Segments/CTPPS_Diamond_Pattern3_Segment3.xml',
+    'Geometry/VeryForwardData/data/CTPPS_Diamond_Segments/CTPPS_Diamond_Pattern3_Segment4.xml',
+    'Geometry/VeryForwardData/data/CTPPS_Diamond_Segments/CTPPS_Diamond_Pattern4_Segment1.xml',
+    'Geometry/VeryForwardData/data/CTPPS_Diamond_Segments/CTPPS_Diamond_Pattern4_Segment2.xml',
+    'Geometry/VeryForwardData/data/CTPPS_Diamond_Segments/CTPPS_Diamond_Pattern4_Segment3.xml',
+    'Geometry/VeryForwardData/data/CTPPS_Diamond_Segments/CTPPS_Diamond_Pattern4_Segment4.xml',
+    'Geometry/VeryForwardData/data/CTPPS_Diamond_Segments/CTPPS_Diamond_Pattern4_Segment5.xml',
+    'Geometry/VeryForwardData/data/CTPPS_Diamond_2021/CTPPS_Diamond_Planes/CTPPS_Diamond_Plane1.xml',
+    'Geometry/VeryForwardData/data/CTPPS_Diamond_2021/CTPPS_Diamond_Planes/CTPPS_Diamond_Plane2.xml',
+    'Geometry/VeryForwardData/data/CTPPS_Diamond_2021/CTPPS_Diamond_Planes/CTPPS_Diamond_Plane3.xml',
+    'Geometry/VeryForwardData/data/CTPPS_Diamond_2021/CTPPS_Diamond_Planes/CTPPS_Diamond_Plane4.xml',
+    'Geometry/VeryForwardData/data/CTPPS_Diamond_2021/CTPPS_Diamond_Detector_Assembly/v1/CTPPS_Diamond_Detector_Assembly.xml'
     )
 
 XMLIdealGeometryESSource = cms.ESSource("XMLIdealGeometryESSource",
     geomXMLFiles =
     totemGeomXMLFiles
-    + ctppsPixelGeomXMLFiles,
+    + ctppsDiamondGeomXMLFiles,
     rootNodeName = cms.string('cms:OCMS')
     )
 

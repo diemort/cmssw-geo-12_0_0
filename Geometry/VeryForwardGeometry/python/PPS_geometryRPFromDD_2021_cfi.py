@@ -83,7 +83,7 @@ ctppsDiamondGeomXMLFiles = cms.vstring(
     'Geometry/VeryForwardData/data/CTPPS_Diamond_X_Distance.xml',
     'Geometry/VeryForwardData/data/CTPPS_Diamond_Parameters.xml',
     'Geometry/VeryForwardData/data/CTPPS_Timing_Station_Parameters.xml',
-    'Geometry/VeryForwardData/data/CTPPS_Timing_Horizontal_Pot.xml',
+    'Geometry/VeryForwardData/data/CTPPS_Timing_Horizontal_Pot/v2/CTPPS_Timing_Horizontal_Pot.xml',
     'Geometry/VeryForwardData/data/CTPPS_Timing_Positive_Station/v1/CTPPS_Timing_Positive_Station.xml',
     'Geometry/VeryForwardData/data/CTPPS_Timing_Negative_Station/v1/CTPPS_Timing_Negative_Station.xml',
     'Geometry/VeryForwardData/data/CTPPS_Diamond_2021/Reco/v1/CTPPS_Timing_Stations_Assembly.xml',
@@ -103,7 +103,7 @@ ctppsDiamondGeomXMLFiles = cms.vstring(
     'Geometry/VeryForwardData/data/CTPPS_Diamond_2021/CTPPS_Diamond_Planes/CTPPS_Diamond_Plane2.xml',
     'Geometry/VeryForwardData/data/CTPPS_Diamond_2021/CTPPS_Diamond_Planes/CTPPS_Diamond_Plane3.xml',
     'Geometry/VeryForwardData/data/CTPPS_Diamond_2021/CTPPS_Diamond_Planes/CTPPS_Diamond_Plane4.xml',
-    'Geometry/VeryForwardData/data/CTPPS_Diamond_2021/CTPPS_Diamond_Detector_Assembly.xml'
+    'Geometry/VeryForwardData/data/CTPPS_Diamond_2021/CTPPS_Diamond_Detector_Assembly/v1/CTPPS_Diamond_Detector_Assembly.xml'
     )
 
 
@@ -119,13 +119,13 @@ totemTimingGeomXMLFiles = cms.vstring(
 
 # pixel files
 ctppsPixelGeomXMLFiles = cms.vstring(
-    'Geometry/VeryForwardData/data/CTPPS_Pixel_2021/Modules/v1/ppstrackerMaterials.xml',
-    'Geometry/VeryForwardData/data/CTPPS_Pixel_2021/Modules/v1/PPS_Pixel_Module_2x2_Run3.xml',
-    'Geometry/VeryForwardData/data/CTPPS_Pixel_2021/Modules/v1/PPS_Pixel_Sens.xml',
-    'Geometry/VeryForwardData/data/CTPPS_Pixel_2021/Assembly/v1/CTPPS_Pixel_Assembly_Box_Real_003.xml',
-    'Geometry/VeryForwardData/data/CTPPS_Pixel_2021/Assembly/v1/CTPPS_Pixel_Assembly_Box_Real_023.xml',
-    'Geometry/VeryForwardData/data/CTPPS_Pixel_2021/Assembly/v1/CTPPS_Pixel_Assembly_Box_Real_103.xml',
-    'Geometry/VeryForwardData/data/CTPPS_Pixel_2021/Assembly/v1/CTPPS_Pixel_Assembly_Box_Real_123.xml'
+    'Geometry/VeryForwardData/data/CTPPS_Pixel_2021/Modules/v2/ppstrackerMaterials.xml',
+    'Geometry/VeryForwardData/data/CTPPS_Pixel_2021/Modules/v3/PPS_Pixel_Module_2x2_Run3.xml',
+    'Geometry/VeryForwardData/data/CTPPS_Pixel_2021/Modules/v2/PPS_Pixel_Sens.xml',
+    'Geometry/VeryForwardData/data/CTPPS_Pixel_2021/Assembly/v2/CTPPS_Pixel_Assembly_Box_Real_003.xml',
+    'Geometry/VeryForwardData/data/CTPPS_Pixel_2021/Assembly/v2/CTPPS_Pixel_Assembly_Box_Real_023.xml',
+    'Geometry/VeryForwardData/data/CTPPS_Pixel_2021/Assembly/v2/CTPPS_Pixel_Assembly_Box_Real_103.xml',
+    'Geometry/VeryForwardData/data/CTPPS_Pixel_2021/Assembly/v2/CTPPS_Pixel_Assembly_Box_Real_123.xml'
     )
 
 XMLIdealGeometryESSource = cms.ESSource("XMLIdealGeometryESSource",

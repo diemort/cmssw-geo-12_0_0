@@ -32,7 +32,7 @@
     </LogicalPart>
     <LogicalPart name="PCB" category="support">
       <rSolid name="PCB"/>
-      <rMaterial name="RP_Materials:PCB"/> <!--should be equivalent to actual RO4350B-->
+      <rMaterial name="RP_Materials:PPS_PCB"/> <!--should be equivalent to actual RO4350B-->
     </LogicalPart>
   </LogicalPartSection>
 

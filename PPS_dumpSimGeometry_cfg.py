@@ -31,66 +31,30 @@ def versionCheck(ver):
 
 def simGeoLoad(score):
     print("Loading configuration for scenario", options.tag , options.version ,"...\n")
-    if score == "Run1":
-       process.load("Geometry.CMSCommonData.cmsIdealGeometryXML_cfi")
-
-    elif score == "2015":
-       process.load("Geometry.CMSCommonData.cmsExtendedGeometry2015XML_cfi")
-
-    elif score == "2015dev":
-       process.load("Geometry.CMSCommonData.cmsExtendedGeometry2015devXML_cfi")
-
-    elif score == "2017":
-       process.load("Geometry.CMSCommonData.cmsExtendedGeometry2017XML_cfi")
-       
-    elif score == "2017Muon":
-       process.load("Geometry.CMSCommonData.cmsExtendedGeometry2017MuonXML_cfi")
-
-    elif score == "2021":
+    if score == "2021": # Full CMS geometry with PPS
        process.load("Geometry.CMSCommonData.cmsExtendedGeometry2021XML_cfi")
 
-    elif score == "2026":
-       versionCheck(options.version)
-       process.load("Geometry.CMSCommonData.cmsExtendedGeometry2026" + options.version + "XML_cfi")
-
-### GGS-UFRGS
     elif score == "PPSrun2": # only PPS geometry of both arms for Run2
        process.load("Geometry.VeryForwardGeometry.PPS_geometryRPFromDD_2018_cfi")
 
     elif score == "PPSrun3": # only PPS geometry of both arms for Run3
        process.load("Geometry.VeryForwardGeometry.PPS_geometryRPFromDD_2021_cfi")
 
-    elif score == "PPSrun3_LeftArm": # only PPS geometry of both arms for Run3
+    elif score == "PPSrun3_LeftArm": # only PPS geometry Left Arm for Run3
        process.load("Geometry.VeryForwardGeometry.PPS_geometryRPFromDD_2021_LeftArm_cfi")
 
-    elif score == "PPSrun3_FixPixels": # only PPS geometry of both arms for Run3 + FixPixels (distance from RP bottom and thicker Envelop for AlSupport)
+    elif score == "PPSrun3_FixPixels": # Pixels corrected + thicker Envelop for AlSupport
        process.load("Geometry.VeryForwardGeometry.PPS_geometryRPFromDD_2021_FixPixels_cfi")
+    elif score == "PPS-Timing-Cylindrical": # only PPS timing detector in cylindrical pot
+       process.load("Geometry.VeryForwardGeometry.PPS_geometryRPFromDD_2021_TimingCylindrical_cfi")
 
-### UPDATE FROM HERE
+    elif score == "PPS-Timing-Box-Simu": # only PPS timing detector in box pot (new Run3)
+       process.load("Geometry.CMSCommonData.cmsExtendedGeometry2021XML_cfi")
 
-    elif score == "PPS-Timing": # only PPS timing detector pot
-       process.load("Geometry.VeryForwardGeometry.PPS_geometryRPFromDD_Timing_2021_cfi")
-
-    elif score == "PPS-Timing-Negative": #FIXME NOT WORKING # only PPS one arm
-       process.load("Geometry.VeryForwardGeometry.PPS_geometryRPFromDD_TimingNeg_2021_cfi")
+### NEEDS UPDATE
 
     elif score == "PPS-Timing-Diamonds": # only Diamond sensors
        process.load("Geometry.VeryForwardGeometry.PPS_geometryRPFromDD_DiamondPlanes_2021_cfi")
-
-    elif score == "PPS-Timing-Sunanda": # only PPS timing detector pot with Sunandas fix
-       process.load("Geometry.VeryForwardGeometry.PPS_geometryRPFromDD_Timing-Sunanda_2021_cfi")
-
-    elif score == "PPS": #FIXME NOT WORKING Only PPS geometry of both arms
-       process.load("Geometry.VeryForwardGeometry.PPS_geometryRPFromDD_Stations_2021_cfi")
-
-    elif score == "2021-Sunanda": # 2021 CMS geometry with Sunandas fix
-       process.load("Geometry.CMSCommonData.cmsExtendedGeometry2021XML_Sunanda_cfi")
-
-    elif score == "2021-newDiamondplusPlanes": # 2021 CMS geo plus Run2 PPS plus fix DIamond box and adding new planes
-       process.load("Geometry.VeryForwardGeometry.PPS_geometryRPFromDD_newDiamondplusPlanes_2021_cfi")
-
-    elif score == "2021-PPS2021minimal": # 2021 CMS geometry with PPS2021 geo with new Timing station, fix for Diamond box and adding new planes
-       process.load("Geometry.CMSCommonData.cmsExtendedGeometry2021XML_PPS2021minimal_cfi")
 
     elif score == "2021-newDiamondBoxPot": # 2021 CMS geometry with Run2 PPS geo, fix for Diamond box and adding new planes, but replicating Diamond box to box pot *22
        process.load("Geometry.CMSCommonData.cmsExtendedGeometry2021XML_newDiamondBoxPot_cfi")
