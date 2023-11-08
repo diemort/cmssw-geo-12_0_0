@@ -37,6 +37,10 @@ sed -i "s@xaodout@$aodout@g" config.py
 sed -i "s@xalign@$align@g" config.py
 sed -i "s@xjson@$json@g" config.py
 sed -i "s@xgt@$gt@g" config.py
+if [ -z "${eosarea}/${jobname}" ]
+then
+    mkdir -p ${eosarea}/${jobname}
+fi
 cmsRun config.py
 mkdir -p ${eosarea}/${jobname}/split/
 xrdcp -fs $fileout ${eosarea}/${jobname}/split/plots/${fileout}
