@@ -1,4 +1,4 @@
 #!/bin/bash
 
-rm -rf condor.dag.*
-rm -rf logs/*
+rm -rf $( basename ${1} .dag ).dag.*
+rm -rf logs/$( basename ${1} .dag )*
