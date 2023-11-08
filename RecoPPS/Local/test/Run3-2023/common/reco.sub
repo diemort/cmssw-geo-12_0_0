@@ -1,0 +1,10 @@
+executable            = common/reco.sh
+requirements          = (OpSysAndVer =?= "CentOS7")
+error                 = logs/$(JOBNAME)-$(ClusterId).$(ProcId).err
+output                = logs/$(JOBNAME)-$(ClusterId).$(ProcId).out
++JobBatchName         = "reco-$(JOBNAME)"
++JobFlavour           = "testmatch"
+should_transfer_files = YES
+transfer_input_files  = common/config.py,internal/$(ALIGN),internal/tarball.tar.gz,internal/input_postTS.txt,internal/$(JSON)
+arguments             = $(ProcId) $(CMSSW) $(PerFile) $(EOSAREA) $(JOBNAME) $(JSON) $(ALIGN) $(GT)
+queue $(FILES)
