@@ -1,4 +1,4 @@
-JOB Reco PRE common/init.sh
+SCRIPT PRE Reco common/init.sh
 JOB Reco common/reco.sub
 JOB Merger common/merger.sub
 VARS Reco FILES="1084"
