@@ -1,0 +1,12 @@
+JOB Reco PRE common/init.sh
+JOB Reco common/reco.sub
+JOB Merger common/merger.sub
+VARS Reco FILES="1084"
+VARS Reco PerFile="10"
+VARS Reco JSON="postTS.json"
+VARS Reco ALIGN="alignment_2023_PostTS_Oct26.xml"
+VARS Reco GT="130X_dataRun3_Prompt_v4"
+VARS ALL_NODES JOBNAME="postTS_Oct26"
+VARS ALL_NODES CMSSW="CMSSW_13_0_3"
+VARS ALL_NODES EOSAREA="/eos/cms/store/group/phys_pps/tmp/test-assocuts/"
+PARENT Reco CHILD Merger

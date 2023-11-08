@@ -1,0 +1,12 @@
+JOB Reco PRE init.sh
+JOB Reco reco.sub
+JOB Merger merger.sub
+VARS Reco FILES="2900"
+VARS Reco PerFile="10"
+VARS Reco JSON="preTS1-1.json"
+VARS Reco ALIGN="alignment_2023_PreTS1_366403_367840_Oct26.xml"
+VARS Reco GT="130X_dataRun3_HLT_Candidate_2023_04_22_13_21_10"
+VARS ALL_NODES JOBNAME="preTS1-1_Oct26"
+VARS ALL_NODES CMSSW="CMSSW_13_0_3"
+VARS ALL_NODES EOSAREA="/eos/cms/store/group/phys_pps/tmp/test-assocuts/"
+PARENT Reco CHILD Merger
