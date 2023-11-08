@@ -1,6 +1,6 @@
 SCRIPT PRE Reco common/init.sh
-JOB Reco reco.sub
-JOB Merger merger.sub
+JOB Reco common/reco.sub
+JOB Merger common/merger.sub
 VARS Reco FILES="1483"
 VARS Reco PerFile="10"
 VARS Reco JSON="preTS1-2.json"
