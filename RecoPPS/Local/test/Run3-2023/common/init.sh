@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ -z "logs" ]
+if [ ! -d "logs" ]
 then
     echo "Creating log folder"
     mkdir logs
