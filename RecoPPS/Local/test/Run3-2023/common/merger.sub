@@ -1,7 +1,7 @@
 executable            = common/merger.sh
 requirements          = (OpSysAndVer =?= "CentOS7")
-error                 = logs/merger-$(JOBNAME)-$(ClusterId).$(ProcId).err
-output                = logs/merger-$(JOBNAME)-$(ClusterId).$(ProcId).out
+error                 = logs/$(JOBNAME)-merger-$(ClusterId).$(ProcId).err
+output                = logs/$(JOBNAME)-merger-$(ClusterId).$(ProcId).out
 +JobBatchName         = "merger-$(JOBNAME)"
 +JobFlavour           = "workday"
 arguments             = $(CMSSW) $(EOSAREA) $(JOBNAME)
