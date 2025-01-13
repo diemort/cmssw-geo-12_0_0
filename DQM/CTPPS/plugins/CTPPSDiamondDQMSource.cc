@@ -122,6 +122,8 @@ private:
     std::unordered_map<unsigned int, MonitorElement*> activity_per_bx;
 
     MonitorElement* hitDistribution2d = nullptr;
+    MonitorElement* hitDistribution2dXY = nullptr;
+
     MonitorElement* hitDistribution2d_lumisection = nullptr;
     MonitorElement* hitDistribution2dOOT = nullptr;
     MonitorElement* hitDistribution2dOOT_le = nullptr;
@@ -385,6 +387,16 @@ CTPPSDiamondDQMSource::PotPlots::PotPlots(DQMStore::IBooker& ibooker,
                                      19. * INV_DISPLAY_RESOLUTION_FOR_HITS_MM,
                                      -0.5,
                                      18.5);
+  hitDistribution2dXY = ibooker.book2D("hits 2D",
+                                     title + " 2D;x (mm); y (mm)",
+                                     19. * INV_DISPLAY_RESOLUTION_FOR_HITS_MM,
+                                     -0.5,
+                                     18.5,
+                                     19. * INV_DISPLAY_RESOLUTION_FOR_HITS_MM,
+                                     -9.5,
+                                     9.5
+				     );
+
 
   hitDistribution2dOOT = ibooker.book2D("hits with OOT in planes",
                                         title + " hits with OOT in planes;plane number, OOT index;x (mm)",
@@ -968,6 +980,8 @@ void CTPPSDiamondDQMSource::analyze(const edm::Event& event, const edm::EventSet
           for (int i = 0; i < numOfBins; ++i)
             hitHistoTmp->Fill(detId.plane() + UFSDShift, hitHistoTmpYAxis->GetBinCenter(startBin + i));
         }
+	TH2F* hitHistoTmpXY = potPlots_[detId_pot].hitDistribution2dXY->getTH2F();
+	hitHistoTmpXY->Fill(rechit.x(),rechit.y());
       }
 
       if (rechit.toT() > 0) {
